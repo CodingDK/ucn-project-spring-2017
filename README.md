@@ -1,5 +1,5 @@
-# TypeScript-Express
-This is just an example on how to use TypeScript for an simple Express app with passport
+# UCN-project-spring-2017
+This is a project made on PBA Web Development at UCN. The Application use TypeScript, ExpressJS (with PassportJS), Angular4.
 
 
 ## Instructions

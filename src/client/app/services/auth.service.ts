@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { LoginViewModel } from '../../shared/models/loginViewModel';
+import { LoginViewModel } from '../../../shared/models/loginViewModel';
 
 import { Headers, Http, Response } from '@angular/http';
 import { Router } from '@angular/router';

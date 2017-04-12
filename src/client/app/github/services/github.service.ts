@@ -5,7 +5,7 @@ import { Router } from '@angular/router';
 
 import 'rxjs/add/operator/toPromise';
 
-import { RootObject } from './github.models';
+import { RootObject } from '../models/github.models';
 
 @Injectable()
 export class GithubService {  

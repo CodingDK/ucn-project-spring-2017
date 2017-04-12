@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
-import { GithubService } from './github.service';
-import { RootObject } from './github.models';
+import { GithubService } from '../services/github.service';
+import { RootObject } from '../models/github.models';
 
 @Component({
   selector: 'github',

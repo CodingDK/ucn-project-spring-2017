@@ -10,11 +10,11 @@ import config from './config/config';
 
 import { loginRouter } from './routes/loginRouter';
 import { githubRouter } from './routes/githubRouter';
-import HeroRouter from './routes/HeroRouter';
-import PassportConfig from './config/PassportConfig';
+import HeroRouter from './routes/heroRouter';
+import PassportConfig from './config/passportConfig';
 
-import {IDatabase} from './config/IDatabase';
-import {MongoDatabase} from './dal/MongoDatabase';
+import {IDatabase} from './config/iDatabase';
+import {MongoDatabase} from './dal/mongoDatabase';
 
 
 // Creates and configures an ExpressJS web server.

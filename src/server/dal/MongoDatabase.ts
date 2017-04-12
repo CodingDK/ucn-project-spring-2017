@@ -1,6 +1,6 @@
 import * as mongoose from 'mongoose';
 
-import {IDatabase} from '../config/IDatabase';
+import {IDatabase} from '../config/iDatabase';
 
 export class MongoDatabase implements IDatabase {
   openConnection(connectionString: string) : void {

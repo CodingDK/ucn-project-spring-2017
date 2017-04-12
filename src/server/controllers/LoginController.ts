@@ -1,4 +1,4 @@
-import {UserController} from './UserController';
+import {UserController} from './userController';
 import {UserDocument} from '../models/user';
 
 export class LoginController {

@@ -2,7 +2,7 @@ import {Application} from 'express';
 import * as passport from "passport";
 const LocalStrategy = require('passport-local').Strategy;
 import {User, Users, UserDocument} from '../models/user';
-import {LoginController} from '../controllers/LoginController';
+import {LoginController} from '../controllers/loginController';
 
 export default class PassportConfig {
   private ctrl: LoginController = new LoginController();

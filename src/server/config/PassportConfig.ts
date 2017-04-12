@@ -1,9 +1,12 @@
 import {Application} from 'express';
 import * as passport from "passport";
 const LocalStrategy = require('passport-local').Strategy;
-import {User, Users, UserDocument} from '../models/user';
+import {UserDocument} from '../models/user';
 import {LoginController} from '../controllers/loginController';
 
+/**
+ * This class make the setup for PassportJS in the application
+ */
 export default class PassportConfig {
   private ctrl: LoginController = new LoginController();
 
@@ -11,6 +14,10 @@ export default class PassportConfig {
     this.init();
   }
 
+  /**
+   * Method for setup PassportJS in the application
+   * @param app the application instance of express
+   */
   public static setup(app: Application) {
     return new PassportConfig(app);
   }

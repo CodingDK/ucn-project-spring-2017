@@ -2,6 +2,9 @@
 import * as bcrypt from 'bcrypt-nodejs';
 import { Document, Schema, model } from 'mongoose';
 
+/**
+ * Model class for an user object
+ */
 export class User {
   email: string;
   password: string;
@@ -32,35 +35,12 @@ const schema = new Schema({
 // register each method at schema
 schema.method('validPassword', User.prototype.validPassword);
 
+/**
+ * Interface/Class for an user
+ */
 export interface UserDocument extends User, Document { }
 
+/**
+ * Mongoose collection for Users
+ */
 export const Users = model<UserDocument>('User', schema);
-
-/*
-export interface IUser extends mongoose.Document {
-  email: string;
-  password: string;
-};
-
-const UserSchema = new mongoose.Schema({
-  email: {type:String, required: true},
-  password: {type:String, required: true}
-});
-
-UserSchema.method('generateHash', (password) => {
-  return bcrypt.hashSync(password, bcrypt.genSaltSync(8));
-})
-
-// generating a hash
-UserSchema.methods.generateHash = (password) => {
-    return bcrypt.hashSync(password, bcrypt.genSaltSync(8));
-};
-
-// checking if password is valid
-UserSchema.methods.validPassword = (password) => {
-    return bcrypt.compareSync(password, this.password);
-};
-//type UserType = IUser & mongoose.Document;
-const User = mongoose.model<IUser>('User', UserSchema);
-export default User;
-*/

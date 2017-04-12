@@ -1,9 +1,19 @@
 import {UserController} from './userController';
 import {UserDocument} from '../models/user';
 
+/**
+ * Controller for handling signup and login in the application
+ */
 export class LoginController {
   private userCtrl: UserController = new UserController();
 
+  /**
+   * The method passportJS called then an user tries to login.
+   * @param req the request
+   * @param email the email of the user
+   * @param password the password to check
+   * @param done callback then all is done here
+   */
   public loginWithPassport(req: any, email: string, password: string, done: any) : void {
     console.log("before looking for user in db, req.user: ", JSON.stringify(req.user));
     console.log("before looking for user in db, email: ", email);
@@ -33,17 +43,24 @@ export class LoginController {
             email, "error: ", JSON.stringify(err));
           return done(err);
         }
+        return done(err);
       });
   }
 
+  /**
+   * The method PassportJS used then an user tries to signup with a new account
+   * @param req the request
+   * @param email the email of the user
+   * @param password the chosen password
+   * @param done callback then all is done here
+   */
   public signUpWithPassport(req: any, email: string, password: string, done: any) : void {
-    //TODO move the stuff about checking for exists user to dal?
     this.userCtrl.findByEmail(email)
       .then((user) => {
         // check if the email already exists
         if (user) {
           console.log("user email already created, email: ", email);
-          return done(null, false, {message: "That email is already taken: " + email});
+          return done(null, false, { message: `That email is already taken: ${email}` });
         } else {
           this.userCtrl.createUser(email, password)
             .then((user) => {
@@ -53,14 +70,16 @@ export class LoginController {
               return done(err);
             });
         }
-      })
+      });
   }
 
+  /** Serializering method for PassportJS */
   public serializeUser(user: UserDocument, done: any) : void {
     console.log("serializeUser", JSON.stringify(user));
     done(null, user._id);
   }
 
+  /** Deserializering method for PassportJS */
   public deserializeUser(id: string, done: any) : void {
     console.log("deserializeUser ID: ", JSON.stringify(id));
     console.log("test, this?", JSON.stringify(this));

@@ -3,7 +3,7 @@ import {Router, Request, Response, NextFunction} from 'express';
 const Heroes = require('../data/hereos.json');
 
 export class HeroRouter {
-  router: Router
+  router: Router;
 
   /**
    * Initialize the HeroRouter

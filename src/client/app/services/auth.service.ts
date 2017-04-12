@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
-import { LoginViewModel } from '../../../shared/models/loginViewModel';
-
 import { Headers, Http, Response } from '@angular/http';
 import { Router } from '@angular/router';
-
 import 'rxjs/add/operator/toPromise';
+
+import { LoginViewModel } from '../../../shared/models/loginViewModel';
+import { AppConstants} from '../app.constants';
 
 
 @Injectable()
@@ -13,9 +13,9 @@ export class AuthService {
   private finishFirstRun: boolean = false;
   private promise: Promise<any>;
 
-  private loginUrl = 'http://localhost:3000/api/login';
-  private logoutUrl = 'http://localhost:3000/api/login/logout';
-  private statusUrl = 'http://localhost:3000/api/login/status';
+  private loginUrl = AppConstants.Server.url + AppConstants.Server.endpoint.login.login;
+  private logoutUrl = AppConstants.Server.url + AppConstants.Server.endpoint.login.logout;
+  private statusUrl = AppConstants.Server.url + AppConstants.Server.endpoint.login.status;
 
   constructor(private http: Http, private router: Router) {
     this.promise = this.http.get(this.statusUrl, { withCredentials: true })

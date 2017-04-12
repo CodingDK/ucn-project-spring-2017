@@ -1,15 +1,14 @@
 import { Injectable } from '@angular/core';
-
 import { Headers, Http, Response } from '@angular/http';
 import { Router } from '@angular/router';
-
 import 'rxjs/add/operator/toPromise';
 
 import { RootObject } from '../models/github.models';
+import { AppConstants } from "../../app.constants";
 
 @Injectable()
 export class GithubService {  
-  private commitsUrl = 'http://localhost:3000/api/github/commits';
+  private commitsUrl = AppConstants.Server.url + AppConstants.Server.endpoint.github.commits;
   private data: any;
 
   constructor(private http: Http, private router: Router) {

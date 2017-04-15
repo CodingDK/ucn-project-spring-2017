@@ -4,7 +4,8 @@ import { RootObject } from '../models/github.models';
 
 @Component({
   selector: 'github',
-  templateUrl: './github.component.html'
+  templateUrl: './github.component.html',
+  styleUrls: ['./github.component.scss']
 })
 export class GithubComponent {
   commits: RootObject[];

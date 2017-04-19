@@ -2,7 +2,7 @@ import { NextFunction, Request, Response, Router } from "express";
 const GoogleAuth = require('google-auth-library');
 
 import { UserController } from './userController';
-import { UserDocument } from '../models/user';
+import { User } from '../models/user';
 import config from '../config/config';
 
 
@@ -32,7 +32,7 @@ export class googleController {
         //let email = payload['email'];
         //let name = payload['name'];
         new UserController().findByGoogleId(googleId)
-          .then((user: UserDocument) => {
+          .then((user: User) => {
             if (!user) {
               console.log("no user found with googleId: " + googleId);
               res.json(401, { login: false, isGoogleUsed: true, message: "user is not authorized to run this system" });
@@ -56,33 +56,5 @@ export class googleController {
           });
         
       });
-
-    
-    /*
-    let email = "1";
-    this.userCtrl.findByEmail(email)
-      .then((user: UserDocument) => {
-        // if no user is found, return message
-        if (!user) {
-          console.log("no user found with " + email);
-          return done(null, false, { message: "no user found with " + email });
-        }
-
-        console.log("user logged in", JSON.stringify(user));
-        // if everything is ok, return the user
-        return done(null, user);
-      })
-      .catch((err: any) => {
-        // If there are any error, return the error
-        if (err) {
-          console.log("looking for user in db error?, email: ",
-            email, "error: ", JSON.stringify(err));
-          return done(err);
-        }
-        return done(err);
-      });
-    /*User.findOrCreate({ googleId: profile.id }, function (err, user) {
-      return done(err, user);
-    });*/
   }
 }

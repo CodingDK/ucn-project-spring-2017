@@ -1,7 +1,7 @@
 import {Application} from 'express';
 import * as passport from "passport";
 const LocalStrategy = require('passport-local').Strategy;
-import {UserDocument} from '../models/user';
+import {User} from '../models/user';
 import { PassportController } from '../controllers/passportController';
 import config from '../config/config';
 
@@ -32,7 +32,7 @@ export default class PassportConfig {
     // passport needs ability to serialize and unserialize users out of session
 
     // used to serialize the user for the session
-    passport.serializeUser((user: UserDocument, done) => {
+    passport.serializeUser((user: User, done) => {
       this.ctrl.serializeUser(user, done);
     });
 

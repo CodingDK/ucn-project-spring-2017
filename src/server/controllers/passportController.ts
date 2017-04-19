@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response, Router } from "express";
 
 import { UserController } from './userController';
-import {UserDocument} from '../models/user';
+import { User } from '../models/user';
 
 /**
  * Controller for handling signup and login in the application
@@ -21,7 +21,7 @@ export class PassportController {
     console.log("before looking for user in db, email: ", email);
     console.log("this, login?", JSON.stringify(this));
     this.userCtrl.findByEmail(email)
-      .then((user: UserDocument) => {
+      .then((user: User) => {
         // if no user is found, return message
         if (!user) {
           console.log("no user found with " + email);
@@ -29,7 +29,7 @@ export class PassportController {
         }
 
         // if the user exists, we check the password
-        if (!user.validPassword(password)) {
+        if (!this.userCtrl.validPassword(password, user.password)) {
           console.log("user password not valid, email: " + email);
           return done(null, false, {message: "wrong password for email: " + email});
         }
@@ -76,9 +76,9 @@ export class PassportController {
   }
   
   /** Serializering method for PassportJS */
-  public serializeUser(user: UserDocument, done: any) : void {
+  public serializeUser(user: User, done: any) : void {
     console.log("serializeUser", JSON.stringify(user));
-    done(null, user._id);
+    done(null, user.id);
   }
 
   /** Deserializering method for PassportJS */

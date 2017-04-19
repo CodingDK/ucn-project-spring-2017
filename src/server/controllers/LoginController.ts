@@ -73,6 +73,38 @@ export class LoginController {
       });
   }
 
+  public loginWithGooglePassport(accessToken: any, refreshToken: any, profile: any, done: any) {
+    console.log("accessToken: ", JSON.stringify(accessToken));
+    console.log("refreshToken: ", JSON.stringify(refreshToken));
+    console.log("profile: ", JSON.stringify(profile));
+    console.log("done: ", JSON.stringify(done));
+    let email = "1";
+    this.userCtrl.findByEmail(email)
+      .then((user: UserDocument) => {
+        // if no user is found, return message
+        if (!user) {
+          console.log("no user found with " + email);
+          return done(null, false, { message: "no user found with " + email });
+        }
+        
+        console.log("user logged in", JSON.stringify(user));
+        // if everything is ok, return the user
+        return done(null, user);
+      })
+      .catch((err: any) => {
+        // If there are any error, return the error
+        if (err) {
+          console.log("looking for user in db error?, email: ",
+            email, "error: ", JSON.stringify(err));
+          return done(err);
+        }
+        return done(err);
+      });
+    /*User.findOrCreate({ googleId: profile.id }, function (err, user) {
+      return done(err, user);
+    });*/
+  }
+
   /** Serializering method for PassportJS */
   public serializeUser(user: UserDocument, done: any) : void {
     console.log("serializeUser", JSON.stringify(user));

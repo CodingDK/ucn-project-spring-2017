@@ -1,16 +1,15 @@
 import {Application} from 'express';
 import * as passport from "passport";
 const LocalStrategy = require('passport-local').Strategy;
-const GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
 import {UserDocument} from '../models/user';
-import { LoginController } from '../controllers/loginController';
+import { PassportController } from '../controllers/passportController';
 import config from '../config/config';
 
 /**
  * This class make the setup for PassportJS in the application
  */
 export default class PassportConfig {
-  private ctrl: LoginController = new LoginController();
+  private ctrl: PassportController = new PassportController();
 
   constructor(private app: Application) {
     this.init();
@@ -74,23 +73,7 @@ export default class PassportConfig {
         this.ctrl.loginWithPassport(req, email, password, done);
       })
     );
-
-    // Use the GoogleStrategy within Passport.
-    //   Strategies in Passport require a `verify` function, which accept
-    //   credentials (in this case, an accessToken, refreshToken, and Google
-    //   profile), and invoke a callback with a user object.
-
-    const google = config.oauth.google;
-    passport.use(new GoogleStrategy({
-        clientID: google.clientId,
-        clientSecret: google.clientSecret,
-        callbackURL: google.callbackUrl
-      },
-      (accessToken: any, refreshToken: any, profile: any, done: any) => {
-        this.ctrl.loginWithGooglePassport(accessToken, refreshToken, profile, done);
-      }
-    ));
-
+    
     // passport setup
     this.app.use(passport.initialize());
     this.app.use(passport.session());

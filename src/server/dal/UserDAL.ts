@@ -5,7 +5,7 @@ import {User, UserDocument, Users} from '../models/user';
 export class UserDal {
 
   /**
-   * Method for finding a user by email
+   * Method for finding an user by email
    * @param email the email to look for
    */
   public findByEmail(email: string) : Promise<UserDocument> {
@@ -21,7 +21,7 @@ export class UserDal {
   }
 
   /**
-   * Method for finding a user by id
+   * Method for finding an user by id
    * @param id the id of the user
    */
   public findById(id : string) : Promise<UserDocument> {
@@ -31,6 +31,22 @@ export class UserDal {
           //TODO maybe better error handling
           reject(err);
           //throw new DbError(JSON.stringify(err));
+        }
+        resolve(userDoc);
+      });
+    });
+  }
+
+  /**
+   * Method for finding an user by googleId
+   * @param googleId the googleId of the user
+   */
+  public findByGoogleId(googleId : string) : Promise<UserDocument> {
+    return new Promise<UserDocument>((resolve, reject) => {
+      Users.findOne({ googleId }, (err, userDoc) => {
+        if (err) {
+          //TODO maybe better error handling
+          reject(err);
         }
         resolve(userDoc);
       });

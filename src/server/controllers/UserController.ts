@@ -8,7 +8,7 @@ export class UserController {
   private dal: UserDal = new UserDal();
 
   /**
-   * Method for finding a user by id
+   * Method for finding an user by id
    * @param id the id of the user
    */
   public findById(id : string) : Promise<UserDocument> {
@@ -16,11 +16,19 @@ export class UserController {
   }
 
   /**
-   * Method for finding a user by email
+   * Method for finding an user by email
    * @param email the email to look for
    */
   public findByEmail(email : string) : Promise<UserDocument> {
     return this.dal.findByEmail(email);
+  }
+
+  /**
+   * Method for finding an user by googleId
+   * @param googleId the googleId of the user
+   */
+  public findByGoogleId(googleId: string): Promise<UserDocument> {
+    return this.dal.findByGoogleId(googleId);
   }
 
   /**

@@ -16,8 +16,10 @@ export class AuthService {
   private loginUrl = AppConstants.Server.url + AppConstants.Server.endpoint.login.login;
   private logoutUrl = AppConstants.Server.url + AppConstants.Server.endpoint.login.logout;
   private statusUrl = AppConstants.Server.url + AppConstants.Server.endpoint.login.status;
+  private googleLoginUrl = AppConstants.Server.url + AppConstants.Server.endpoint.login.googleLogin;
 
   constructor(private http: Http, private router: Router) {
+    //TODO Maybe this promise should be moved or angular gives some other opportunities for setting the loggedIn value 
     this.promise = this.http.get(this.statusUrl, { withCredentials: true })
       .toPromise()
       .then(response => {
@@ -27,7 +29,17 @@ export class AuthService {
       .catch(this.handleError);
   }
 
-  // This method will display the lock widget
+
+  googleLoginSucceed(id_token: string): Promise<boolean> {
+    return this.http.post(this.googleLoginUrl, { id_token }, { withCredentials: true })
+      .toPromise()
+      .then(response => {
+        this.loggedIn = response.json().login;
+        return this.loggedIn;
+      })
+      .catch(this.handleError);
+  }
+
   login(loginModel: LoginViewModel) : Promise<boolean> {
     console.log("service: loginModel: ", loginModel);
 

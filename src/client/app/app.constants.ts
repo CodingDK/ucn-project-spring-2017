@@ -8,7 +8,8 @@ export class AppConstants {
       login: {
         login: 'login/',
         logout: 'login/logout/',
-        status: 'login/status/'
+        status: 'login/status/',
+        googleLogin: 'login/auth/google'
       },
       github: {
         commits: 'github/commits'

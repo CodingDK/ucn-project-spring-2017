@@ -9,6 +9,7 @@ import { GithubModule } from './github/github.module';
 import { AppComponent } from './components/app.component';
 import { HomeComponent } from './components/home.component';
 import { LoginComponent } from './components/login.component';
+import { LoginGoogleComponent } from './components/login-google.component';
 
 import { AuthGuard } from './services/auth.guard';
 import { AuthService } from './services/auth.service';
@@ -17,7 +18,8 @@ import { AuthService } from './services/auth.service';
   declarations: [
     AppComponent,
     HomeComponent,
-    LoginComponent
+    LoginComponent,
+    LoginGoogleComponent
   ],
   imports: [
     BrowserModule,

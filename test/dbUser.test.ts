@@ -5,7 +5,7 @@ const expect = chai.expect;
 
 const dbURI = 'mongodb://localhost/ucn-spring-db';
 
-import { Users, DbTeacher, UserDocument, Teachers, TeacherDocument, DbStudent, StudentDocument } from '../src/server/dal/models/dbUser';
+import { Users, DbUser, UserDocument } from '../src/server/dal/models/dbUser';
 
 //import app from '../src/server/server';
 
@@ -24,7 +24,7 @@ describe("Example spec for a model", () => {
   it("can save another", (done) => {
     mongoose.connect(dbURI);
     let arrUsers = [];
-    let newUser: StudentDocument = <StudentDocument>{};//new DbStudent();
+    let newUser = new DbUser();//new DbStudent();
     newUser.name = "test";
     newUser.email = "test";
     newUser.password = "test";
@@ -33,18 +33,20 @@ describe("Example spec for a model", () => {
     //newUser.roles = ["admin", "teacher"];
     console.log("newUser before save", newUser);
     arrUsers.push(newUser);
-    let newTeacher = <TeacherDocument>{
-      name: "teacher",
-      email: "teacher",
-      password: "teacher"
-    }
-    let newStudent = <any>{
-      name: "student",
-      email: "student",
-      password: "student",
-      schoolClass: "stuent class!",
-      //objType: "Student" 
-    }
+    let newTeacher = new DbUser();
+    newTeacher.name = "teacher";
+    newTeacher.email = "teacher";
+    newTeacher.password = "teacher";
+    newTeacher.roles = ["Teacher"];
+    newTeacher.schoolClasses = ["pwe0916", "other class"];
+
+    console.log("newTeacher before save", newTeacher);
+    arrUsers.push(newTeacher);
+    let newStudent = new DbUser();
+    newStudent.name = "student";
+    newStudent.email = "student";
+    newStudent.password = "student";
+    newStudent.schoolClasses = ["pwe0916"];
     console.log("newStudent before save", newStudent);
     arrUsers.push(newStudent);
     Users.create(arrUsers, (err: any, createdUser: any) => {

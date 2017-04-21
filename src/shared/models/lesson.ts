@@ -2,7 +2,7 @@ import { Teacher } from './teacher';
 import { SchoolClass } from './schoolClass';
 import { MeetUp } from './meetUp';
 
-export class LessonModel {
+export class Lesson {
 
     startTime: Date;
     endTime: Date;

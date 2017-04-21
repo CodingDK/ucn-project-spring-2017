@@ -1,7 +1,7 @@
 import { User } from './user';
 import { SchoolClass } from './schoolClass';
 
-export class TeacherModel extends User {
+export class Teacher extends User {
 
     roles: string[];
     schoolClasses: SchoolClass[];

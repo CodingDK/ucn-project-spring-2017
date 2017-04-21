@@ -1,10 +1,10 @@
-import { Document, Model } from 'mongoose';
+import { Document, model } from 'mongoose';
 import { getNewSchemaWithDefaultOptions } from '../helpers';
 
 /**
  * Model class for a dbLesson object
  */
-export class Lesson {
+export class DbLesson {
     id: string
     startTime: Date;
     endTime: Date;
@@ -13,7 +13,6 @@ export class Lesson {
 }
 
 const schema = getNewSchemaWithDefaultOptions({
-    id: { type: String, required: true },
     startTime: { type: Date, required: true },
     endTime: { type: Date },
     teacher: { type: String, required: true },

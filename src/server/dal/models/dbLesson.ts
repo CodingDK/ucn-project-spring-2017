@@ -1,7 +1,12 @@
-import { Document, model } from 'mongoose';
+import { Document, model, Schema } from 'mongoose';
 import { getNewSchemaWithDefaultOptions } from '../helpers';
 
-import { MeetUp } from '../../../shared/models/meetUp';
+export class DbMeetUp {
+  checkIn: Date;
+  checkOut: Date;
+  topic: string;
+  student: string;
+}
 
 /**
  * Model class for a dbLesson object
@@ -9,9 +14,9 @@ import { MeetUp } from '../../../shared/models/meetUp';
 export class DbLesson {
   startTime: Date;
   endTime: Date;
-  teacher: string[] // should be object id
+  teachers: string[] // should be object id
   schoolClass: string;
-  meetUps: MeetUp
+  meetUps: DbMeetUp[];
 }
 
 const meetUpSchema = getNewSchemaWithDefaultOptions({
@@ -24,7 +29,7 @@ const meetUpSchema = getNewSchemaWithDefaultOptions({
 const schema = getNewSchemaWithDefaultOptions({
   startTime: { type: Date, required: true },
   endTime: { type: Date, required: true },
-  teacher: [{ type: String, ref: 'User' }],
+  teachers: [{ type: String, ref: 'User' }],
   schoolClass: { type: String, required: true },
   meetUps: [meetUpSchema]
 });

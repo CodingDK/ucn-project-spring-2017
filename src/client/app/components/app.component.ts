@@ -6,7 +6,7 @@ import { AuthService } from '../services/auth.service';
   templateUrl: './app.component.html'
 })
 export class AppComponent {
-  constructor(private authService: AuthService) {}
+  constructor() {}
   //TODO make a better fix for scroll-problem than changing page
   onDeactivate() {
     document.body.scrollTop = 0;

@@ -1,12 +1,13 @@
+<h1 class="page-header">Login</h1>
 <div class="row">
   <div class="col-md-4 col-md-offset-2">
     <div class="login-panel panel panel-default">
       <div class="panel-heading">
-        <h3 class="panel-title">Please Sign In</h3>
+        <h3 class="panel-title">Login venligst ind</h3>
       </div>
       <div class="panel-body">
         <div class="alert alert-danger" role="alert" *ngIf="errorMessage">
-          <strong>Error</strong> {{errorMessage}}
+          <strong>Fejl</strong> {{errorMessage}}
         </div>
         <form role="form">
           <fieldset>
@@ -22,13 +23,12 @@
                      [(ngModel)]="model.password"
                      >
             </div>
-            <div class="checkbox">
+            <!--<div class="checkbox">
               <label>
                 <input name="remember" type="checkbox" value="Remember Me">Remember Me
               </label>
-            </div>
+            </div>-->
             
-            <!-- Change this to a button or input when using this as a form -->
             <button class="btn btn-lg btn-success btn-block" (click)="submit()" >Login</button> <!--[disabled]="isSubmitted"-->
           </fieldset>
         </form>
@@ -38,7 +38,7 @@
   <div class="col-md-4">
     <div class="login-panel panel panel-default">
       <div class="panel-heading">
-        <h3 class="panel-title">Use another service to log in</h3>
+        <h3 class="panel-title">Login med en anden service</h3>
       </div>
       <div class="panel-body">
         <login-google></login-google>

@@ -1,0 +1,22 @@
+<nav class="navbar navbar-default navbar-static-top" role="navigation">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <a class="navbar-brand" routerLink="/home">Lektiecafé</a>
+    </div>
+    <ul class="nav navbar-nav">
+      <li routerLinkActive="active"><a routerLink="/home" routerLinkActive="active">Home</a></li>
+      <li routerLinkActive="active" *ngIf="authService.isLoggedIn()">
+        <a routerLink="/github">Github Commits</a>
+      </li>
+    </ul>
+    <ul class="nav navbar-nav navbar-right">
+      <li routerLinkActive="active" *ngIf="!authService.isLoggedIn()">
+        <a routerLink="/login"><span class="fa fa-sign-in"></span> Login</a>
+      </li>
+      <li *ngIf="authService.isLoggedIn()">
+        <a (click)="authService.logout()"><span class="fa fa-sign-out"></span> Logout</a>
+      </li>
+    </ul>
+  </div>
+
+</nav>

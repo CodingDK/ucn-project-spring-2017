@@ -7,6 +7,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { GithubModule } from './github/github.module';
 
 import { AppComponent } from './components/app.component';
+import { NavbarComponent } from './components/navbar.component';
 import { HomeComponent } from './components/home.component';
 import { LoginComponent } from './components/login.component';
 import { LoginGoogleComponent } from './components/login-google.component';
@@ -17,6 +18,7 @@ import { AuthService } from './services/auth.service';
 @NgModule({
   declarations: [
     AppComponent,
+    NavbarComponent,
     HomeComponent,
     LoginComponent,
     LoginGoogleComponent

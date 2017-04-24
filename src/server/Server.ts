@@ -9,6 +9,7 @@ import config from './config/config';
 import { loginRouter } from './routes/loginRouter';
 import { githubRouter } from './routes/githubRouter';
 import HeroRouter from './routes/heroRouter';
+import LessonRouter from './routes/lessonRouter';
 import PassportConfig from './config/passportConfig';
 
 import {IDatabase} from './config/iDatabase';
@@ -58,6 +59,7 @@ class Server {
     app.use('/api/github', githubRouter);
     app.use('/api/login', loginRouter);
     app.use('/api/v1/heroes', HeroRouter);
+    app.use('/api/lesson/', LessonRouter)
     //app.use(express.static(path.join(__dirname, "/../client")));
   }
 }

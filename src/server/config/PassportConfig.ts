@@ -1,7 +1,7 @@
 import {Application} from 'express';
 import * as passport from "passport";
 const LocalStrategy = require('passport-local').Strategy;
-import {User} from '../models/user';
+import {User} from '../../shared/models/user';
 import { PassportController } from '../controllers/passportController';
 import config from '../config/config';
 

@@ -1,10 +1,33 @@
-import { User } from '../models/user';
+import { User, Student } from '../../shared/models/user';
 import { DbUser, UserDocument, Users } from './models/dbUser';
 
 /**
  * Class for handling Users in database
  */
 export class UserDal {
+
+  /**
+   * Method to find Students by School Class name
+   */
+  public findStudentsBySchoolClassName(name: string): Promise<Student[]> {
+    return new Promise<Student[]>((resolve, reject) => {
+      Users.find({
+        schoolClass: name,
+        roles: "student"
+      }, (err, objs: UserDocument[]) => {
+        if (err) {
+          reject(err);
+        }
+        let retList = new Array<Student>();
+        if (objs != null) {
+          objs.forEach((value: UserDocument) => {
+            retList.push(value.toObject() as Student);
+          });
+        }
+        resolve(retList);
+      });
+    }); 
+  } 
 
   /**
    * Method for finding an user by email

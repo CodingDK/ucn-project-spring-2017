@@ -2,7 +2,7 @@ import { NextFunction, Request, Response, Router } from "express";
 const GoogleAuth = require('google-auth-library');
 
 import { UserController } from './userController';
-import { User } from '../models/user';
+import { User } from '../../shared/models/user';
 import config from '../config/config';
 
 

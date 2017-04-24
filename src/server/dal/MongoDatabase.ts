@@ -10,7 +10,9 @@ export class MongoDatabase implements IDatabase {
    * Method for open a connection to mongodb
    * @param connectionString string for connection to the database
    */
-  openConnection(connectionString: string) : void {
+  openConnection(connectionString: string): void {
+    //workaround for https://github.com/Automattic/mongoose/issues/4951#issuecomment-283327958
+    (<any>mongoose).Promise = global.Promise;
     mongoose.connect(connectionString);
   }
 

@@ -1,13 +1,20 @@
 import * as bcrypt from 'bcrypt-nodejs';
 
-import { User } from '../models/user';
-import {UserDal} from '../dal/userDAL';
+import { User, Student } from '../../shared/models/user';
+import { UserDal } from '../dal/userDAL';
 
 /**
  * Controller for handling Users
  */
 export class UserController {
   private dal: UserDal = new UserDal();
+
+  /**
+   * Method to find Students by School Class name
+   */
+  public findStudentsBySchoolClassName(name: string): Promise<Student[]> {
+    return this.dal.findStudentsBySchoolClassName(name);
+  } 
 
   /**
    * Method for finding an user by id

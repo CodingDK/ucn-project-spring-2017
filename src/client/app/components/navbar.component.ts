@@ -1,12 +1,39 @@
 import { Component } from '@angular/core';
 import { AuthService } from '../services/auth.service';
 
+import { ToastyService, ToastyConfig, ToastOptions, ToastData } from 'ng2-toasty';
+
 @Component({
   selector: 'navbar',
   templateUrl: './navbar.component.html',
   styleUrls: ['./navbar.component.scss']
 })
 export class NavbarComponent {
-  constructor(private authService: AuthService) {}
-  
+  constructor(private toastyService: ToastyService, private authService: AuthService) {
+  }
+
+  addToast() {
+    // Just add default Toast with title only
+    this.toastyService.default('Hi there');
+    // Or create the instance of ToastOptions
+    var toastOptions: ToastOptions = {
+      title: "My title",
+      msg: "The message",
+      showClose: true,
+      timeout: 5000,
+      //theme: 'default',
+      onAdd: (toast: ToastData) => {
+        console.log('Toast ' + toast.id + ' has been added!');
+      },
+      onRemove: function (toast: ToastData) {
+        console.log('Toast ' + toast.id + ' has been removed!');
+      }
+    };
+    // Add see all possible types in one shot
+    this.toastyService.info(toastOptions);
+    this.toastyService.success(toastOptions);
+    this.toastyService.wait(toastOptions);
+    this.toastyService.error(toastOptions);
+    this.toastyService.warning(toastOptions);
+  }
 }

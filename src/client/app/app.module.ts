@@ -3,6 +3,9 @@ import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
 
+
+import { ToastyModule } from 'ng2-toasty';
+
 import { AppRoutingModule } from './app-routing.module';
 import { GithubModule } from './github/github.module';
 
@@ -27,6 +30,7 @@ import { AuthService } from './services/auth.service';
     BrowserModule,
     FormsModule,
     HttpModule,
+    ToastyModule.forRoot(),
     GithubModule,
     AppRoutingModule // Must be last import. So Rounting childs works
     

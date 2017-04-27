@@ -12,7 +12,7 @@ githubRouter.get('/commits', isLoggedIn, (req: Request, res: Response, next: Nex
       'User-Agent': 'Application'
     }
   };
-  request('https://api.github.com/repos/CodingDK/TypeScript-Express/commits', options, (error: any, response: any, body: any) => {
+  request('https://api.github.com/repos/CodingDK/ucn-project-spring-2017/commits', options, (error: any, response: any, body: any) => {
     if (!error && response.statusCode == 200) {
       if (config.gitHubSimpleCache == "") {
         config.gitHubSimpleCache = body;

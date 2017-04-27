@@ -30,8 +30,8 @@ export class AuthService {
   }
 
 
-  googleLoginSucceed(id_token: string): Promise<boolean> {
-    return this.http.post(this.googleLoginUrl, { id_token }, { withCredentials: true })
+  googleLoginSucceed(auth_code: string): Promise<boolean> {
+    return this.http.post(this.googleLoginUrl, { auth_code }, { withCredentials: true })
       .toPromise()
       .then(response => {
         this.loggedIn = response.json().login;

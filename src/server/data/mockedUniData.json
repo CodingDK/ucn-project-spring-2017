@@ -1,0 +1,11 @@
+{
+  "defaultSchoolClasses": [ "pwe0916" ],
+  "defaultRoles": [ "student" ],
+  "users": [
+    {
+      "id": "117149558582877958184",
+      "roles": [ "admin" ],
+      "schoolClasses": [ "pwe0916" ]
+    }
+  ]
+}

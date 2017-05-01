@@ -4,7 +4,9 @@ export function getNewSchemaWithDefaultOptions(schemaDefinition: SchemaDefinitio
   let newOptions = {
     toObject: {
       transform: function (doc: any, ret: any) {
-        ret.id = ret._id.toString();
+        if (doc._id) {
+          ret.id = doc._id.toString();
+        }
         delete ret._id;
       }
     }

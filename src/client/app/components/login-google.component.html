@@ -1,7 +1,8 @@
 
   <button [id]="googleLoginButtonId"
           title="Sign in with Google"
-          class="btn btn-block btn-social btn-google">
+          class="btn btn-block btn-social btn-google"
+          #googleLoginBtn>
     <span class="fa fa-google"></span>Login med Google
   </button>
   <div class="alert alert-danger" role="alert" *ngIf="errorMessage" style="margin-top:10px;">

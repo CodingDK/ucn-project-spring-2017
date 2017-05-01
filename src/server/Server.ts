@@ -6,7 +6,7 @@ import * as cookieParser from 'cookie-parser';
 import * as cors from 'cors';
 import config from './config/config';
 
-import { loginRouter } from './routes/loginRouter';
+import LoginRouter from './routes/loginRouter';
 import { githubRouter } from './routes/githubRouter';
 import HeroRouter from './routes/heroRouter';
 import LessonRouter from './routes/lessonRouter';
@@ -57,7 +57,7 @@ class Server {
   private routes(): void {
     let app = this.express;
     app.use('/api/github', githubRouter);
-    app.use('/api/login', loginRouter);
+    app.use('/api/login', LoginRouter);
     app.use('/api/v1/heroes', HeroRouter);
     app.use('/api/lesson/', LessonRouter)
     //app.use(express.static(path.join(__dirname, "/../client")));

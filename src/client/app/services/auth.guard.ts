@@ -10,13 +10,15 @@ export class AuthGuard implements CanActivate {
 
   //TODO implement a better handler for this - remove setTimeout part
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
+    //let value = this.authService.isLoggedIn();
+    //console.log(value);
     let value = this.authService.isLoggedIn();
-
-    if (!this.authService.isFinishFirstRun()) {
+    
+    /*if (!this.authService.isFinishFirstRun()) {
       setTimeout(() => {
         value = this.authService.isLoggedIn();
       }, 300);
-    }
+    }*/
     if (!value) {
       this.router.navigate(['/login'], { queryParams: { returnUrl: state.url } });
     }

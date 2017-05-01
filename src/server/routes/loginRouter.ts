@@ -44,13 +44,22 @@ class LoginRouter extends BaseRouter {
       //res.redirect('/');
     });
 
-    router.get("/status", (req: Request, res: Response) => {
-      // `req.user` contains the authenticated user.
-      res.json({ login: req.isAuthenticated() });
-    });
+    router.get("/status", this.getStatus.bind(this));
 
     // POST /auth/google
     router.post('/auth/google', this.loginWithGoogle.bind(this));
+  }
+
+  private getStatus(req: Request, res: Response, next: NextFunction) {
+    // `req.user` contains the authenticated user.
+    let user = req.user;
+    console.log("user", user);
+    if (!user) {
+      this.send(res, null, "User not logged in", false);
+    } else {
+      let safeUser = this.getClientSafeUser(req.user);
+      this.send(res, safeUser, "User is logged in");
+    }
   }
 
   private loginWithGoogle(req: Request, res: Response, next: NextFunction) {

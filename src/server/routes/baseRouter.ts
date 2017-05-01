@@ -27,7 +27,6 @@ export abstract class BaseRouter {
     retUser.imageUrl = user.imageUrl;
     retUser.id = user.id;
     retUser.name = user.name;
-    console.log("instanceof", user instanceof Teacher, user instanceof Student)
     if (user instanceof Teacher) {
       let retTeacher = retUser as Teacher;
       retTeacher.roles = user.roles;

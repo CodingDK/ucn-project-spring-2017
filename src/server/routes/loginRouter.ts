@@ -58,16 +58,12 @@ class LoginRouter extends BaseRouter {
     const auth_code = req.body.auth_code;
     this.ctrl.login(auth_code)
       .then((user: User) => {
-        console.log("user to sign in?", user);
         //Logging in with the found or new user
         req.login(user, (err: any) => {
           if (err) {
-            console.log("loginWithGoogle error: ", err);
             throw new ResponseError(err, "Error in logging user in with passport");
           }
-          console.log("safe: ", user);
           let safeUser = this.getClientSafeUser(user);
-          console.log("safeUser: ", safeUser);
           this.send(res, safeUser, "Succes logging in with Google")
           //res.json({ login: true, isGoogleUsed: true, message: "ok" });
         });

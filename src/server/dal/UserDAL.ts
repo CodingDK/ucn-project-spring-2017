@@ -91,7 +91,6 @@ export class UserDal {
   private getUserFromDocument(userDoc: UserDocument): User {
     let newObj: User;
     let retObj: Student | Teacher;
-    console.log("#### indexof:", userDoc.roles.indexOf("student"), userDoc.roles);
     if (userDoc.roles.indexOf("student") == -1) { //check if the user is a teacher
       retObj = new Teacher();
       retObj.roles = userDoc.roles;

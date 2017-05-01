@@ -1,112 +1,93 @@
-import { NextFunction, Request, Response, Router } from "express";
 const GoogleAuth = require('google-auth-library');
+const google = require('googleapis');
 
 import { UserController } from './userController';
-import { User } from '../../shared/models/user';
+import { User, GoogleTokens, Teacher, Student } from '../../shared/models/user';
+import { ResponseError } from '../errors/responseError';
+
+const UniData = require('../data/mockedUniData.json');
 import config from '../config/config';
 
 
-export class googleController {
+
+export class GoogleController {
   private userCtrl: UserController = new UserController();
+  private googleTokens: GoogleTokens;
 
+  constructor() { }
 
-  public login(req: Request, res: Response, next: NextFunction) {
-    const auth_code = req.body.auth_code;
-    const client_Id = config.oauth.google.clientId;
-    const client_Secret = config.oauth.google.clientSecret;
-    const callback_Url = config.oauth.google.callbackUrl;
-    const scopes = [
-      'profile',
-      'email'
-    ];
-
-    console.log("client_Id: ", client_Id);
-    console.log("client_Secret: ", client_Secret);
-    console.log("auth_code: ", auth_code);
-
-    var google = require('googleapis');
-    var OAuth2 = google.auth.OAuth2;
-
-    var oauth2Client = new OAuth2(
-      client_Id,
-      client_Secret,
-      "http://localhost:4200/"
-    );
-    
-    var url = oauth2Client.generateAuthUrl({
-      // 'online' (default) or 'offline' (gets refresh_token)
-      access_type: 'offline',
-
-      // If you only need one scope you can pass it as a string
-      scope: scopes,
-
-      // Optional property that passes state parameters to redirect URI
-      // state: { foo: 'bar' }
-    });
-
-    console.log('Visit the url: ', url);
-
-    oauth2Client.getToken(auth_code, (err:any, tokens:any) => {
-      // Now tokens contains an access_token and an optional refresh_token. Save them.
-      if (!err) {
-        oauth2Client.setCredentials(tokens);
-      }
-      res.json(401, {
-        login: false,
-        isGoogleUsed: true,
-        //message: "error in token validation",
-        message: JSON.stringify({error: err, tokens}),
-        error: err,
-        tokens: tokens
-      });
-      return next(err);
-      //console.log("err", err);
-      //console.log("tokens:", tokens);
-    });
-
-    /*
-    let auth = new GoogleAuth;
-    let client = new auth.OAuth2(client_Id, '', '');
-    client.verifyIdToken(
-      idToken,
-      client_Id,
-      // Or, if multiple clients access the backend:
-      //[CLIENT_ID_1, CLIENT_ID_2, CLIENT_ID_3],
-      (err: any, login: any) => {
-        if (err) {
-          console.log("Validation IdToken error: ", err);
-          res.json(401, { login: false, isGoogleUsed: true, message: "error in token validation" });
-          return next(err);
-        }
-        let payload = login.getPayload();
-        let googleId = payload['sub'];
-        //let email = payload['email'];
-        //let name = payload['name'];
-        console.log("payload, ", payload);
-        new UserController().findByGoogleId(googleId)
-          .then((user: User) => {
-            if (!user) {
-              console.log("no user found with googleId: " + googleId);
-              res.json(401, { login: false, isGoogleUsed: true, message: "user is not authorized to run this system" });
-              
-            } else {
-              req.login(user, function (err) {
-                if (err) {
-                  return next(err);
-                }
-                res.json({ login: true, isGoogleUsed: true, message: "ok" });
-              });
-            }
-            
-            
-          })
-          .catch((err: any) => {
-            if (err) {
-              console.log("looking for user in db error?, googleID: ", googleId, "error: ", JSON.stringify(err));
-            }
-            res.json(401, { login: false, isGoogleUsed: true, message: "an database error happen" });
-          });
-        
-      });*/
+  /**
+   * Login with Google
+   */
+  public login(auth_code: string): Promise<User> {
+    return this.getClientAndSetTokens(auth_code)
+      .then(this.getProfileData.bind(this))
+      .then(this.createOrUpdateUserWithGoogleData.bind(this))
   }
+
+  /**
+   * Create a oauth client and get tokens from google and set it to client
+   */
+  private getClientAndSetTokens(auth_code: string): Promise<any> {
+    const credentials = config.oauth.google;
+
+    const auth = new GoogleAuth;
+    //Make client for communicate with Google
+    const oauth2Client = new auth.OAuth2(credentials.clientId, credentials.clientSecret, credentials.callbackUrl);
+
+    //Ask Google for changing the auth_code to access_token and refresh_token
+    return new Promise<any>((resolve: any, reject: any) => {
+      oauth2Client.getToken(auth_code, (err: any, tokens: any, response: any) => {
+        if (err) {
+          reject(new ResponseError(err, "error in getting token"));
+        }
+        this.googleTokens = GoogleTokens.NewFromTokens(tokens);
+
+        //Use tokens in the client
+        oauth2Client.setCredentials(this.googleTokens);
+
+        resolve(oauth2Client);
+      });
+    });
+  }
+
+  /**
+   * Request userinfo from Google
+   */
+  private getProfileData(oauth2Client: any): Promise<any> {
+    return new Promise<any>((resolve, reject) => {
+      const plus = google.plus('v1');
+      plus.people.get({ userId: 'me', auth: oauth2Client }, (err: any, profile: any) => {
+        if (err) {
+          reject(new ResponseError(err, "error in getting profile data from google"));
+        }
+        resolve(profile);
+      });
+    });
+  }
+
+  /**
+   * Getting mocking data and update or create the user in the system
+   */
+  private createOrUpdateUserWithGoogleData(profile: any) {
+    const googleId = profile.id;
+    const name = profile.displayName;
+    const imageUrl = profile.image.url;
+
+    //setting mock data from file, later replace this with real data from UniLogin
+    const uniMockedObject = UniData.users.find((x: any) => x.id == googleId);
+    const schoolClasses = uniMockedObject ? uniMockedObject.schoolClasses : UniData.defaultSchoolClasses;
+    const roles = uniMockedObject ? uniMockedObject.roles : UniData.defaultRoles;
+    //console.log("googleId:", googleId);
+    //console.log("name:", name);
+    //console.log("image:", imageUrl);
+    return this.userCtrl.createOrUpdateWithGoogleInfo(googleId, name, imageUrl, this.googleTokens, schoolClasses, roles)
+      .then((user: User) => {
+        return user;
+      })
+      .catch((err: any) => {
+        throw new ResponseError(err, "a database error happened");
+      });
+  }
+
 }

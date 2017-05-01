@@ -1,6 +1,6 @@
 import * as bcrypt from 'bcrypt-nodejs';
 
-import { User, Student } from '../../shared/models/user';
+import { User, Student, GoogleTokens } from '../../shared/models/user';
 import { UserDal } from '../dal/userDAL';
 
 /**
@@ -8,6 +8,14 @@ import { UserDal } from '../dal/userDAL';
  */
 export class UserController {
   private dal: UserDal = new UserDal();
+
+  /**
+   * This Method will create a new user in database or update if an user with the googleId already exists in the database
+   * @returns the created user or the updated user
+   */
+  public createOrUpdateWithGoogleInfo(googleId: string, name: string, imageUrl: string, googleTokens: GoogleTokens, schoolClasses: string[], roles: string[]) : Promise<User> {
+    return this.dal.createOrUpdateWithGoogleInfo(googleId, name, imageUrl, googleTokens, schoolClasses, roles);
+  }
 
   /**
    * Method to find Students by School Class name

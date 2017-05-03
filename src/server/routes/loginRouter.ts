@@ -70,7 +70,7 @@ class LoginRouter extends BaseRouter {
         //Logging in with the found or new user
         req.login(user, (err: any) => {
           if (err) {
-            throw new ResponseError(err, "Error in logging user in with passport");
+            throw ResponseError.makeNew(err, "Error in logging user in with passport");
           }
           let safeUser = this.getClientSafeUser(user);
           this.send(res, safeUser, "Succes logging in with Google")

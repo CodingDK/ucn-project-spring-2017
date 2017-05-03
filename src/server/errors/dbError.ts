@@ -1,15 +1,18 @@
 export class DbError extends Error {
-  private parentError: Error;
+  private parentError: any;
 
-  constructor(error: Error, message: string) {
+  private constructor(message: string) {
     super(message);
-    this.parentError;
-
-    // Set the prototype explicitly.
     Object.setPrototypeOf(this, DbError.prototype);
   }
 
-  getParentError(): Error {
+  static makeNew(error: any, message: string): DbError {
+    let obj = new DbError(message);
+    obj.parentError = error;
+    return obj;
+  }
+
+  getParentError(): any {
     return this.parentError;
   }
 }

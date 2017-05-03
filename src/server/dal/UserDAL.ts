@@ -34,7 +34,7 @@ export class UserDal {
         //rethrow error if it comes from creating else create a new DbError
         let retError = err;
         if (!(err instanceof DbError)) {
-          retError = new DbError(err, `Error happen in createOrUpdateWithGoogleInfo with GoogleInfo googleId: ${googleId}`);
+          retError = DbError.makeNew(err, `Error happen in createOrUpdateWithGoogleInfo with GoogleInfo googleId: ${googleId}`);
         }
         throw retError;
       });
@@ -83,7 +83,7 @@ export class UserDal {
     newUser.schoolClasses = schoolClasses;
     return Users.create(newUser)
       .catch((err: any) => {
-        throw new DbError(err, `Error happen in creating new user with GoogleInfo googleId: ${googleId}`);
+        throw DbError.makeNew(err, `Error happen in creating new user with GoogleInfo googleId: ${googleId}`);
       });
   }
 
@@ -193,7 +193,7 @@ export class UserDal {
         if (err) {
           //TODO maybe better error handling
           reject(err);
-          //throw new DbError(JSON.stringify(err));
+          //throw DbError.makeNew(JSON.stringify(err));
         }
         if (userDoc != null) {
           resolve(userDoc.toObject() as User);

@@ -39,7 +39,7 @@ export class GoogleController {
     return new Promise<any>((resolve: any, reject: any) => {
       oauth2Client.getToken(auth_code, (err: any, tokens: any, response: any) => {
         if (err) {
-          reject(new ResponseError(err, "error in getting token"));
+          reject(ResponseError.makeNew(err, "error in getting token"));
         }
         this.googleTokens = GoogleTokens.NewFromTokens(tokens);
 
@@ -59,7 +59,7 @@ export class GoogleController {
       const plus = google.plus('v1');
       plus.people.get({ userId: 'me', auth: oauth2Client }, (err: any, profile: any) => {
         if (err) {
-          reject(new ResponseError(err, "error in getting profile data from google"));
+          reject(ResponseError.makeNew(err, "error in getting profile data from google"));
         }
         resolve(profile);
       });
@@ -86,7 +86,7 @@ export class GoogleController {
         return user;
       })
       .catch((err: any) => {
-        throw new ResponseError(err, "a database error happened");
+        throw ResponseError.makeNew(err, "a database error happened");
       });
   }
 

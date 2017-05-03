@@ -1,6 +1,12 @@
+import { validate, ValidationError } from "class-validator";
+
 import { Lesson } from '../../shared/models/lesson';
 import { MeetUp } from '../../shared/models/meetUp';
 import { LessonDal } from '../dal/lessonDAL';
+import { CreateLessonViewModel } from '../../shared/viewmodels/createLessonViewModel';
+import { ResponseError } from '../errors/responseError';
+import { DbError } from '../errors/dbError';
+
 
 import { UserController } from './userController';
 
@@ -25,28 +31,32 @@ export class LessonController {
   public findById(user: any, id: string): Promise<Lesson> {
     return this.dal.findById(user, id);
   }
-
-
+  
   /**
    * Method for creating a new lesson
    * @param lesson the new lesson to create
    */
-  public createLesson(user: any, lesson: Lesson): Promise<Lesson> {
-    //TODO validations!
-    //TODO validation on teachers id
-    return this.userCtrl.findStudentsBySchoolClassName(lesson.schoolClass.name)
-      .then(students => {
-        lesson.meetups = students.map(student => {
-          return new MeetUp(student);
-        })
-        return lesson;
+  public createLesson(user: any, viewModel: CreateLessonViewModel): Promise<Lesson> {
+    return validate(viewModel, { validationError: { target: false} })
+      .then(errors => { // errors is an array of validation errors
+        if (errors.length > 0) {
+          //console.log("validation failed. errors: ", errors);
+          throw ResponseError.makeNew(errors, "validation failed");
+        } else {
+          //console.log("validation succeed");
+          return viewModel;
+        }
       })
-      //TODO Handle if no students was found
-      .catch(err => {
-        throw err;
+      .then((viewModel: CreateLessonViewModel) => {
+        //TODO validate teachers and schoolClass exists
+        return this.dal.createLesson(user, viewModel);
       })
-      .then(lesson => {
-        return this.dal.createLesson(user, lesson);
+      .catch(error => {
+        if (error instanceof ResponseError) {
+          throw error;
+        } else { //if (error instanceof DbError) {
+          throw ResponseError.makeNew(error, "a database error happened")
+        }
       });
   }
 

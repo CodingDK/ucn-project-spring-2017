@@ -1,6 +1,9 @@
 import { Lesson } from '../../shared/models/lesson';
 import { MeetUp } from '../../shared/models/meetUp';
+import { Student } from '../../shared/models/user'; 
+import { CreateLessonViewModel } from '../../shared/viewmodels/createLessonViewModel';
 import { DbLesson, LessonDocument, Lessons, DbMeetUp } from './models/dbLesson';
+import { DbError } from '../errors/dbError';
 
 import { UserDal } from './userDAL';
 
@@ -51,31 +54,37 @@ export class LessonDal {
    * Method for creating a new lesson
    * @param newLesson
    */
-  public createLesson(user: any, lesson: Lesson): Promise<Lesson> {
-    
-    return new Promise<Lesson>((resolve, reject) => {
-      let dbLesson = new DbLesson();
-          dbLesson.startTime = lesson.startTime;
-          dbLesson.endTime = lesson.endTime;
-          dbLesson.schoolClass = lesson.schoolClass.name;
-          dbLesson.teachers = lesson.teachers.map((value) => {
-            return value.id;
-          });
-          dbLesson.meetUps = lesson.meetups.map((value) => {
-            let dbMeetUp = new DbMeetUp();
-            dbMeetUp.student = value.student.id;
-            return dbMeetUp;
-          });
-      Lessons.create(dbLesson, (err: any, createdLesson: LessonDocument) => {
-        if (err) {
-          reject(err);
-        }
-        if (createdLesson != null) {
-          resolve(createdLesson.toObject() as Lesson);
-        }
-        resolve(undefined);
+  public createLesson(user: any, viewModel: CreateLessonViewModel): Promise<Lesson> {
+    return this.userDal.findStudentsBySchoolClassName(viewModel.schoolClassName)
+      .then((students: Student[]) => {
+        let dbLesson = new DbLesson();
+        dbLesson.startTime = viewModel.startTime;
+        dbLesson.endTime = viewModel.endTime;
+        dbLesson.schoolClass = viewModel.schoolClassName;
+        dbLesson.teachers = viewModel.teachers;
+        dbLesson.meetUps = students.map((value) => {
+          let dbMeetUp = new DbMeetUp();
+          dbMeetUp.student = value.id;
+          return dbMeetUp;
+        });
+        return dbLesson;
       })
-    });
+      .catch((err: any) => {
+        throw DbError.makeNew(err, `Error happen in finding students and attach them to a dbLesson`);
+      })
+      .then((dbLesson: DbLesson) => {
+        return Lessons.create(dbLesson);
+      })
+      .then((createdLesson: LessonDocument) => {
+        return this.getLessonObj(createdLesson);
+      })
+      .catch((err: any) => {
+        let retError = err;
+        if (!(err instanceof DbError)) {
+          retError = DbError.makeNew(err, `Error happened in creating a new lesson in database`);
+        }
+        throw retError;
+      });
   }
 
   /**
@@ -99,55 +108,5 @@ export class LessonDal {
       return newDbMeetUp;
     })
   }
-
-  ///**
-  // * 
-  // * @param lessonDate
-  // */
-  //public findByDate(lessonDate: Date): Promise<Lesson> {
-  //    // TODO: 
-  //    return null;
-  //}
-
-  ///**
-  // * 
-  // * @param lessonDates
-  // */
-  //public findByDateRange(lessonDates: Date[]): Promise<Lesson> {
-  //    // TODO: 
-  //}
-
-  ///**
-  // * 
-  // * @param teacher
-  // */
-  //public findByTeacher(teacher: string): Promise<Lesson> {
-  //    // TODO: 
-  //}
-
-  ///**
-  // * 
-  // * @param schoolClass
-  // */
-  //public findBySchoolClass(schoolClass: string): Promise<Lesson> {
-  //    // TODO:
-  //}
-
-  ///**
-  // * 
-  // * @param startTime
-  // */
-  //private findByStartTime(startTime: Date): Promise<Lesson> {
-  //    return null;
-  //}
-
-  ///**
-  // * 
-  // * @param endTime
-  // */
-  //private findByEndTime(endTime: Date): Promise<Lesson> {
-  //    return null;
-  //}
-
-
+  
 }

@@ -1,15 +1,18 @@
 export class ResponseError extends Error {
-  private parentError: Error;
-
-  constructor(error: Error, message: string) {
+  private parentError: any;
+  
+  private constructor(message: string) {
     super(message);
-    this.parentError;
-
-    // Set the prototype explicitly.
     Object.setPrototypeOf(this, ResponseError.prototype);
   }
 
-  getParentError(): Error {
+  static makeNew(error: any, message: string) : ResponseError {
+    let obj = new ResponseError(message);
+    obj.parentError = error;
+    return obj;
+  }
+
+  getParentError(): any {
     return this.parentError;
   }
 }

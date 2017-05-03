@@ -29,12 +29,15 @@ export class LessonController {
    * Method for find a lesson by id
    */
   public findById(user: any, id: string): Promise<Lesson> {
-    return this.dal.findById(user, id);
+    return this.dal.findById(user, id)
+      .catch((err: any) => {
+        throw ResponseError.makeNew(err, "a database error happened");
+      });
   }
   
   /**
    * Method for creating a new lesson
-   * @param lesson the new lesson to create
+   * @param viewModel the new lesson to create
    */
   public createLesson(user: any, viewModel: CreateLessonViewModel): Promise<Lesson> {
     return validate(viewModel, { validationError: { target: false} })
@@ -58,6 +61,14 @@ export class LessonController {
           throw ResponseError.makeNew(error, "a database error happened")
         }
       });
+  }
+
+  /**
+   * Delete a lesson from the database by id
+   * @param id the id to delete from database
+   */
+  public deleteById(user: any, id: string): Promise<boolean> {
+    return this.dal.deleteById(user, id);
   }
 
   ///**

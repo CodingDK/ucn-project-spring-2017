@@ -88,6 +88,23 @@ export class LessonDal {
   }
 
   /**
+   * Delete a lesson from the database by id
+   * @param id the id to delete from database
+   */
+  public deleteById(user: any, id: string): Promise<boolean> {
+    console.log("deletebyID DAL:", id);
+    return new Promise<boolean>((resolve, reject) => {
+      Lessons.findByIdAndRemove(id, (err: any, lessonDoc: LessonDocument) => {
+        if (err) {
+          reject(err);
+        }
+        let deleted = typeof lessonDoc !== "undefined";
+        resolve(deleted);
+      });
+    });
+  }
+
+  /**
    * Make a Lesson object from a DbLesson object
    * @param dbLesson - the dbLesson object to convert
    */

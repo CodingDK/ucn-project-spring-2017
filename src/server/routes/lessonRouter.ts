@@ -34,13 +34,13 @@ class LessonRouter extends BaseRouter {
     //PUT update lesson
     //this.router.put('/', this.ctrl.updateLesson);
     //DELETE delete a lesson
-    //this.router.delete('/', this.ctrl.deleteLesson);
+    this.router.delete('/:id', this.deleteLesson.bind(this));
   }
 
   /**
    * Get all Lessons
    */
-  public getAll(req: Request, res: Response, next: NextFunction): void {
+  private getAll(req: Request, res: Response, next: NextFunction): void {
     this.ctrl.getAll(req.user)
       .then((lessons: Lesson[]) => {
         return this.send(res, lessons, "lesson created");
@@ -55,7 +55,7 @@ class LessonRouter extends BaseRouter {
   /**
    * Get single Lessons
    */
-  public getSingle(req: Request, res: Response, next: NextFunction): void {
+  private getSingle(req: Request, res: Response, next: NextFunction): void {
     this.ctrl.findById(req.user, req.params['id'])
       .then((lesson: Lesson) => {
         return this.send(res, lesson);
@@ -70,11 +70,26 @@ class LessonRouter extends BaseRouter {
   /**
    * Create a new Lesson
    */
-  public createLesson(req: Request, res: Response, next: NextFunction): void {
+  private createLesson(req: Request, res: Response, next: NextFunction): void {
     const viewModel = this.parseToObject(req.body, CreateLessonViewModel);
     this.ctrl.createLesson(req.user, viewModel)
       .then((lesson: Lesson) => {
         return this.send(res, lesson);
+      })
+      .catch((err: any) => {
+        this.errorHandler(res, err, err.message);
+        return next(err);
+      });
+  }
+
+  /**
+   * Delete a Lesson
+   */
+  private deleteLesson(req: Request, res: Response, next: NextFunction): void {
+    this.ctrl.deleteById(req.user, req.params['id'])
+      .then((deleted: boolean) => {
+        console.log("deleted", deleted);
+        return this.send(res, deleted);
       })
       .catch((err: any) => {
         this.errorHandler(res, err, err.message);

@@ -1,6 +1,6 @@
 import * as express from 'express';
 import * as logger from 'morgan';
-import {json, urlencoded} from 'body-parser';
+import * as bodyParser from 'body-parser';
 import * as session from 'express-session';
 import * as cookieParser from 'cookie-parser';
 import * as cors from 'cors';
@@ -42,8 +42,8 @@ class Server {
     app.use(cors({ origin: config.origin, credentials: true})); //
     app.use(logger('dev'));
     app.use(cookieParser('secretForAll'));
-    app.use(json());
-    app.use(urlencoded({ extended: true }));
+    app.use(bodyParser.urlencoded({ extended: true }));
+    app.use(bodyParser.json());
 
     app.use(session({
         secret: 'ytunolossabes',

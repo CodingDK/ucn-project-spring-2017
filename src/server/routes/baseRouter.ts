@@ -1,6 +1,10 @@
 import { Router, Response } from 'express';
+import { ValidationError } from 'class-validator';
+
+import { ResponseError } from '../errors/responseError';
 
 import { User, Teacher, Student } from '../../shared/models/user';
+import { TypedJSON, SerializerSettings } from "typedjson-npm";
 
 export abstract class BaseRouter {
   router: Router = Router();
@@ -14,8 +18,17 @@ export abstract class BaseRouter {
   }
 
   public errorHandler(res: Response, err: any, message: string = "") {
-    res.json(400, {
-      data: err,
+    let data = err;
+    //check if parentError is validationErrors and send them as data object instead
+    if (err instanceof ResponseError) {
+      let parent = err.getParentError();
+      if (typeof parent[0] !== 'undefined' && parent[0] instanceof ValidationError) {
+        data = parent;
+      }
+    }
+    
+    res.status(400).json({
+      data: data,
       message,
       succus: false
     });
@@ -33,5 +46,9 @@ export abstract class BaseRouter {
       retUser = retTeacher;
     }
     return retUser;
+  }
+
+  public parseToObject<T>(body: any, type: { new (): T; }, settings?: SerializerSettings): T {
+    return TypedJSON.parse(JSON.stringify(body), type);
   }
 }

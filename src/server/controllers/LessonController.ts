@@ -1,10 +1,11 @@
-import { validate, validateSync } from "class-validator";
-import { transformAndValidate } from "class-transformer-validator";
+import { validate, ValidationError } from "class-validator";
 
 import { Lesson } from '../../shared/models/lesson';
 import { MeetUp } from '../../shared/models/meetUp';
 import { LessonDal } from '../dal/lessonDAL';
 import { CreateLessonViewModel } from '../../shared/viewmodels/createLessonViewModel';
+import { ResponseError } from '../errors/responseError';
+import { DbError } from '../errors/dbError';
 
 
 import { UserController } from './userController';
@@ -30,56 +31,32 @@ export class LessonController {
   public findById(user: any, id: string): Promise<Lesson> {
     return this.dal.findById(user, id);
   }
-
-
+  
   /**
    * Method for creating a new lesson
    * @param lesson the new lesson to create
    */
   public createLesson(user: any, viewModel: CreateLessonViewModel): Promise<Lesson> {
-    console.log("viewModel", viewModel);
-    transformAndValidate(CreateLessonViewModel, viewModel)
-      .then((userObject: CreateLessonViewModel) => {
-        // now you can access all your class prototype method
-        console.log(`Hello: ${userObject}`); // prints "Hello World!" on console
+    return validate(viewModel, { validationError: { target: false} })
+      .then(errors => { // errors is an array of validation errors
+        if (errors.length > 0) {
+          //console.log("validation failed. errors: ", errors);
+          throw ResponseError.makeNew(errors, "validation failed");
+        } else {
+          //console.log("validation succeed");
+          return viewModel;
+        }
+      })
+      .then((viewModel: CreateLessonViewModel) => {
+        //TODO validate teachers and schoolClass exists
+        return this.dal.createLesson(user, viewModel);
       })
       .catch(error => {
-        // here you can handle error on transformation (invalid JSON)
-        // or validation error (e.g. invalid email property)
-        console.log("catch", error);
-      });
-    let errors = validateSync(viewModel);
-    console.log("error: ", errors);
-
-    if (errors.length > 0) {
-      console.log("sync, validation failed. errors: ", errors);
-    } else {
-      console.log("sync, validation succeed");
-    }
-    validate(viewModel).then(errors => { // errors is an array of validation errors
-      console.log("error: ", errors);
-      if (errors.length > 0) {
-        console.log("validation failed. errors: ", errors);
-      } else {
-        console.log("validation succeed");
-      }
-    });
-    //TODO validations!
-    //TODO validation on teachers id
-    let lesson: Lesson = new Lesson();
-    return this.userCtrl.findStudentsBySchoolClassName(lesson.schoolClass.name)
-      .then(students => {
-        lesson.meetups = students.map(student => {
-          return new MeetUp(student);
-        })
-        return lesson;
-      })
-      //TODO Handle if no students was found
-      .catch(err => {
-        throw err;
-      })
-      .then(lesson => {
-        return this.dal.createLesson(user, lesson);
+        if (error instanceof ResponseError) {
+          throw error;
+        } else { //if (error instanceof DbError) {
+          throw ResponseError.makeNew(error, "a database error happened")
+        }
       });
   }
 

@@ -3,6 +3,7 @@ import { Router, Request, Response, NextFunction } from 'express';
 import { BaseRouter } from './baseRouter';
 import { LessonController } from '../controllers/lessonController';
 import { Lesson } from '../../shared/models/lesson';
+import { CreateLessonViewModel } from '../../shared/viewmodels/createLessonViewModel';
 
 class LessonRouter extends BaseRouter {
   ctrl: LessonController;
@@ -23,6 +24,7 @@ class LessonRouter extends BaseRouter {
   private init() {
 
     this.router.get('/getTestObject', this.getTestObject.bind(this));
+    this.router.get('/getTestObjectCreate', this.getTestObjectCreate.bind(this));
     //GET all lessons
     this.router.get('/', this.getAll.bind(this));
     //GET single lesson
@@ -41,7 +43,7 @@ class LessonRouter extends BaseRouter {
   public getAll(req: Request, res: Response, next: NextFunction): void {
     this.ctrl.getAll(req.user)
       .then((lessons: Lesson[]) => {
-        return this.send(res, lessons);
+        return this.send(res, lessons, "lesson created");
         //next();
       })
       .catch((err: any) => {
@@ -69,10 +71,10 @@ class LessonRouter extends BaseRouter {
    * Create a new Lesson
    */
   public createLesson(req: Request, res: Response, next: NextFunction): void {
-    this.ctrl.createLesson(req.user, req.body)
+    const viewModel = this.parseToObject(req.body, CreateLessonViewModel);
+    this.ctrl.createLesson(req.user, viewModel)
       .then((lesson: Lesson) => {
         return this.send(res, lesson);
-        //next();
       })
       .catch((err: any) => {
         this.errorHandler(res, err, err.message);
@@ -81,10 +83,27 @@ class LessonRouter extends BaseRouter {
   }
 
   private getTestObject(req: Request, res: Response, next: NextFunction) {
-    let endDate = new Date();
-    endDate.setDate(endDate.getDate() + 1);
-    let lesson = Lesson.createNew(new Date(), endDate, "pwe0916", ["1"]);
+    let startTime = new Date(new Date().getTime() + 1000 * 60 * 60);
+    let endDate = new Date(startTime.getTime());
+    let lesson = Lesson.createNew(startTime, endDate, "pwe0916", ["1"]);
     return this.send(res, lesson); 
+  }
+
+  private getTestObjectCreate(req: Request, res: Response, next: NextFunction) {
+    let startTime = new Date(new Date().getTime() + 1000 * 60 * 60);
+    let endDate = new Date(startTime.getTime());
+    /*let obj = new CreateLessonViewModel({
+      startTime: startTime,
+      endTime: endDate,
+      schoolClassName: "pwe0916",
+      teachers: ["1"]
+    });*/
+    let obj = new CreateLessonViewModel();
+    obj.startTime = startTime;
+    obj.endTime = endDate;
+    obj.schoolClassName = "pwe0916";
+    obj.teachers = ["1"];   
+    return this.send(res, obj); 
   }
 }
 

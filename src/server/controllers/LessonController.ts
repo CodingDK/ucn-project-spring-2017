@@ -76,7 +76,7 @@ export class LessonController {
       })
       //TODO Handle if no students was found
       .catch(err => {
-        return err;
+        throw err;
       })
       .then(lesson => {
         return this.dal.createLesson(user, lesson);

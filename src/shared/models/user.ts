@@ -1,15 +1,20 @@
+import { GoogleTokens } from './googleTokens';
+
 export class User {
   id: string;
   name: string;
-  uniLoginId: string; // google login for now
+  googleId: string; // google login for now
   email: string;
   password: string;
+  imageUrl: string;
+  googleTokens: GoogleTokens;
 
-  protected static setFromData<T extends User>(object: T, name: string, uniLoginId: string) {
+  protected static setFromData<T extends User>(object: T, name: string, googleId: string) {
     object.name = name;
-    object.uniLoginId = uniLoginId;
+    object.googleId = googleId;
   }
 }
 
-export { Student } from './Student';
-export { Teacher } from './Teacher';
+export { Student } from './student';
+export { Teacher } from './teacher';
+export { GoogleTokens } from './googleTokens';

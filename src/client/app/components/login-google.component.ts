@@ -1,4 +1,4 @@
-import { Component, AfterViewInit, NgZone } from '@angular/core';
+import { Component, AfterViewInit, NgZone, ViewChild, Renderer2, ElementRef } from '@angular/core';
 import { Router } from '@angular/router';
 
 import { environment } from '../../environments/environment';
@@ -14,6 +14,9 @@ declare const gapi: any;
   styleUrls: ['./login-google.component.scss']
 })
 export class LoginGoogleComponent implements AfterViewInit {
+
+  @ViewChild('googleLoginBtn') signInBtn: ElementRef;
+
   public googleLoginButtonId = "google-login-button";
   public errorMessage: string;
 
@@ -26,8 +29,8 @@ export class LoginGoogleComponent implements AfterViewInit {
   
   public auth2: any;
 
-  constructor(private authService: AuthService, private router: Router, private _zone: NgZone) {
-
+  constructor(private authService: AuthService, private router: Router, private _zone: NgZone, private renderer: Renderer2) {
+    
   }
 
   ngAfterViewInit() {
@@ -41,36 +44,48 @@ export class LoginGoogleComponent implements AfterViewInit {
         cookiepolicy: 'single_host_origin',
         scope: this.scope
       });
-      this.attachSignin();
+      this.renderer.listen(this.signInBtn.nativeElement, 'click', this.attachSignin.bind(this));
     });
   }
+
+  //public attachSignin() {
+  //  let element = document.getElementById(this.googleLoginButtonId);
+  //  this.auth2.attachClickHandler(element, {},
+  //    (googleUser: any) => {
+  //      this._zone.run(() => {
+          
+  //        let id_token = googleUser.getAuthResponse().id_token;
+          
+  //      });
+        
+  //      //let profile = googleUser.getBasicProfile();
+  //      //console.log('Token || ' + googleUser.getAuthResponse().id_token);
+  //      //console.log('ID: ' + profile.getId());
+  //      //console.log('Name: ' + profile.getName());
+  //      //console.log('Image URL: ' + profile.getImageUrl());
+  //      //console.log('Email: ' + profile.getEmail());
+        
+  //    }, (error: any) => {
+  //      console.log("attachSignin Error: ", JSON.stringify(error, undefined, 2));
+  //    });
+  //}
+
   public attachSignin() {
-    let element = document.getElementById(this.googleLoginButtonId);
-    this.auth2.attachClickHandler(element, {},
-      (googleUser: any) => {
-        this._zone.run(() => {
-          let id_token = googleUser.getAuthResponse().id_token;
-          this.authService.googleLoginSucceed(id_token).then(response => {
-            this.router.navigateByUrl('/github');
-          }).catch(err => {
-            try {
-              this.errorMessage = JSON.parse(err._body).message;
-            } catch (e) {
-              this.errorMessage = `Unknown Error - code: ${err.status} - ${err.statusText}`;
-            }
-          });
+    this.auth2.grantOfflineAccess().then((response: any) => {
+      this._zone.run(() => { 
+        let authCode = response.code;
+        this.authService.googleLoginSucceed(authCode).then(response => {
+          this.router.navigateByUrl('/github');
+        })
+        .catch(err => {
+          try {
+            this.errorMessage = JSON.parse(err._body).message;
+          } catch (e) {
+            this.errorMessage = `Unknown Error - code: ${err.status} - ${err.statusText}`;
+          }
         });
-        
-        //let profile = googleUser.getBasicProfile();
-        //console.log('Token || ' + googleUser.getAuthResponse().id_token);
-        //console.log('ID: ' + profile.getId());
-        //console.log('Name: ' + profile.getName());
-        //console.log('Image URL: ' + profile.getImageUrl());
-        //console.log('Email: ' + profile.getEmail());
-        
-      }, (error: any) => {
-        console.log("attachSignin Error: ", JSON.stringify(error, undefined, 2));
       });
+    });
   }
 
   /*

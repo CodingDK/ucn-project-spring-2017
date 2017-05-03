@@ -22,13 +22,14 @@ export class GithubService {
         this.data = response.json();
         return response.json();
       })
-      .catch(this.handleError);
-    //this.router.navigateByUrl('/login');
+      .catch(this.handleError.bind(this));
   }
   
   // Implement a method to handle errors if any
-  private handleError(error: any): Promise<any> {
+  private handleError(error: any): void {
     console.error('GithubService - An error occurred', error);
-    return Promise.reject(error.message || error);
+    if (error.status === 401) {
+      this.router.navigate(['/login'], { queryParams: { returnUrl: this.router.url } });
+    }
   }
 }

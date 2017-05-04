@@ -22,7 +22,8 @@ export class LessonController {
    * Method for Getting All Lessons
    */
   public getAll(user: any): Promise<Lesson[]> {
-    return this.dal.getAll(user);
+    return this.dal.getAll(user)
+      .catch(this.errorHandler.bind(this));
   }
 
   /**
@@ -30,17 +31,15 @@ export class LessonController {
    */
   public findById(user: any, id: string): Promise<Lesson> {
     return this.dal.findById(user, id)
-      .catch((err: any) => {
-        throw ResponseError.makeNew(err, "a database error happened");
-      });
+      .catch(this.errorHandler.bind(this))
   }
-  
+
   /**
    * Method for creating a new lesson
    * @param viewModel the new lesson to create
    */
   public createLesson(user: any, viewModel: CreateLessonViewModel): Promise<Lesson> {
-    return validate(viewModel, { validationError: { target: false} })
+    return validate(viewModel, { validationError: { target: false } })
       .then(errors => { // errors is an array of validation errors
         if (errors.length > 0) {
           //console.log("validation failed. errors: ", errors);
@@ -54,13 +53,7 @@ export class LessonController {
         //TODO validate teachers and schoolClass exists
         return this.dal.createLesson(user, viewModel);
       })
-      .catch(error => {
-        if (error instanceof ResponseError) {
-          throw error;
-        } else { //if (error instanceof DbError) {
-          throw ResponseError.makeNew(error, "a database error happened")
-        }
-      });
+      .catch(this.errorHandler.bind(this))
   }
 
   /**
@@ -68,7 +61,18 @@ export class LessonController {
    * @param id the id to delete from database
    */
   public deleteById(user: any, id: string): Promise<boolean> {
-    return this.dal.deleteById(user, id);
+    return this.dal.deleteById(user, id)
+      .catch(this.errorHandler.bind(this));
+  }
+
+  private errorHandler(err: any) {
+    if (err instanceof ResponseError) {
+      throw err;
+    } else if (err instanceof DbError) {
+      throw ResponseError.makeNew(err, err.message);
+    } else {
+      throw ResponseError.makeNew(err, "an unknown error happened");
+    }
   }
 
   ///**

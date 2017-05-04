@@ -88,7 +88,6 @@ class LessonRouter extends BaseRouter {
   private deleteLesson(req: Request, res: Response, next: NextFunction): void {
     this.ctrl.deleteById(req.user, req.params['id'])
       .then((deleted: boolean) => {
-        console.log("deleted", deleted);
         return this.send(res, deleted);
       })
       .catch((err: any) => {

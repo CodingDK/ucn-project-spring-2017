@@ -1,9 +1,11 @@
 import { Lesson } from '../../shared/models/lesson';
 import { MeetUp } from '../../shared/models/meetUp';
-import { Student } from '../../shared/models/user'; 
+import { Student } from '../../shared/models/user';
 import { CreateLessonViewModel } from '../../shared/viewmodels/createLessonViewModel';
 import { DbLesson, LessonDocument, Lessons, DbMeetUp } from './models/dbLesson';
 import { DbError } from '../errors/dbError';
+import { Types } from 'mongoose';
+import { validateObjectId } from './helpers';
 
 import { UserDal } from './userDAL';
 
@@ -14,10 +16,10 @@ export class LessonDal {
   private userDal = new UserDal();
 
   public getAll(user: any): Promise<Lesson[]> {
-    return new Promise<Lesson[]>((resolve, reject) => {
+    return new Promise<Lesson[]>((resolve: any, reject: any) => {
       Lessons.find({}, (err: any, objs: LessonDocument[]) => {
         if (err) {
-          reject(err);
+          return reject(DbError.makeNew(err, "A Database error happened"));
         }
         let retList = new Array<Lesson>();
         if (objs != null) {
@@ -25,31 +27,33 @@ export class LessonDal {
             retList.push(this.getLessonObj(value));
           });
         }
-        resolve(retList);
-      })
+        return resolve(retList);
+      });
     });
   }
+
 
   /**
     * Method for find a lesson by the id
     * @param id the id to look for
     */
   public findById(user: any, id: string): Promise<Lesson> {
-    return new Promise<Lesson>((resolve, reject) => {
-      Lessons.findById(id, (err, lessonDoc: LessonDocument) => {
-        //console.log("id?", id);
-        //console.log("err?", err);
-        if (err) {
-          reject(err);
-        }
-        if (lessonDoc != null) {
-          resolve(this.getLessonObj(lessonDoc));
-        }
-        resolve(undefined);
+    return validateObjectId(id)
+      .then((objectId: Types.ObjectId) => {
+        return new Promise<Lesson>((resolve: any, reject: any) => {
+          Lessons.findById(objectId, (err: any, lessonDoc: LessonDocument) => {
+            if (err) {
+              return reject(DbError.makeNew(err, "A Database error happened"));
+            }
+            if (lessonDoc != null) {
+              return resolve(this.getLessonObj(lessonDoc));
+            }
+            return resolve(undefined);
+          });
+        });
       });
-    });
   }
-  
+
   /**
    * Method for creating a new lesson
    * @param newLesson
@@ -92,16 +96,18 @@ export class LessonDal {
    * @param id the id to delete from database
    */
   public deleteById(user: any, id: string): Promise<boolean> {
-    console.log("deletebyID DAL:", id);
-    return new Promise<boolean>((resolve, reject) => {
-      Lessons.findByIdAndRemove(id, (err: any, lessonDoc: LessonDocument) => {
-        if (err) {
-          reject(err);
-        }
-        let deleted = typeof lessonDoc !== "undefined";
-        resolve(deleted);
+    return validateObjectId(id)
+      .then((objectId: Types.ObjectId) => {
+        return new Promise<boolean>((resolve, reject) => {
+          Lessons.findByIdAndRemove(objectId, (err: any, lessonDoc: LessonDocument) => {
+            if (err) {
+              return reject(DbError.makeNew(err, `Database error happened in deleting id: ${id}`));
+            }
+            let deleted = typeof lessonDoc !== "undefined" && lessonDoc != null;
+            return resolve(deleted);
+          });
+        });
       });
-    });
   }
 
   /**
@@ -125,5 +131,5 @@ export class LessonDal {
       return newDbMeetUp;
     })
   }
-  
+
 }

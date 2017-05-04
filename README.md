@@ -15,6 +15,8 @@ This is a project made on PBA Web Development at UCN. The Application use TypeSc
     
     ```javascript
     process.env.MONGO_URL = "mongodb://localhost/typescript-db";
+    process.env.GOOGLE_CLIENT_ID = "GOOGLE CLIENT ID FROM GOOGLE CONSOLE";
+    process.env.GOOGLE_CLIENT_SECRET = "GOOGLE SECRET ID FROM GOOGLE CONSOLE";
     
     require("./src/server/startup");
     ```

@@ -22,7 +22,6 @@ class LessonRouter extends BaseRouter {
    * endpoints.
    */
   private init() {
-
     this.router.get('/getTestObject', this.getTestObject.bind(this));
     this.router.get('/getTestObjectCreate', this.getTestObjectCreate.bind(this));
     //GET all lessons

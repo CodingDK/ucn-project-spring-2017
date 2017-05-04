@@ -1,4 +1,4 @@
-import { Router, Response } from 'express';
+import { Router, Response, Request, NextFunction } from 'express';
 import { ValidationError } from 'class-validator';
 
 import { ResponseError } from '../errors/responseError';
@@ -8,6 +8,26 @@ import { TypedJSON, SerializerSettings } from "typedjson-npm";
 
 export abstract class BaseRouter {
   router: Router = Router();
+
+  /**
+   * Function for check if a user is logged in or not
+   * It will send a 401 to res parameter, if the user is not logged in.
+   * @param req the request
+   * @param res the response
+   * @param next callback / that to do next
+   */
+  public isLoggedIn(req: Request, res: Response, next: NextFunction): void {
+    // if user is authenticate in the session, carry on
+    if (req.isAuthenticated()) {
+      return next();
+    }
+    //res.redirect('/');
+    res.status(401).json({
+      data: {},
+      message: "Your are not logged in!",
+      succus: false
+    });
+  }
 
   public send(res: Response, data: any, message: string = "", succus: boolean = true): void {
     res.json({
@@ -26,7 +46,7 @@ export abstract class BaseRouter {
         data = parent;
       }
     }
-    
+
     res.status(400).json({
       data: data,
       message,

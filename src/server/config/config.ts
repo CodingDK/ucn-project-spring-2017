@@ -18,6 +18,9 @@ const config = {
   },
   //origin, that are allowed to send request
   origin: /localhost:4200$/,
+
+  session: { secret: "secretForAll" },
+  cookie: { secret: "secretForAll1"},
   gitHubSimpleCache: ""
 };
 

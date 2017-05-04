@@ -13,7 +13,7 @@ import LessonRouter from './routes/lessonRouter';
 import PassportConfig from './config/passportConfig';
 
 import {IDatabase} from './config/iDatabase';
-import {MongoDatabase} from './dal/mongoDatabase';
+import { MongoDatabase } from './dal/mongoDatabase';
 
 /**
  * Class for handling the server (expressJS instance)
@@ -41,14 +41,16 @@ class Server {
 
     app.use(cors({ origin: config.origin, credentials: true})); //
     app.use(logger('dev'));
-    app.use(cookieParser('secretForAll'));
+    app.use(cookieParser(config.cookie.secret));
     app.use(bodyParser.urlencoded({ extended: true }));
     app.use(bodyParser.json());
 
     app.use(session({
-        secret: 'ytunolossabes',
+        secret: config.session.secret,
         saveUninitialized: true,
-        resave: true
+        resave: true,
+        cookie: { httpOnly: true },//, maxAge: 2419200000 },
+        store: dbHandler.getStoreForSessions()
     }));
     PassportConfig.setup(app);
   }

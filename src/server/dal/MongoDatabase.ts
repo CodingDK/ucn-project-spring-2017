@@ -1,6 +1,8 @@
 import * as mongoose from 'mongoose';
+import * as session from 'express-session';
+const MongoStore = require('connect-mongo')(session);
 
-import {IDatabase} from '../config/iDatabase';
+import { IDatabase } from '../config/iDatabase';
 
 /**
  * Class for handling MongoDb
@@ -24,5 +26,12 @@ export class MongoDatabase implements IDatabase {
       console.log('Mongoose default connection disconnected through app termination');
       process.exit(0);
     });
+  }
+
+  /**
+   * Method for getting store for express sessions
+   */
+  getStoreForSessions(): any {
+    return new MongoStore({ mongooseConnection: mongoose.connection });
   }
 }

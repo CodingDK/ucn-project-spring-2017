@@ -12,4 +12,9 @@ export interface IDatabase {
    * Method for closing connection to the database
    */
   closeConnectionEvent(): void;
+
+  /**
+   * Get store for express sessions
+   */
+  getStoreForSessions(): any;
 }

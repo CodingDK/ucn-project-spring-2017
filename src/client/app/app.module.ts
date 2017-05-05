@@ -2,12 +2,11 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
-
-
 import { ToastyModule } from 'ng2-toasty';
 
 import { AppRoutingModule } from './app-routing.module';
 import { GithubModule } from './github/github.module';
+import { StudentModule } from './student/student.module';
 
 import { AppComponent } from './components/app.component';
 import { NavbarComponent } from './components/navbar.component';
@@ -26,6 +25,7 @@ import { LocalStorageService } from './services/localstorage.service';
     HomeComponent,
     LoginComponent,
     LoginGoogleComponent
+
   ],
   imports: [
     BrowserModule,
@@ -33,6 +33,7 @@ import { LocalStorageService } from './services/localstorage.service';
     HttpModule,
     ToastyModule.forRoot(),
     GithubModule,
+    StudentModule,
     AppRoutingModule // Must be last import. So Rounting childs works
     
   ],

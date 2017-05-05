@@ -1,0 +1,67 @@
+﻿<div *ngIf="isModalShown" [config]="{ show: true, ignoreBackdropClick: true, backdrop: false }" (onHidden)="onHidden()" 
+     bsModal #addModal="bs-modal" class="modal fade" 
+     tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-md">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title pull-left">Opret ny lektiecafé</h4>
+        <button type="button" class="close pull-right" aria-label="Close" (click)="hideModal()">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="form">
+          <div class="row">
+            
+          </div>
+          <div class="row">
+            <div class="form-group col-md-4">
+              <label class="control-label" for="date">Dato</label>
+              <div class="input-group clickCursor dateInputGroup"
+                   #datePickerPopup="bs-popover"
+                   [popover]="datePickerTemplate"
+                   placement="bottom">
+                <span class="form-control" [class.focus]="datePickerPopup.isOpen">{{getPrettyDate()}}</span>
+                <!--<input class="form-control" id="date" name="date" type="text"
+              [(ngModel)]="model.date" readonly>-->
+                <span class="input-group-addon">
+                  <span class="fa fa-calendar" aria-hidden="true"></span>
+                </span>
+              </div>
+              <ng-template #datePickerTemplate>
+                <datepicker [(ngModel)]="model.date" [showWeeks]="true" [startingDay]="1" (selectionDone)="hideDatePickerPopup()"></datepicker>
+              </ng-template>
+
+            </div>
+            <div class="form-group col-md-4 col-sm-6">
+              <label class="control-label" for="startTime">Start Tidspunkt</label>
+              <timepicker [(ngModel)]="model.startTime" [showMeridian]="false"></timepicker>
+              <!--<input class="form-control" id="startTime" name="startTime" type="time">-->
+            </div>
+            <div class="form-group col-md-4 col-sm-6">
+              <label class="control-label" for="endTime">Slut Tidspunkt</label>
+              <timepicker [(ngModel)]="model.endTime"  [showMeridian]="false"></timepicker>
+              <!--<input class="form-control" id="startTime" name="startTime" type="time">-->
+            </div>
+          </div>
+          <div class="row">
+            <div class="form-group col-md-12">
+              <label class="control-label" for="schoolClass">Klasse</label>
+              <input class="form-control" id="schoolClass" name="schoolClass" type="text">
+            </div>
+          </div>
+          <div class="row">
+            <div class="form-group col-md-12">
+              <label class="control-label" for="teacher">Lærere</label>
+              <input class="form-control" id="teacher" name="teacher" type="text">              
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" (click)="hideModal()">Annuller</button>
+        <button type="button" class="btn btn-success" (click)="submit()">Opret</button>
+      </div>
+    </div>
+  </div>
+</div>

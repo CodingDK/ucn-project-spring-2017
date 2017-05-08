@@ -3,7 +3,7 @@ import { SchoolClass } from './schoolClass';
 import { MeetUp } from './meetUp';
 
 export class Lesson {
-
+  id: string;
   startTime: Date;
   endTime: Date;
   teachers: Teacher[];

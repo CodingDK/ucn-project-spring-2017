@@ -20,6 +20,8 @@ import { AuthGuard } from './services/auth.guard';
 import { AuthService } from './services/auth.service';
 import { LocalStorageService } from './services/localstorage.service';
 
+import { MomentModule } from 'angular2-moment';
+
 
 @NgModule({
   declarations: [
@@ -35,6 +37,7 @@ import { LocalStorageService } from './services/localstorage.service';
     FormsModule,
     HttpModule,
     ToastyModule.forRoot(),
+    MomentModule,
     GithubModule,
     TempModule,
     AppRoutingModule // Must be last import. So Rounting childs works

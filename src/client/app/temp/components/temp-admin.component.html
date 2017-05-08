@@ -1,6 +1,6 @@
 ﻿<h1>
-  Planlagte Lektiécafer 
-  <button type="button" class="btn btn-primary createBtn" (click)="showModal()">Opret ny</button>
+  Planlagte Lektiécafer
+  <button type="button" class="btn btn-primary btnCreate" (click)="showModal()">Opret ny</button>
 </h1>
 
 <table class="table table-striped">
@@ -15,14 +15,14 @@
   </thead>
   <tbody>
     <tr *ngFor="let l of getAll()">
-      <td>{{getDateCol(l)}}</td>
+      <td>{{l.startTime | amDateFormat:'dddd DD/MM'}}</td>
       <td>{{l.schoolClass}}</td>
-      <td>{{getStartCol(l)}}</td>
-      <td>{{getEndCol(l)}}</td>
+      <td>{{l.startTime | amDateFormat:'LT'}}</td>
+      <td>{{l.endTime | amDateFormat:'LT'}}</td>
       <td>
         <button class="btn btn-success btn-xs btnEdit" role="button">Rediger</button> |
         <button class="btn btn-info btn-xs btnDetails" role="button">Detaljer</button> |
-        <button class="btn btn-danger btn-xs btnDelete" role="button">Slet</button>
+        <button class="btn btn-danger btn-xs btnDelete" role="button" (click)="openDeleteModal(l)">Slet</button>
       </td>
     </tr>
   </tbody>
@@ -31,6 +31,49 @@
 
 
 <temp-admin-add-modal></temp-admin-add-modal>
+<temp-confirm-modal [title]="'Slet Lektiecafé'"
+                    [body]="deleteTemplate"
+                    [btnClass]="'btn-danger'"
+                    [btnText]="'Slet'"
+                    (onConfirmed)="onConfirmedDelete($event)">
+
+</temp-confirm-modal>
+<ng-template #deleteTemplate>
+  <h4>
+    Er du sikker på at du vil slette lektiecaféen
+    med følgende oplysninger:
+  </h4>
+  <div class="row">
+    <div class="col-sm-4">
+      <label>Dato</label>
+    </div>
+    <div class="col-sm-8">
+      {{activeItem.startTime | amDateFormat:"dddd [d.] LL"}}
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-sm-4">
+      <label>Periode</label>
+    </div>
+    <div class="col-sm-8">
+      kl. {{activeItem.startTime | amDateFormat:"LT"}}
+      til {{activeItem.endTime | amDateFormat:'LT'}}
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-sm-4">
+      <label>Lærer</label>
+    </div>
+    <div class="col-sm-8">{{activeItem.teachers}}</div>
+  </div>
+  <div class="row">
+    <div class="col-sm-4">
+      <label>Klasse</label>
+    </div>
+    <div class="col-sm-8">{{activeItem.schoolClass}}</div>
+  </div>
+
+</ng-template>
 <!--
   startTime: Date;
   endTime: Date;

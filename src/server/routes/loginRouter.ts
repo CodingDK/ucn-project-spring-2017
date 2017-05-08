@@ -78,12 +78,12 @@ class LoginRouter extends BaseRouter {
         });
       })
       .catch((err: any) => {
-        let errorMessage = "An unknown error happen"
+        /*let errorMessage = "An unknown error happen"
         if (err instanceof ResponseError) {
           errorMessage = err.message;
         }
-        this.errorHandler(res, err, errorMessage);
-        //return next(err);
+        this.errorHandler(res, err, errorMessage);*/
+        return next(err);
       });
   }
 }

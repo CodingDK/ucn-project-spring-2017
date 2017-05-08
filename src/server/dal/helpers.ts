@@ -1,5 +1,5 @@
 import { Schema, SchemaDefinition, Types } from 'mongoose';
-import { DbError } from '../errors/dbError';
+import { ResponseError } from '../errors/responseError';
 
 export function getNewSchemaWithDefaultOptions(schemaDefinition: SchemaDefinition, options: any = null): Schema {
   let newOptions = {
@@ -21,14 +21,14 @@ export function getNewSchemaWithDefaultOptions(schemaDefinition: SchemaDefinitio
 /**
  * Validate an id and return a promise with an ObjectId object with the id
  * @param id the id to validate
- * @throws DbError throws if id is not valid
+ * @throws ResponseError throws if id is not valid
  */
 export function validateObjectId(id: string | number) : Promise<Types.ObjectId> {
   return new Promise<Types.ObjectId>((resolve: any, reject: any) => {
     try {
       return resolve(Types.ObjectId(id));
     } catch (err) {
-      return reject(DbError.makeNew(err, `Id is not valid: ${id}`));
+      return reject(ResponseError.makeNew(err, `Id is not valid: ${id}`));
     }
   })
 }

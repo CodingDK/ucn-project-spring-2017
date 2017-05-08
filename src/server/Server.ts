@@ -6,6 +6,8 @@ import * as cookieParser from 'cookie-parser';
 import * as cors from 'cors';
 import config from './config/config';
 
+import { Response, Request, NextFunction } from 'express';
+
 import LoginRouter from './routes/loginRouter';
 import { githubRouter } from './routes/githubRouter';
 import HeroRouter from './routes/heroRouter';
@@ -14,6 +16,9 @@ import PassportConfig from './config/passportConfig';
 
 import {IDatabase} from './config/iDatabase';
 import { MongoDatabase } from './dal/mongoDatabase';
+
+import { ValidationError } from 'class-validator';
+import { ResponseError } from './errors/responseError';
 
 /**
  * Class for handling the server (expressJS instance)
@@ -28,6 +33,7 @@ class Server {
     this.express = express();
     this.middleware();
     this.routes();
+    this.errorHandler();
   }
   // Configure Express middleware.
   private middleware(): void {
@@ -61,8 +67,32 @@ class Server {
     app.use('/api/github', githubRouter);
     app.use('/api/login', LoginRouter);
     app.use('/api/v1/heroes', HeroRouter);
-    app.use('/api/lesson/', LessonRouter)
+    app.use('/api/lesson/', LessonRouter);
     //app.use(express.static(path.join(__dirname, "/../client")));
+  }
+
+  private errorHandler(): void {
+    this.express.use((err: any, req: Request, res: Response, next: NextFunction) => {
+      console.log("errorHandler in server.ts");
+      console.error(err.stack)
+      let data = err;
+      let unknownErorr = true;
+      //check if parentError is validationErrors and send them as data object instead
+      if (err instanceof ResponseError) {
+        unknownErorr = false;
+        let parent = err.getParentError();
+        if (typeof parent[0] !== 'undefined' && parent[0] instanceof ValidationError) {
+          data = parent;
+        }
+      }
+
+      return res.status(400).json({
+        data: data,
+        message: data.message,
+        succus: false,
+        unknownErorr: unknownErorr ? true : undefined
+      });
+    })
   }
 }
 

@@ -1,9 +1,11 @@
 import { Component, ViewChild, AfterViewInit } from '@angular/core';
-import { TempService } from '../services/temp.service';
-import { Lesson } from '../../../../shared/models/lesson';
-import { ToastyService, ToastyConfig, ToastOptions, ToastData } from 'ng2-toasty';
 
 import { ModalDirective } from 'ngx-bootstrap/modal';
+import { ToastyService, ToastyConfig, ToastOptions, ToastData } from 'ng2-toasty';
+
+import { Lesson } from '../../../../shared/models/lesson';
+
+import { TempService } from '../services/temp.service';
 import { TempAdminAddModalComponent } from './temp-admin-add-modal.component';
 import { TempConfirmModalComponent } from './temp-confirm-modal.component';
 
@@ -22,12 +24,13 @@ export class TempAdminComponent implements AfterViewInit {
   deleteModal: TempConfirmModalComponent;
 
   activeItem: Lesson;
-
+  
   constructor(private tempService: TempService, private toastyService: ToastyService) {
+    
   }
 
   ngAfterViewInit() {
-    //this.addModal.showModal();
+    this.addModal.showModal();
   }
 
   getAll(): Lesson[] {
@@ -40,7 +43,7 @@ export class TempAdminComponent implements AfterViewInit {
     //console.log("viewChild", );
     //this.toastyService.default('Hi there');
   }
-
+  
   openDeleteModal(lesson: Lesson) {
     this.activeItem = lesson;
     this.deleteModal.showModal();

@@ -77,19 +77,26 @@ class Server {
       console.error(err.stack)
       let data = err;
       let unknownErorr = true;
+      let errorName;
+      try {
+        errorName = err.constructor.name;
+      } catch (e) { }
       //check if parentError is validationErrors and send them as data object instead
       if (err instanceof ResponseError) {
         unknownErorr = false;
         let parent = err.getParentError();
         if (typeof parent[0] !== 'undefined' && parent[0] instanceof ValidationError) {
           data = parent;
+          errorName = "ValidationError";
         }
+
       }
 
       return res.status(400).json({
         data: data,
         message: data.message,
         succus: false,
+        errorName: errorName,
         unknownErorr: unknownErorr ? true : undefined
       });
     })

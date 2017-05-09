@@ -9,6 +9,8 @@ import { ToastyService, ToastyConfig, ToastOptions, ToastData } from 'ng2-toasty
 import { Lesson } from '../../../../shared/models/lesson';
 import { AppConstants } from "../../app.constants";
 
+import { CreateLessonViewModel } from '../../viewmodels/createLessonViewModel';
+
 @Injectable()
 export class TempService {
   private lessonUrl = AppConstants.Server.url + "lesson/";
@@ -36,6 +38,19 @@ export class TempService {
     return this.allLessons;
   }
 
+  createLesson(viewModel: CreateLessonViewModel): Promise<Lesson> {
+    return this.http.post(this.lessonUrl, viewModel, { withCredentials: true })
+      .toPromise()
+      .then(response => {
+        return response.json().data;
+      })
+      .then((lesson: Lesson) => {
+        this.refreshAllLessons();
+        return lesson;
+      })
+      .catch(this.handleError.bind(this));
+  }
+
   deleteLesson(id: string) : Promise<boolean> {
     return this.http.delete(this.lessonUrl + id, { withCredentials: true })
       .toPromise()
@@ -43,7 +58,6 @@ export class TempService {
         return response.json().data;
       })
       .then((deleted: boolean) => {
-        //TODO refresh
         this.refreshAllLessons();
         return deleted;
       })

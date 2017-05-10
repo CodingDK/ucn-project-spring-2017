@@ -1,1 +1,14 @@
 /* You can add global styles to this file, and also import other style files */
+
+//TODO This can maybe be usefull for bootstrap modals, for preventing jumping content because of the scrollbar
+//body.modal-open {
+//  padding-right: 17px !important;
+//}
+
+.popover {
+  max-width: none;
+}
+
+.clickCursor {
+  cursor:pointer;
+}

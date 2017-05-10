@@ -81,7 +81,6 @@ export class AuthService {
   
   isLoggedIn(): boolean {
     if (!this.finishFirstRun) {
-      console.log("value here?", this.localStorageService.getCurrentUser() !== undefined);
       return this.localStorageService.getCurrentUser() !== undefined;
     }
     return this.loggedIn;
@@ -97,7 +96,6 @@ export class AuthService {
       this.localStorageService.removeCurrentUser();
     }
     this.loggedIn = succes;
-    console.log("succes", succes);
     return succes;
   }
 

@@ -46,7 +46,7 @@ class LessonRouter extends BaseRouter {
         //next();
       })
       .catch((err: any) => {
-        this.errorHandler(res, err, err.message);
+        //this.errorHandler(res, err, err.message);
         return next(err);
       });
   }
@@ -61,7 +61,7 @@ class LessonRouter extends BaseRouter {
         //next();
       })
       .catch((err: any) => {
-        this.errorHandler(res, err, err.message);
+        //this.errorHandler(res, err, err.message);
         return next(err);
       });
   }
@@ -76,7 +76,7 @@ class LessonRouter extends BaseRouter {
         return this.send(res, lesson);
       })
       .catch((err: any) => {
-        this.errorHandler(res, err, err.message);
+        //this.errorHandler(res, err, err.message);
         return next(err);
       });
   }
@@ -90,7 +90,7 @@ class LessonRouter extends BaseRouter {
         return this.send(res, deleted);
       })
       .catch((err: any) => {
-        this.errorHandler(res, err, err.message);
+        //this.errorHandler(res, err, err.message);
         return next(err);
       });
   }

@@ -2,7 +2,6 @@ import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
 
 import { StudentComponent } from './components/student.component';
-import { StudentCheckInComponent } from './components/studentCheckIn.component';
 import { AuthGuard } from '../services/auth.guard';
 
 

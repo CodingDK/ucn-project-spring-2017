@@ -3,9 +3,7 @@ import { CanActivate } from "@angular/router";
 
 import { StudentService } from '../services/student.service';
 //import { AuthService } from '../../services/auth.service';
-import { Lesson } from '../models/lesson';
 
-import { StudentLessonComponent } from './studentLesson.component';
 
 @Component({
     selector: 'student',

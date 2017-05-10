@@ -1,0 +1,17 @@
+﻿<div class="container">
+    <h1>Lektiecafe for elever</h1> 
+
+    <div *ngIf="studentCheckedIn == true else lessonsTemplate">
+        <h1>Student checked in</h1>
+        <button (click)="studentCheckOut()">Check Ud</button>
+    </div>
+
+    <ng-template #lessonsTemplate>        
+        <div *ngIf="activeLessons == true else noLessonsTemplate">
+            <button (click)="studentCheckIn()">Check Ind</button>            
+        </div>
+        <ng-template #noLessonsTemplate>
+            <p>Ingen Lektiecafer er tilgængelige for dig</p>
+        </ng-template>
+    </ng-template>    
+</div>

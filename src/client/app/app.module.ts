@@ -8,7 +8,10 @@ import { ToastyModule } from 'ng2-toasty';
 
 import { AppRoutingModule } from './app-routing.module';
 import { GithubModule } from './github/github.module';
+
 import { TempModule } from './temp/temp.module';
+import { StudentModule } from './student/student.module';
+
 
 import { AppComponent } from './components/app.component';
 import { NavbarComponent } from './components/navbar.component';
@@ -30,6 +33,7 @@ import { MomentModule } from 'angular2-moment';
     HomeComponent,
     LoginComponent,
     LoginGoogleComponent
+
   ],
   imports: [
     BrowserModule,
@@ -41,6 +45,7 @@ import { MomentModule } from 'angular2-moment';
     MomentModule,
     GithubModule,
     TempModule,
+    StudentModule,
     AppRoutingModule // Must be last import. So Rounting childs works
     
   ],

@@ -12,14 +12,14 @@ import { StudentService } from './services/student.service';
         CommonModule,
         FormsModule,
         HttpModule,
-        StudentRoutingModule
+        StudentRoutingModule 
     ],
 
     declarations: [
-        StudentComponent
+        StudentComponent,
     ],
     providers: [
-        StudentService
+        StudentService     
     ],
     exports: [
         StudentComponent

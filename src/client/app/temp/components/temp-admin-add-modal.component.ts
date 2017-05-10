@@ -1,5 +1,6 @@
 ﻿import { Component, ViewChild, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, FormControl, AbstractControl, Validators } from '@angular/forms';
+import { Router, ActivatedRoute } from '@angular/router';
 import * as moment from 'moment';
 import { ToastyService, ToastOptions } from 'ng2-toasty';
 import { ModalDirective, PopoverDirective } from 'ngx-bootstrap';
@@ -33,7 +34,11 @@ export class TempAdminAddModalComponent implements OnInit{
   schoolClassNameInput: FormControl;
 
 
-  constructor(private tempService: TempService, private toastyService: ToastyService, private fb: FormBuilder) {
+  constructor(private tempService: TempService,
+    private toastyService: ToastyService,
+    private fb: FormBuilder,
+    private route: ActivatedRoute,
+    private router: Router) {
     
   }
 
@@ -51,6 +56,8 @@ export class TempAdminAddModalComponent implements OnInit{
 
   public onHidden(): void {
     this.isModalShown = false;
+    console.log("onHidden");
+    this.router.navigate(['../'], { relativeTo: this.route });
   }
 
   public test(): void {

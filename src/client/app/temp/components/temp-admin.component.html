@@ -1,6 +1,6 @@
 ﻿<h1>
   Planlagte Lektiécafer
-  <button type="button" class="btn btn-primary btnCreate" (click)="showModal()">Opret ny</button>
+  <button type="button" class="btn btn-primary btnCreate" (click)="openAddModal()">Opret ny</button>
 </h1>
 
 <table class="table table-striped">
@@ -30,7 +30,7 @@
 
 
 
-<temp-admin-add-modal></temp-admin-add-modal>
+<!--<temp-admin-add-modal></temp-admin-add-modal>-->
 <temp-confirm-modal [title]="'Slet Lektiecafé'"
                     [body]="deleteTemplate"
                     [btnClass]="'btn-danger'"

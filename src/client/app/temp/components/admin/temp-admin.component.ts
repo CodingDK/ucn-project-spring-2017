@@ -5,10 +5,9 @@ import 'rxjs/add/operator/switchMap';
 import { ModalDirective } from 'ngx-bootstrap/modal';
 import { ToastyService, ToastyConfig, ToastOptions, ToastData } from 'ng2-toasty';
 
-import { Lesson } from '../../../../shared/models/lesson';
+import { Lesson } from '../../../../../shared/models/lesson';
 
-import { TempService } from '../services/temp.service';
-import { TempConfirmModalComponent } from './temp-confirm-modal.component';
+import { TempService } from '../../services/temp.service';
 
 @Component({
   selector: 'temp-admin',
@@ -17,8 +16,6 @@ import { TempConfirmModalComponent } from './temp-confirm-modal.component';
 })
 export class TempAdminComponent implements AfterViewInit {
   
-  @ViewChild(TempConfirmModalComponent)
-  deleteModal: TempConfirmModalComponent;
 
   activeItem: Lesson;
   
@@ -43,26 +40,8 @@ export class TempAdminComponent implements AfterViewInit {
   }
   
   openDeleteModal(lesson: Lesson) {
-    this.activeItem = lesson;
-    this.deleteModal.showModal();
+    this.router.navigate(['delete', lesson.id], { relativeTo: this.route });
   }
 
-  onConfirmedDelete(event: any) {
-    this.tempService.deleteLesson(this.activeItem.id)
-      .then((deleted: boolean) => {
-        this.deleteModal.hideModal();
-        if (deleted) {
-          this.toastyService.success("Lektiecaf&eacute;en er blevet slettet");
-        } else {
-          this.toastyService.info("Lektiecaf&eacute;en blev ikke fundet, og er muligvis allerede slettet");
-        }
-      })
-      .catch((err: any) => {
-        let body = JSON.parse(err._body);
-        this.toastyService.error(<ToastOptions>{
-          title: "Der opstod en fejl",
-          msg: body.message
-        });
-      });
-  }
+  
 }

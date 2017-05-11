@@ -38,6 +38,10 @@ export class TempService {
     return this.allLessons;
   }
 
+  getLessonById(id: string): Lesson | undefined {
+    return this.allLessons.find(value => { return value.id === id });
+  }
+
   createLesson(viewModel: CreateLessonViewModel): Promise<Lesson> {
     return this.http.post(this.lessonUrl, viewModel, { withCredentials: true })
       .toPromise()

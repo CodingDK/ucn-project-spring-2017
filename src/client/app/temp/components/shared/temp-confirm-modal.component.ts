@@ -10,31 +10,34 @@ export class TempConfirmModalComponent {
   @ViewChild('confirmModal')
   private confirmModal: ModalDirective;
   @Output() onConfirmed = new EventEmitter<void>();
+  @Output() onHidden = new EventEmitter<void>();
 
   @Input() title: string;
   @Input() body: any;
   @Input() btnText: string;
   @Input() btnClass: string;
   
-  public isModalShown: boolean = false;
+  //public isModalShown: boolean = false;
 
   constructor() {
   }
 
   public confirm(): void {
     this.onConfirmed.emit();
+    this.hideModal();
     //this.hideModal();
   }
 
   public showModal(): void {
-    this.isModalShown = true;
+    //this.isModalShown = true;
   }
 
   public hideModal(): void {
     this.confirmModal.hide();
   }
 
-  private onHidden(): void {
-    this.isModalShown = false;
+  private onHiddenModal(): void {
+    this.onHidden.emit();
+    //this.isModalShown = false;
   }
 }

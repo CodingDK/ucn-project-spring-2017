@@ -23,7 +23,7 @@ export class LoginComponent {
     this.model = new LoginViewModel(tempModel.email, "");
     this.authService.login(tempModel)
       .then(response => {
-        this.router.navigateByUrl('/github');
+        this.router.navigateByUrl('/temp');
       }).catch(err => {
         if (err.status == 401) {
           this.errorMessage = "Wrong Username or password";

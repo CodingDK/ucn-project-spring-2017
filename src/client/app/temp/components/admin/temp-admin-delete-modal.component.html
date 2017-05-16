@@ -1,0 +1,43 @@
+﻿<temp-confirm-modal [title]="'Slet Lektiecafé'"
+                    [body]="deleteTemplate"
+                    [btnClass]="'btn-danger'"
+                    [btnText]="'Slet'"
+                    (onConfirmed)="onConfirmedDelete($event)"
+                    (onHidden)="onHidden()">
+</temp-confirm-modal>
+<ng-template #deleteTemplate>
+  <h4>
+    Er du sikker på at du vil slette lektiecaféen
+    med følgende oplysninger:
+  </h4>
+  <div class="row">
+    <div class="col-sm-4">
+      <label>Dato</label>
+    </div>
+    <div class="col-sm-8">
+      {{item?.startTime | amDateFormat:"dddd [d.] LL"}}
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-sm-4">
+      <label>Periode</label>
+    </div>
+    <div class="col-sm-8">
+      kl. {{item?.startTime | amDateFormat:"LT"}}
+      til {{item?.endTime | amDateFormat:'LT'}}
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-sm-4">
+      <label>Lærer</label>
+    </div>
+    <div class="col-sm-8">{{item?.teachers}}</div>
+  </div>
+  <div class="row">
+    <div class="col-sm-4">
+      <label>Klasse</label>
+    </div>
+    <div class="col-sm-8">{{item?.schoolClass}}</div>
+  </div>
+
+</ng-template>

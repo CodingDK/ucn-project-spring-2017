@@ -75,7 +75,7 @@ export class LoginGoogleComponent implements AfterViewInit {
       this._zone.run(() => { 
         let authCode = response.code;
         this.authService.googleLoginSucceed(authCode).then(response => {
-          this.router.navigateByUrl('/github');
+          this.router.navigateByUrl('/temp');
         })
         .catch(err => {
           try {

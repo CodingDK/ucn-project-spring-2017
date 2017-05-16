@@ -3,7 +3,8 @@ import { RouterModule } from '@angular/router';
 
 import { TempComponent } from './components/temp.component';
 import { AuthGuard } from '../services/auth.guard';
-import { TempAdminAddModalComponent } from './components/temp-admin-add-modal.component';
+import { TempAdminAddModalComponent } from './components/admin/temp-admin-add-modal.component';
+import { TempAdminDeleteModalComponent } from './components/admin/temp-admin-delete-modal.component';
 
 @NgModule({
   imports: [RouterModule.forChild([
@@ -14,6 +15,10 @@ import { TempAdminAddModalComponent } from './components/temp-admin-add-modal.co
         {
           path: 'add',
           component: TempAdminAddModalComponent
+        },
+        {
+          path: 'delete/:id',
+          component: TempAdminDeleteModalComponent
         }
       ]
     }//, canActivate: [AuthGuard] }

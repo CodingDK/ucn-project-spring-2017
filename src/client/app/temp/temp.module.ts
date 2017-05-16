@@ -10,9 +10,10 @@ import { ModalModule, PopoverModule, DatepickerModule, TimepickerModule } from '
 
 import { TempRoutingModule } from './temp.routes';
 import { TempComponent } from './components/temp.component';
-import { TempAdminComponent } from './components/temp-admin.component';
-import { TempAdminAddModalComponent } from './components/temp-admin-add-modal.component';
-import { TempConfirmModalComponent } from './components/temp-confirm-modal.component';
+import { TempAdminComponent } from './components/admin/temp-admin.component';
+import { TempAdminAddModalComponent } from './components/admin/temp-admin-add-modal.component';
+import { TempAdminDeleteModalComponent } from './components/admin/temp-admin-delete-modal.component';
+import { TempConfirmModalComponent } from './components/shared/temp-confirm-modal.component';
 import { TempService } from './services/temp.service';
 
 @NgModule({
@@ -33,6 +34,7 @@ import { TempService } from './services/temp.service';
     TempComponent,
     TempAdminComponent,
     TempAdminAddModalComponent,
+    TempAdminDeleteModalComponent,
     TempConfirmModalComponent
   ],
   providers: [

@@ -1,0 +1,40 @@
+﻿<h1>
+  Planlagte Lektiécafer
+  <button type="button" class="btn btn-primary btnCreate" (click)="openAddModal()">Opret ny</button>
+</h1>
+
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th>Dag</th>
+      <th>Klasse</th>
+      <th>Start</th>
+      <th>Slut</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let l of getAll()">
+      <td>{{l.startTime | amDateFormat:'dddd DD/MM'}}</td>
+      <td>{{l.schoolClass}}</td>
+      <td>{{l.startTime | amDateFormat:'LT'}}</td>
+      <td>{{l.endTime | amDateFormat:'LT'}}</td>
+      <td>
+        <button class="btn btn-success btn-xs btnEdit" role="button">Rediger</button> |
+        <button class="btn btn-info btn-xs btnDetails" role="button">Detaljer</button> |
+        <button class="btn btn-danger btn-xs btnDelete" role="button" (click)="openDeleteModal(l)">Slet</button>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+
+
+<!--<temp-admin-add-modal></temp-admin-add-modal>-->
+
+<!--
+  startTime: Date;
+  endTime: Date;
+  teachers: Teacher[];
+  schoolClass: SchoolClass;
+-->

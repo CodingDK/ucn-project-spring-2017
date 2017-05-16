@@ -7,19 +7,19 @@ import { ToastyService, ToastyConfig, ToastOptions, ToastData } from 'ng2-toasty
 
 import { Lesson } from '../../../../../shared/models/lesson';
 
-import { TempService } from '../../services/temp.service';
+import { LessonService } from '../../services/lesson.service';
 
 @Component({
-  selector: 'temp-admin',
-  templateUrl: './temp-admin.component.html',
-  styleUrls: ['./temp-admin.component.scss']
+  selector: 'lesson-admin',
+  templateUrl: './lesson-admin.component.html',
+  styleUrls: ['./lesson-admin.component.scss']
 })
-export class TempAdminComponent implements AfterViewInit {
+export class LessonAdminComponent implements AfterViewInit {
   
 
   activeItem: Lesson;
   
-  constructor(private tempService: TempService, private toastyService: ToastyService,
+  constructor(private lessonService: LessonService, private toastyService: ToastyService,
     private route: ActivatedRoute,
     private router: Router) {
   }
@@ -29,7 +29,7 @@ export class TempAdminComponent implements AfterViewInit {
   }
 
   getAll(): Lesson[] {
-    return this.tempService.getAllLessons();
+    return this.lessonService.getAllLessons();
   }
 
   openAddModal() {

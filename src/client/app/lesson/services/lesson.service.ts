@@ -12,7 +12,7 @@ import { AppConstants } from "../../app.constants";
 import { CreateLessonViewModel } from '../../viewmodels/createLessonViewModel';
 
 @Injectable()
-export class TempService {
+export class LessonService {
   private lessonUrl = AppConstants.Server.url + "lesson/";
   private allLessons: Lesson[] = [];
 
@@ -70,7 +70,7 @@ export class TempService {
 
   // Implement a method to handle errors if any
   private handleError(error: any): void {
-    console.error('TempService - An error occurred', error);
+    console.error('LessonService - An error occurred', error);
     if (error.status === 401) {
       this.toastyService.error("Du er ikke logget ind eller også har du ikke adgang til funtionen");
       this.router.navigate(['/login'], { queryParams: { returnUrl: this.router.url } });

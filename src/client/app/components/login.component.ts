@@ -19,11 +19,11 @@ export class LoginComponent {
 
   submit() {
     this.isSubmitted = true;
-    const tempModel = this.model;
-    this.model = new LoginViewModel(tempModel.email, "");
-    this.authService.login(tempModel)
+    const lessonModel = this.model;
+    this.model = new LoginViewModel(lessonModel.email, "");
+    this.authService.login(lessonModel)
       .then(response => {
-        this.router.navigateByUrl('/temp');
+        this.router.navigateByUrl('/lesson');
       }).catch(err => {
         if (err.status == 401) {
           this.errorMessage = "Wrong Username or password";

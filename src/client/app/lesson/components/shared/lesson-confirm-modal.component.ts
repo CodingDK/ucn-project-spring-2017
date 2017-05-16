@@ -2,11 +2,11 @@
 import { ModalDirective, PopoverDirective } from 'ngx-bootstrap';
 
 @Component({
-  selector: 'temp-confirm-modal',
-  templateUrl: './temp-confirm-modal.component.html',
-  styleUrls: ['./temp-confirm-modal.component.scss']
+  selector: 'lesson-confirm-modal',
+  templateUrl: './lesson-confirm-modal.component.html',
+  styleUrls: ['./lesson-confirm-modal.component.scss']
 })
-export class TempConfirmModalComponent {
+export class LessonConfirmModalComponent {
   @ViewChild('confirmModal')
   private confirmModal: ModalDirective;
   @Output() onConfirmed = new EventEmitter<void>();

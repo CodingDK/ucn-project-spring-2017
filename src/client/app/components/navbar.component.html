@@ -6,7 +6,7 @@
     <ul class="nav navbar-nav">
       <li routerLinkActive="active"><a routerLink="/home" routerLinkActive="active">Home</a></li>
       <li routerLinkActive="active" *ngIf="authService.isLoggedIn()">
-        <a routerLink="/temp">Administrator</a>
+        <a routerLink="/lesson">Administrator</a>
       </li>
       <!--<li>
         <a (click)="addToast()" style="cursor:pointer;">Notification test</a>

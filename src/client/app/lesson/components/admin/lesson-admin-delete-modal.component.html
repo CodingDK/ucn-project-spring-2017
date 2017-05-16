@@ -1,10 +1,10 @@
-﻿<temp-confirm-modal [title]="'Slet Lektiecafé'"
+﻿<lesson-confirm-modal [title]="'Slet Lektiecafé'"
                     [body]="deleteTemplate"
                     [btnClass]="'btn-danger'"
                     [btnText]="'Slet'"
                     (onConfirmed)="onConfirmedDelete($event)"
                     (onHidden)="onHidden()">
-</temp-confirm-modal>
+</lesson-confirm-modal>
 <ng-template #deleteTemplate>
   <h4>
     Er du sikker på at du vil slette lektiecaféen

@@ -75,7 +75,7 @@ export class LoginGoogleComponent implements AfterViewInit {
       this._zone.run(() => { 
         let authCode = response.code;
         this.authService.googleLoginSucceed(authCode).then(response => {
-          this.router.navigateByUrl('/temp');
+          this.router.navigateByUrl('/lesson');
         })
         .catch(err => {
           try {
@@ -91,9 +91,9 @@ export class LoginGoogleComponent implements AfterViewInit {
   /*
   submit() {
     this.isSubmitted = true;
-    const tempModel = this.model;
-    this.model = new LoginViewModel(tempModel.email, "");
-    this.authService.login(tempModel)
+    const lessonModel = this.model;
+    this.model = new LoginViewModel(lessonModel.email, "");
+    this.authService.login(lessonModel)
       .then(response => {
         this.router.navigateByUrl('/github');
       }).catch(err => {

@@ -6,23 +6,23 @@ import { ToastyService, ToastOptions } from 'ng2-toasty';
 import { ModalDirective } from 'ngx-bootstrap';
 
 
-import { TempService } from '../../services/temp.service';
-import { TempConfirmModalComponent } from '../shared/temp-confirm-modal.component';
+import { LessonService } from '../../services/lesson.service';
+import { LessonConfirmModalComponent } from '../shared/lesson-confirm-modal.component';
 import { Lesson } from '../../../../../shared/models/lesson';
 
 
 @Component({
-  selector: 'temp-admin-delete-modal',
-  templateUrl: './temp-admin-delete-modal.component.html',
-  styleUrls: ['./temp-admin-delete-modal.component.scss']
+  selector: 'lesson-admin-delete-modal',
+  templateUrl: './lesson-admin-delete-modal.component.html',
+  styleUrls: ['./lesson-admin-delete-modal.component.scss']
 })
-export class TempAdminDeleteModalComponent implements OnInit {
-  @ViewChild(TempConfirmModalComponent)
-  deleteModal: TempConfirmModalComponent;
+export class LessonAdminDeleteModalComponent implements OnInit {
+  @ViewChild(LessonConfirmModalComponent)
+  deleteModal: LessonConfirmModalComponent;
 
   item: Lesson;
 
-  constructor(private tempService: TempService, private toastyService: ToastyService,
+  constructor(private lessonService: LessonService, private toastyService: ToastyService,
     private route: ActivatedRoute,
     private router: Router,
     private location: Location) {
@@ -31,9 +31,9 @@ export class TempAdminDeleteModalComponent implements OnInit {
   ngOnInit(): void {
     this.route.params.subscribe(params => {
       const id = params['id'];
-      const item = this.tempService.getLessonById(id);
+      const item = this.lessonService.getLessonById(id);
       if (item === undefined) {
-        this.router.navigate(['/temp'], { relativeTo: this.route, replaceUrl: true });
+        this.router.navigate(['/lesson'], { relativeTo: this.route, replaceUrl: true });
         this.notFoundToasty();
       } else {
         this.item = item;
@@ -43,11 +43,11 @@ export class TempAdminDeleteModalComponent implements OnInit {
   }
     
   public onHidden(): void {
-    this.router.navigate(['/temp'], { relativeTo: this.route});
+    this.router.navigate(['/lesson'], { relativeTo: this.route});
   }
 
   public onConfirmedDelete(event: any) {
-    this.tempService.deleteLesson(this.item.id)
+    this.lessonService.deleteLesson(this.item.id)
       .then((deleted: boolean) => {
         this.deleteModal.hideModal();
         if (deleted) {

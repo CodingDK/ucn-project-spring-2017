@@ -6,18 +6,18 @@ import { ToastyService, ToastOptions } from 'ng2-toasty';
 import { ModalDirective, PopoverDirective } from 'ngx-bootstrap';
 
 import { isDateValidator, isDateLaterValidator } from '../../../validators/validators';
-import { TempService } from '../../services/temp.service';
+import { LessonService } from '../../services/lesson.service';
 import { CreateLessonViewModel } from '../../../viewmodels/createLessonViewModel';
 import { Lesson } from '../../../../../shared/models/lesson';
 
 import { ValidationError } from 'class-validator';
 
 @Component({
-  selector: 'temp-admin-add-modal',
-  templateUrl: './temp-admin-add-modal.component.html',
-  styleUrls: ['./temp-admin-add-modal.component.scss']
+  selector: 'lesson-admin-add-modal',
+  templateUrl: './lesson-admin-add-modal.component.html',
+  styleUrls: ['./lesson-admin-add-modal.component.scss']
 })
-export class TempAdminAddModalComponent implements OnInit{
+export class LessonAdminAddModalComponent implements OnInit{
   @ViewChild('addModal')
   private addModal: ModalDirective;
 
@@ -34,7 +34,7 @@ export class TempAdminAddModalComponent implements OnInit{
   schoolClassNameInput: FormControl;
 
 
-  constructor(private tempService: TempService,
+  constructor(private lessonService: LessonService,
     private toastyService: ToastyService,
     private fb: FormBuilder,
     private route: ActivatedRoute,
@@ -95,7 +95,7 @@ export class TempAdminAddModalComponent implements OnInit{
 
   public submit(): void {
     let viewModel = this.getViewModelFromForm();
-    this.tempService.createLesson(viewModel)
+    this.lessonService.createLesson(viewModel)
       .then((lesson: Lesson) => {
         this.toastyService.success("Lektiecaféen er blevet oprettet");
         this.addModal.hide();

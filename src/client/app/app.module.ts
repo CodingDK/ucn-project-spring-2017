@@ -9,7 +9,7 @@ import { ToastyModule } from 'ng2-toasty';
 import { AppRoutingModule } from './app-routing.module';
 import { GithubModule } from './github/github.module';
 
-import { TempModule } from './temp/temp.module';
+import { LessonModule } from './lesson/lesson.module';
 import { StudentModule } from './student/student.module';
 
 
@@ -44,7 +44,7 @@ import { MomentModule } from 'angular2-moment';
     ToastyModule.forRoot(),
     MomentModule,
     GithubModule,
-    TempModule,
+    LessonModule,
     StudentModule,
     AppRoutingModule // Must be last import. So Rounting childs works
     

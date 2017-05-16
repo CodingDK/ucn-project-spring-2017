@@ -4,7 +4,7 @@ import { HttpModule } from '@angular/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { MomentModule } from 'angular2-moment';
-
+import { MultiselectDropdownModule } from 'angular-2-dropdown-multiselect';
 
 import { ModalModule, PopoverModule, DatepickerModule, TimepickerModule } from 'ngx-bootstrap';
 
@@ -23,6 +23,7 @@ import { LessonService } from './services/lesson.service';
     ReactiveFormsModule,
     HttpModule,
     MomentModule,
+    MultiselectDropdownModule,
     ModalModule.forRoot(),
     PopoverModule.forRoot(),
     DatepickerModule.forRoot(),

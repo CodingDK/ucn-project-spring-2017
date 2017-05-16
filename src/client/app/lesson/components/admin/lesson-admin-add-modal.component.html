@@ -56,22 +56,23 @@
               </div>
             </div>
             <div class="row">
-              <div class="form-group col-md-12"
+              <div class="form-group col-md-6"
                    [class.has-error]="formErrors.schoolClassName">
                 <label class="control-label" for="schoolClass">Klasse</label>
-                <input class="form-control" id="schoolClass" name="schoolClass" type="text"
-                       formControlName="schoolClassName">
+                <!--<input class="form-control" id="schoolClass" name="schoolClass" type="text"
+                       formControlName="schoolClassName">-->
+                <ss-multiselect-dropdown [options]="schoolClassHelper.options" [texts]="schoolClassHelper.texts" [settings]="schoolClassHelper.settings" id="schoolClass" formControlName="schoolClassName"></ss-multiselect-dropdown>
                 <div *ngIf="formErrors.schoolClassName" class="alert alert-danger">
                   {{ formErrors.schoolClassName }}
                 </div>
               </div>
-            </div>
-            <div class="row">
-              <div class="form-group col-md-12"
+              <div class="form-group col-md-6"
                    [class.has-error]="formErrors.teachers">
                 <label class="control-label" for="teacher">Lærere</label>
-                <input class="form-control" id="teacher" name="teacher" type="text"
-                       formControlName="teachers">
+
+                <ss-multiselect-dropdown [options]="teachersHelper.options" [texts]="teachersHelper.texts" [settings]="teachersHelper.settings" id="teacher" formControlName="teachers"></ss-multiselect-dropdown>
+                <!--<input class="form-control" id="teacher" name="teacher" type="text"
+           formControlName="teachers">-->
                 <div *ngIf="formErrors.teachers" class="alert alert-danger">
                   {{ formErrors.teachers }}
                 </div>
@@ -80,6 +81,7 @@
           </div>
         </div>
         <div class="modal-footer">
+          Object: {{schoolClassHelper | json}}
           <button type="button" class="btn btn-default" (click)="hideModal()">Annuller</button>
           <button type="button" class="btn btn-success" (click)="submit()">Opret</button>
         </div>

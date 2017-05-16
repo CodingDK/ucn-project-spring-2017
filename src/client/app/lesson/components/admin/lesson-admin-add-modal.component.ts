@@ -4,6 +4,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import * as moment from 'moment';
 import { ToastyService, ToastOptions } from 'ng2-toasty';
 import { ModalDirective, PopoverDirective } from 'ngx-bootstrap';
+import { IMultiSelectOption, IMultiSelectTexts, IMultiSelectSettings } from 'angular-2-dropdown-multiselect';
 
 import { isDateValidator, isDateLaterValidator } from '../../../validators/validators';
 import { LessonService } from '../../services/lesson.service';
@@ -32,18 +33,20 @@ export class LessonAdminAddModalComponent implements OnInit{
   startTimeInput: FormControl;
   endTimeInput: FormControl;
   schoolClassNameInput: FormControl;
-
-
+    
+  teachersHelper = new MultiSelectHelper("lærer", "lærere");
+  schoolClassHelper = new MultiSelectHelper("klasse", "klasser");
+  
   constructor(private lessonService: LessonService,
     private toastyService: ToastyService,
     private fb: FormBuilder,
     private route: ActivatedRoute,
     private router: Router) {
-    
   }
 
   ngOnInit(): void {
     this.createForm();
+    this.setValuesInDropdowns();
   }
 
   public showModal(): void {
@@ -56,14 +59,31 @@ export class LessonAdminAddModalComponent implements OnInit{
 
   public onHidden(): void {
     this.isModalShown = false;
-    console.log("onHidden");
     this.router.navigate(['../'], { relativeTo: this.route });
   }
+    
+  private setValuesInDropdowns() {
+    const schoolClasses = new Array<IMultiSelectOption>();
+    schoolClasses.push(<IMultiSelectOption>{
+      id: 1,
+      name: "pwe0916"
+    })
+    schoolClasses.push(<IMultiSelectOption>{
+      id: 2,
+      name: "swe0916"
+    })
+    this.schoolClassHelper.options = schoolClasses;
 
-  public test(): void {
-    console.log("errors showModal", this.lessonForm.errors);
-    this.lessonForm.updateValueAndValidity();
-    console.log("errors showModal", this.lessonForm.errors);
+    let teachers = new Array<IMultiSelectOption>();
+    teachers.push(<IMultiSelectOption>{
+      id: 1,
+      name: "Kaj"
+    })
+    teachers.push(<IMultiSelectOption>{
+      id: 2,
+      name: "Ole"
+    })
+    this.teachersHelper.options = teachers;
   }
 
   private createForm() {
@@ -72,8 +92,8 @@ export class LessonAdminAddModalComponent implements OnInit{
     this.dateInput = new FormControl(start.toDate(), [isDateValidator()]);
     this.startTimeInput = new FormControl(start.toDate(), [isDateValidator]);
     this.endTimeInput = new FormControl(start.add(1, 'hour').toDate(), [isDateValidator()]);
-    this.teachersInput = new FormControl('', Validators.required);
-    this.schoolClassNameInput = new FormControl('');
+    this.teachersInput = new FormControl([], Validators.required);
+    this.schoolClassNameInput = new FormControl([], Validators.required);
 
     this.lessonForm = this.fb.group({
       date: this.dateInput,
@@ -193,3 +213,26 @@ export class LessonAdminAddModalComponent implements OnInit{
 
 }
 
+class MultiSelectHelper {
+  texts: IMultiSelectTexts = {
+    checkAll: 'Vælge alle',
+    uncheckAll: 'Fjern alle',
+    checked: `${this.typeName} valgt`,
+    checkedPlural: `${this.typeNames} valgt`,
+    searchPlaceholder: 'Find',
+    defaultTitle: 'Vælg',
+    allSelected: 'Alle valgt',
+  };
+  settings: IMultiSelectSettings = {
+    checkedStyle: 'fontawesome',
+    buttonClasses: 'btn btn-default btn-block btn-select',
+    dynamicTitleMaxItems: 2,
+    displayAllSelectedText: true,
+    containerClasses: ''
+  };
+  options: IMultiSelectOption[];
+
+  constructor(private typeName: string, private typeNames: string) {
+
+  }
+}

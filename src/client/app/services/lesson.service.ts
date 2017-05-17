@@ -3,7 +3,6 @@ import { Headers, Http, Response } from '@angular/http';
 import { Router } from '@angular/router';
 import 'rxjs/add/operator/toPromise';
 
-
 import { ToastyService, ToastyConfig, ToastOptions, ToastData } from 'ng2-toasty';
 
 import { Lesson } from '../../../shared/models/lesson';

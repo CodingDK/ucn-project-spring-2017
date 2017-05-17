@@ -3,10 +3,12 @@ import * as bcrypt from 'bcrypt-nodejs';
 import { User, Student, GoogleTokens } from '../../shared/models/user';
 import { UserDal } from '../dal/userDAL';
 
+import { BaseController } from './baseController';
+
 /**
  * Controller for handling Users
  */
-export class UserController {
+export class UserController extends BaseController {
   private dal: UserDal = new UserDal();
 
   /**
@@ -18,9 +20,17 @@ export class UserController {
   }
 
   /**
+   * Method to ge all users
+   * @param roles the roles to get, or just undefined to get all users
+   */
+  public getAll(user: any, roles?: string[]) : Promise<User[]> {
+    return this.dal.getAll(user, roles);
+  }
+
+  /**
    * Method to find Students by School Class name
    */
-  public findStudentsBySchoolClassName(name: string): Promise<Student[]> {
+  public findStudentsBySchoolClassName(user: any, name: string): Promise<Student[]> {
     return this.dal.findStudentsBySchoolClassName(name);
   } 
 
@@ -28,7 +38,7 @@ export class UserController {
    * Method for finding an user by id
    * @param id the id of the user
    */
-  public findById(id: string): Promise<User> {
+  public findById(user: any, id: string): Promise<User> {
     return this.dal.findById(id);
   }
 

@@ -42,7 +42,7 @@ class LessonRouter extends BaseRouter {
   private getAll(req: Request, res: Response, next: NextFunction): void {
     this.ctrl.getAll(req.user)
       .then((lessons: Lesson[]) => {
-        return this.send(res, lessons, "lesson created");
+        return this.send(res, lessons);
         //next();
       })
       .catch((err: any) => {

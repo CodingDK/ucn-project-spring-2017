@@ -85,7 +85,7 @@ export class PassportController {
   public deserializeUser(id: string, done: any) : void {
     console.log("deserializeUser ID: ", JSON.stringify(id));
     console.log("test, this?", JSON.stringify(this));
-    this.userCtrl.findById(id)
+    this.userCtrl.findById(null, id)
       .then((user) => {
         done(null, user);
       })

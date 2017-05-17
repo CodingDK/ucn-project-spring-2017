@@ -131,6 +131,31 @@ export class UserDal {
   }
 
   /**
+   * Method to ge all users
+   * @param roles the roles to get, or just undefined to get all users
+   */
+  public getAll(user: any, roles?: string[]): Promise<User[]> {
+    let query:any = {};
+    if (roles) {
+      query.roles = { $in: roles };
+    }
+    return new Promise<User[]>((resolve, reject) => {
+      Users.find(query, (err, objs: UserDocument[]) => {
+        if (err) {
+          return reject(DbError.makeNew(err, "A Database error happened"));
+        }
+        let retList = new Array<User>();
+        if (objs != null) {
+          objs.forEach((value: UserDocument) => {
+            retList.push(value.toObject() as User);
+          });
+        }
+        return resolve(retList);
+      });
+    });
+  }
+
+  /**
    * Method to find Students by School Class name
    */
   public findStudentsBySchoolClassName(name: string): Promise<Student[]> {
@@ -140,7 +165,7 @@ export class UserDal {
         roles: "student"
       }, (err, objs: UserDocument[]) => {
         if (err) {
-          reject(err);
+          return reject(DbError.makeNew(err, "A Database error happened"));
         }
         let retList = new Array<Student>();
         if (objs != null) {
@@ -148,7 +173,7 @@ export class UserDal {
             retList.push(value.toObject() as Student);
           });
         }
-        resolve(retList);
+        return resolve(retList);
       });
     });
   }
@@ -161,13 +186,12 @@ export class UserDal {
     return new Promise<User>((resolve, reject) => {
       Users.findOne({ 'email': email }, (err, userDoc: UserDocument) => {
         if (err) {
-          //TODO maybe better error handling
-          reject(err);
+          return reject(DbError.makeNew(err, "A Database error happened"));
         }
         if (userDoc != null) {
-          resolve(userDoc.toObject() as User);
+          return resolve(userDoc.toObject() as User);
         }
-        resolve(undefined);
+        return resolve(undefined);
         /*
         let test = userDoc.toObject() as User;
         console.log("### userDal start ###");
@@ -191,14 +215,12 @@ export class UserDal {
     return new Promise<User>((resolve, reject) => {
       Users.findById(id, (err, userDoc: UserDocument) => {
         if (err) {
-          //TODO maybe better error handling
-          reject(err);
-          //throw DbError.makeNew(JSON.stringify(err));
+          return reject(DbError.makeNew(err, "A Database error happened"));
         }
         if (userDoc != null) {
-          resolve(userDoc.toObject() as User);
+          return resolve(userDoc.toObject() as User);
         }
-        resolve(undefined);
+        return resolve(undefined);
       });
     });
   }
@@ -211,13 +233,12 @@ export class UserDal {
     return new Promise<User>((resolve, reject) => {
       Users.findOne({ googleId }, (err, userDoc: UserDocument) => {
         if (err) {
-          //TODO maybe better error handling
-          reject(err);
+          return reject(DbError.makeNew(err, "A Database error happened"));
         }
         if (userDoc != null) {
-          resolve(userDoc.toObject() as User);
+          return resolve(userDoc.toObject() as User);
         }
-        resolve(undefined);
+        return resolve(undefined);
       });
     });
   }
@@ -231,12 +252,12 @@ export class UserDal {
     return new Promise<User>((resolve, reject) => {
       Users.create(newUser, (err: any, createdUser: UserDocument) => {
         if (err) {
-          reject(err);
+          return reject(DbError.makeNew(err, "A Database error happened"));
         }
         if (createdUser != null) {
-          resolve(createdUser.toObject() as User);
+          return resolve(createdUser.toObject() as User);
         }
-        resolve(undefined);
+        return resolve(undefined);
       })
     });
   }

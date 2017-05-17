@@ -5,15 +5,15 @@ import { MeetUp } from '../../shared/models/meetUp';
 import { LessonDal } from '../dal/lessonDAL';
 import { CreateLessonViewModel } from '../../shared/viewmodels/createLessonViewModel';
 import { ResponseError } from '../errors/responseError';
-import { DbError } from '../errors/dbError';
 
 
 import { UserController } from './userController';
+import { BaseController } from './baseController';
 
 /**
  * Controller for handling Lessons
  */
-export class LessonController {
+export class LessonController extends BaseController {
 
   private dal: LessonDal = new LessonDal();
   private userCtrl = new UserController();
@@ -64,17 +64,7 @@ export class LessonController {
     return this.dal.deleteById(user, id)
       .catch(this.errorHandler.bind(this));
   }
-
-  private errorHandler(err: any) {
-    if (err instanceof ResponseError) {
-      throw err;
-    } else if (err instanceof DbError) {
-      throw ResponseError.makeNew(err, err.message);
-    } else {
-      throw ResponseError.makeNew(err, "an unknown error happened");
-    }
-  }
-
+  
   ///**
   // * Method for find a lesson by id
   // * @param id

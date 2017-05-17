@@ -8,8 +8,12 @@ import { IMultiSelectOption, IMultiSelectTexts, IMultiSelectSettings } from 'ang
 
 import { isDateValidator, isDateLaterValidator } from '../../../validators/validators';
 import { LessonService } from '../../../services/lesson.service';
+import { UserService } from '../../../services/user.service';
 import { CreateLessonViewModel } from '../../../viewmodels/createLessonViewModel';
 import { Lesson } from '../../../../../shared/models/lesson';
+import { User } from '../../../../../shared/models/user';
+import { SchoolClass } from '../../../../../shared/models/schoolClass';
+
 
 import { ValidationError } from 'class-validator';
 
@@ -18,7 +22,7 @@ import { ValidationError } from 'class-validator';
   templateUrl: './lesson-admin-add-modal.component.html',
   styleUrls: ['./lesson-admin-add-modal.component.scss']
 })
-export class LessonAdminAddModalComponent implements OnInit{
+export class LessonAdminAddModalComponent implements OnInit {
   @ViewChild('addModal')
   private addModal: ModalDirective;
 
@@ -33,11 +37,12 @@ export class LessonAdminAddModalComponent implements OnInit{
   startTimeInput: FormControl;
   endTimeInput: FormControl;
   schoolClassNameInput: FormControl;
-    
+
   teachersHelper = new MultiSelectHelper("lærer", "lærere");
   schoolClassHelper = new MultiSelectHelper("klasse", "klasser");
-  
+
   constructor(private lessonService: LessonService,
+    private userService: UserService,
     private toastyService: ToastyService,
     private fb: FormBuilder,
     private route: ActivatedRoute,
@@ -61,29 +66,57 @@ export class LessonAdminAddModalComponent implements OnInit{
     this.isModalShown = false;
     this.router.navigate(['../'], { relativeTo: this.route });
   }
-    
-  private setValuesInDropdowns() {
-    const schoolClasses = new Array<IMultiSelectOption>();
-    schoolClasses.push(<IMultiSelectOption>{
-      id: 1,
-      name: "pwe0916"
-    })
-    schoolClasses.push(<IMultiSelectOption>{
-      id: 2,
-      name: "swe0916"
-    })
-    this.schoolClassHelper.options = schoolClasses;
 
-    let teachers = new Array<IMultiSelectOption>();
-    teachers.push(<IMultiSelectOption>{
-      id: 1,
-      name: "Kaj"
-    })
-    teachers.push(<IMultiSelectOption>{
-      id: 2,
-      name: "Ole"
-    })
-    this.teachersHelper.options = teachers;
+  private setValuesInDropdowns() {
+    //const schoolClasses = new Array<IMultiSelectOption>();
+    //schoolClasses.push(<IMultiSelectOption>{
+    //  id: 1,
+    //  name: "pwe0916"
+    //})
+    //schoolClasses.push(<IMultiSelectOption>{
+    //  id: 2,
+    //  name: "swe0916"
+    //})
+    //this.schoolClassHelper.options = schoolClasses;
+
+    //Get All schoolClasses and put them in select field
+    this.userService.getAllSchoolClasses()
+      .then((schoolClasses: SchoolClass[]) => {
+        let values = schoolClasses.map((schoolClass) => {
+          return <IMultiSelectOption>{
+            id: schoolClass.name,
+            name: schoolClass.name
+          };
+        });
+        this.schoolClassHelper.options = values;
+      })
+      .catch((err: any) => {
+        console.log("LessonAdminAddModal - getAllSchoolClasses: ", err);
+        this.promiseErrorHandler(err);
+      });
+
+    //Get All teachers and put them in select field
+    this.userService.getAllUsers(['teacher'])
+      .then((users) => {
+        let values = users.map((user) => {
+          return <IMultiSelectOption>{
+            id: user.id,
+            name: user.name
+          };
+        });
+        this.teachersHelper.options = values;
+      })
+      .catch((err: any) => {
+        console.log("LessonAdminAddModal - getAllUsers: ", err);
+        this.promiseErrorHandler(err);
+      });
+  }
+
+  private promiseErrorHandler(err: any): void {
+    this.toastyService.error(<ToastOptions>{
+      title: "Der opstod en fejl",
+      msg: `Der er opstået en ukendt fejl:<br />${err.status} - ${err.statusText}`
+    });
   }
 
   private createForm() {
@@ -112,6 +145,7 @@ export class LessonAdminAddModalComponent implements OnInit{
       .subscribe(data => this.setErrorMessages(data));
     this.setErrorMessages(); // (re)set validation messages now
   }
+
 
   public submit(): void {
     let viewModel = this.getViewModelFromForm();
@@ -156,7 +190,7 @@ export class LessonAdminAddModalComponent implements OnInit{
     viewModel.teachers = teachers;
 
     return viewModel;
-  } 
+  }
 
   public setErrorMessages(data?: any) {
     if (!this.lessonForm) { return; }
@@ -166,19 +200,19 @@ export class LessonAdminAddModalComponent implements OnInit{
       this.formErrors[field] = '';
       const control = form.get(field);
       if (control)
-      if (control && control.dirty && !control.valid && control.errors != null) {
-        const messages = this.validationMessages[field];
-        const errors = control.errors;
-        for (const key in errors) {
-          if (messages !== undefined && messages[key] !== undefined) {
-            this.formErrors[field] += messages[key] + ' ';
-          } else if (typeof errors[key] === "string") {
-            this.formErrors[field] += errors[key] + ' ';
-          } else {
-            this.formErrors[field] += `Ukendt fejl: ${key} `
+        if (control && control.dirty && !control.valid && control.errors != null) {
+          const messages = this.validationMessages[field];
+          const errors = control.errors;
+          for (const key in errors) {
+            if (messages !== undefined && messages[key] !== undefined) {
+              this.formErrors[field] += messages[key] + ' ';
+            } else if (typeof errors[key] === "string") {
+              this.formErrors[field] += errors[key] + ' ';
+            } else {
+              this.formErrors[field] += `Ukendt fejl: ${key} `
+            }
           }
         }
-      }
     }
   }
 

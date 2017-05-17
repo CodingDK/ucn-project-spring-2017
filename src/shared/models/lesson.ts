@@ -6,7 +6,7 @@ export class Lesson {
   id: string;
   startTime: Date;
   endTime: Date;
-  teachers: Teacher[];
+  teachers: Teacher[] | string[];
   schoolClasses: SchoolClass[];
   meetups: MeetUp[]; // students who met up
 
@@ -31,11 +31,5 @@ export class Lesson {
       return teacher;
     })
     return newObj;
-  }
-
-  getTeachersAsStringArray(): string[] {
-    return this.teachers.map((value) => {
-      return value.id;
-    });
   }
 }

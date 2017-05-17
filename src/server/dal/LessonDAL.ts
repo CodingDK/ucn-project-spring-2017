@@ -17,7 +17,7 @@ export class LessonDal {
 
   public getAll(user: any): Promise<Lesson[]> {
     return new Promise<Lesson[]>((resolve: any, reject: any) => {
-      Lessons.find({}, (err: any, objs: LessonDocument[]) => {
+      Lessons.find({}).exec((err: any, objs: LessonDocument[]) => { //.populate('teachers') // .populate('meetUps.student')
         if (err) {
           return reject(DbError.makeNew(err, "A Database error happened"));
         }
@@ -59,24 +59,46 @@ export class LessonDal {
    * @param newLesson
    */
   public createLesson(user: any, viewModel: CreateLessonViewModel, students: Student[]): Promise<Lesson> {
-    return new Promise<DbLesson>((resolve: any, reject: any) => { 
+    return new Promise<DbLesson>(
+      //First validate teachers Ids format and create dbLesson object
+      (resolve: any, reject: any) => {
+        const validateTeachersIdsPromises = viewModel.teachers.map((id) => { return validateObjectId(id) });
         let dbLesson = new DbLesson();
+
+        return Promise.all(validateTeachersIdsPromises)
+          .then((teachersObjectIds) => {
+            dbLesson.teachers = teachersObjectIds;
+            return resolve(dbLesson);
+          });
+      })
+      //Next validate students Ids format and create meetups for students
+      .then((dbLesson) => {
+        const validateStudentIdsPromises = students.map((student) => { return validateObjectId(student.id) });
+        return Promise.all(validateStudentIdsPromises)
+          .then((studentsObjectIds) => {
+            dbLesson.meetUps = studentsObjectIds.map((value) => {
+              let dbMeetUp = new DbMeetUp();
+              dbMeetUp.student = value;
+              return dbMeetUp;
+            });
+            return dbLesson;
+          })
+      })
+      //Set the rest of the properties on dbLesson
+      .then((dbLesson) => {
         dbLesson.startTime = viewModel.startTime;
         dbLesson.endTime = viewModel.endTime;
         dbLesson.schoolClasses = viewModel.schoolClassNames;
-        dbLesson.teachers = viewModel.teachers;
-        dbLesson.meetUps = students.map((value) => {
-          let dbMeetUp = new DbMeetUp();
-          dbMeetUp.student = value.id;
-          return dbMeetUp;
-        });
-        return resolve(dbLesson);
+
+        return dbLesson;
       })
+      //Send dbLesson to database
       .then((dbLesson: DbLesson) => {
         return Lessons.create(dbLesson).catch((err: any) => {
           throw DbError.makeNew(err, `Error happened in creating a new lesson in database`);
         });
       })
+      //Convert a db document to a lesson object
       .then((createdLesson: LessonDocument) => {
         return this.getLessonObj(createdLesson);
       })
@@ -113,7 +135,24 @@ export class LessonDal {
    * @param dbLesson - the dbLesson object to convert
    */
   private getLessonObj(dbLesson: LessonDocument): Lesson {
-    return dbLesson.toObject() as Lesson;
+    let lesson = dbLesson.toObject() as any;
+    //check and set objectIds to strings for teachers
+    const firstTeacher = lesson.teachers[0];
+    if (firstTeacher && firstTeacher instanceof Types.ObjectId) {
+      lesson.teachers = lesson.teachers.map((value: Types.ObjectId) => {
+        return value.toString();
+      })
+    }
+    //check and set objectIds to strings for student
+    const firstMeetUp = lesson.meetUps[0];
+    if (firstMeetUp && firstMeetUp.student && firstMeetUp.student instanceof Types.ObjectId) {
+      lesson.meetUps = lesson.meetUps.map((value: any) => {
+        value.student = value.student.toString();
+        return value;
+      });
+    }
+    
+    return lesson;
   }
 
   /**
@@ -125,7 +164,7 @@ export class LessonDal {
       newDbMeetUp.checkIn = value.checkIn;
       newDbMeetUp.checkOut = value.checkOut;
       newDbMeetUp.topic = value.topic;
-      newDbMeetUp.student = value.student.id;
+      newDbMeetUp.student = Types.ObjectId((<Student>value.student).id);
       return newDbMeetUp;
     })
   }

@@ -26,6 +26,7 @@ export function IsValidSchoolClassNames(validationOptions?: ValidationOptions) {
 @ValidatorConstraint({ async: false })
 class IsValidSchoolClassNamesConstraint implements ValidatorConstraintInterface {
   validate(schoolClassNames: any, args: ValidationArguments) {
+    if (!schoolClassNames) return true;
     return !schoolClassNames.some((v: any) => {
       //return true if the value is not valid and false for continue validating values
       return validSchoolNames.indexOf(v) == -1;

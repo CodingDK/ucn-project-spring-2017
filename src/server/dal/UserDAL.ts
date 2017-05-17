@@ -3,6 +3,8 @@ import { SchoolClass } from '../../shared/models/schoolClass';
 import { DbUser, UserDocument, Users } from './models/dbUser';
 import { DbError } from '../errors/dbError';
 
+import { Types } from 'mongoose';
+import { validateObjectId } from './helpers';
 /**
  * Class for handling Users in database
  */
@@ -135,7 +137,7 @@ export class UserDal {
    * @param roles the roles to get, or just undefined to get all users
    */
   public getAll(user: any, roles?: string[]): Promise<User[]> {
-    let query:any = {};
+    let query: any = {};
     if (roles) {
       query.roles = { $in: roles };
     }
@@ -161,8 +163,8 @@ export class UserDal {
   public findStudentsBySchoolClassNames(user: any, names: string[]): Promise<Student[]> {
     return new Promise<Student[]>((resolve, reject) => {
       Users.find({
-        schoolClasses: { $in: names },
-        roles: "student"
+        roles: "student",
+        schoolClasses: { $in: names }
       }, (err, objs: UserDocument[]) => {
         if (err) {
           return reject(DbError.makeNew(err, "A Database error happened"));
@@ -175,6 +177,32 @@ export class UserDal {
         }
         return resolve(retList);
       });
+    });
+  }
+
+  /**
+   * Method to check ids exists in the database
+   */
+  public checkIdsExist(user: any, ids: string[], roles?: string[]): Promise<boolean> {
+    return new Promise<boolean>((resolve, reject) => {
+      const validatePromises = ids.map((id) => { return validateObjectId(id) });
+
+      Promise.all(validatePromises)
+        .then((objectIds) => {
+          let query: any = { _id: { $in: ids } };
+          if (roles) {
+            query.roles = { $in: roles } ;
+          }
+          Users.count(query, (err: any, dbCount: number) => {
+            if (err) {
+              return reject(DbError.makeNew(err, "A Database error happened"));
+            }
+            return resolve((ids.length === dbCount));
+          });
+        })
+        .catch((err: any) => {
+          return reject(DbError.makeNew(err, "Some of the Ids is not valid"));
+        })
     });
   }
 
@@ -212,17 +240,20 @@ export class UserDal {
    * @param id the id of the user
    */
   public findById(id: string): Promise<User> {
-    return new Promise<User>((resolve, reject) => {
-      Users.findById(id, (err, userDoc: UserDocument) => {
-        if (err) {
-          return reject(DbError.makeNew(err, "A Database error happened"));
-        }
-        if (userDoc != null) {
-          return resolve(userDoc.toObject() as User);
-        }
-        return resolve(undefined);
+    return validateObjectId(id)
+      .then((objectId: Types.ObjectId) => {
+        return new Promise<User>((resolve, reject) => {
+          Users.findById(id, (err, userDoc: UserDocument) => {
+            if (err) {
+              return reject(DbError.makeNew(err, "A Database error happened"));
+            }
+            if (userDoc != null) {
+              return resolve(userDoc.toObject() as User);
+            }
+            return resolve(undefined);
+          });
+        });
       });
-    });
   }
 
   /**

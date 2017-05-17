@@ -1,7 +1,7 @@
 import { Lesson } from '../../shared/models/lesson';
 import { MeetUp } from '../../shared/models/meetUp';
 import { Student } from '../../shared/models/user';
-import { CreateLessonViewModel } from '../../shared/viewmodels/createLessonViewModel';
+import { CreateLessonViewModel } from '../viewmodels/createLessonViewModel';
 import { DbLesson, LessonDocument, Lessons, DbMeetUp } from './models/dbLesson';
 import { DbError } from '../errors/dbError';
 import { Types } from 'mongoose';

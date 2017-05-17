@@ -3,7 +3,7 @@ import { Router, Request, Response, NextFunction } from 'express';
 import { BaseRouter } from './baseRouter';
 import { LessonController } from '../controllers/lessonController';
 import { Lesson } from '../../shared/models/lesson';
-import { CreateLessonViewModel } from '../../shared/viewmodels/createLessonViewModel';
+import { CreateLessonViewModel } from '../viewmodels/createLessonViewModel';
 
 class LessonRouter extends BaseRouter {
   ctrl: LessonController;

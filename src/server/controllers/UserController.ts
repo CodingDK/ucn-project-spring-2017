@@ -35,6 +35,13 @@ export class UserController extends BaseController {
   } 
 
   /**
+   * Method to check ids exists in the database
+   */
+  public checkIdsExist(user: any, ids: string[], roles?: string[]): Promise<boolean> {
+    return this.dal.checkIdsExist(user, ids, roles);
+  } 
+
+  /**
    * Method for finding an user by id
    * @param id the id of the user
    */

@@ -2,10 +2,10 @@ import { registerDecorator, ValidationOptions, ValidationArguments } from "class
 import * as moment from "moment";
 
 export function IsLaterThan(property: string, validationOptions?: ValidationOptions) {
-  
+
   return function (object: Object, propertyName: string) {
     let options: ValidationOptions = Object.assign(<ValidationOptions>{
-        message: `${propertyName} must be a date later than ${property}`
+      message: `${propertyName} must be a date later than ${property}`
     }, validationOptions);
     registerDecorator({
       name: "isLaterThan",

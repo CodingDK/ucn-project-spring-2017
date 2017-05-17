@@ -1,9 +1,13 @@
 import { IsDate, IsString, MinDate, ArrayNotEmpty, IsNotEmpty } from "class-validator";
-import { IsLaterThan, IsValidDateObj } from "../common/customValidators";
+import { IsLaterThan, IsValidDateObj } from "../validators/customValidators";
+import { IsValidTeacherIds } from '../validators/isValidTeacherIdsValidator';
+import { IsValidSchoolClassNames } from '../validators/isValidSchoolClassNamesValidator';
 import { JsonObject, JsonMember } from "typedjson-npm";
 
+import { ICreateLessonViewModel } from '../../shared/interfaces/iCreateLessonViewModel';
+
 @JsonObject
-export class CreateLessonViewModel {
+export class CreateLessonViewModel implements ICreateLessonViewModel {
   @JsonMember({type: Date})
   @IsValidDateObj()
   @IsNotEmpty()
@@ -21,12 +25,14 @@ export class CreateLessonViewModel {
   @IsString({ each: true })
   @IsNotEmpty({ each: true })
   @ArrayNotEmpty()
+  @IsValidTeacherIds()
   teachers: string[];
 
   @JsonMember({ type: Array, elements: String })
   @IsString({ each: true })
   @IsNotEmpty({ each: true })
   @ArrayNotEmpty()
+  @IsValidSchoolClassNames()
   schoolClassNames: string[];
   
   /*constructor(data: any) {

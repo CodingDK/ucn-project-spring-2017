@@ -3,7 +3,7 @@ import { validate, ValidationError } from "class-validator";
 import { Lesson } from '../../shared/models/lesson';
 import { MeetUp } from '../../shared/models/meetUp';
 import { LessonDal } from '../dal/lessonDAL';
-import { CreateLessonViewModel } from '../../shared/viewmodels/createLessonViewModel';
+import { CreateLessonViewModel } from '../viewmodels/createLessonViewModel';
 import { ResponseError } from '../errors/responseError';
 
 
@@ -44,12 +44,8 @@ export class LessonController extends BaseController {
         if (errors.length > 0) {
           //console.log("validation failed. errors: ", errors);
           throw ResponseError.makeNew(errors, "validation failed");
-        } else {
-          //console.log("validation succeed");
-          //TODO validate teachers and schoolClass exists
-          return;
         }
-      })      
+      })
       .then(() => {
         return this.userCtrl.findStudentsBySchoolClassNames(user, viewModel.schoolClassNames)
           .catch((err: any) => {
@@ -60,8 +56,10 @@ export class LessonController extends BaseController {
         return this.dal.createLesson(user, viewModel, students);
       })
       .catch(this.errorHandler.bind(this))
+      
+      
   }
-
+  
   /**
    * Delete a lesson from the database by id
    * @param id the id to delete from database

@@ -15,7 +15,7 @@ export class DbLesson {
   startTime: Date;
   endTime: Date;
   teachers: string[] // should be object id
-  schoolClass: string;
+  schoolClasses: string[];
   meetUps: DbMeetUp[];
 }
 
@@ -30,7 +30,7 @@ const schema = getNewSchemaWithDefaultOptions({
   startTime: { type: Date, required: true },
   endTime: { type: Date, required: true },
   teachers: [{ type: String, ref: 'User' }],
-  schoolClass: { type: String, required: true },
+  schoolClasses: [{ type: String, required: true }],
   meetUps: [meetUpSchema]
 });
 

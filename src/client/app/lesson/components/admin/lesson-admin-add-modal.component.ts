@@ -36,7 +36,7 @@ export class LessonAdminAddModalComponent implements OnInit {
   dateInput: FormControl;
   startTimeInput: FormControl;
   endTimeInput: FormControl;
-  schoolClassNameInput: FormControl;
+  schoolClassNamesInput: FormControl;
 
   teachersHelper = new MultiSelectHelper("lærer", "lærere");
   schoolClassHelper = new MultiSelectHelper("klasse", "klasser");
@@ -68,17 +68,6 @@ export class LessonAdminAddModalComponent implements OnInit {
   }
 
   private setValuesInDropdowns() {
-    //const schoolClasses = new Array<IMultiSelectOption>();
-    //schoolClasses.push(<IMultiSelectOption>{
-    //  id: 1,
-    //  name: "pwe0916"
-    //})
-    //schoolClasses.push(<IMultiSelectOption>{
-    //  id: 2,
-    //  name: "swe0916"
-    //})
-    //this.schoolClassHelper.options = schoolClasses;
-
     //Get All schoolClasses and put them in select field
     this.userService.getAllSchoolClasses()
       .then((schoolClasses: SchoolClass[]) => {
@@ -126,13 +115,13 @@ export class LessonAdminAddModalComponent implements OnInit {
     this.startTimeInput = new FormControl(start.toDate(), [isDateValidator]);
     this.endTimeInput = new FormControl(start.add(1, 'hour').toDate(), [isDateValidator()]);
     this.teachersInput = new FormControl([], Validators.required);
-    this.schoolClassNameInput = new FormControl([], Validators.required);
+    this.schoolClassNamesInput = new FormControl([], Validators.required);
 
     this.lessonForm = this.fb.group({
       date: this.dateInput,
       startTime: this.startTimeInput,
       endTime: this.endTimeInput,
-      schoolClassName: this.schoolClassNameInput,
+      schoolClassNames: this.schoolClassNamesInput,
       teachers: this.teachersInput
     }, { validator: isDateLaterValidator(this.endTimeInput, this.startTimeInput) });
     //Set a trigger for updating valid state on endTime then editing in startTime
@@ -175,8 +164,8 @@ export class LessonAdminAddModalComponent implements OnInit {
 
   public getViewModelFromForm(): CreateLessonViewModel {
     const viewModel = new CreateLessonViewModel();
-    let schoolClassName = this.schoolClassNameInput.value as string;
-    let teachers = (<string>this.teachersInput.value).split(", ").filter(i => i);
+    let schoolClassNames = this.schoolClassNamesInput.value;
+    let teachers = this.teachersInput.value;
 
     let date = moment(this.dateInput.value);
     let startTime = moment(this.startTimeInput.value);
@@ -186,9 +175,8 @@ export class LessonAdminAddModalComponent implements OnInit {
 
     let duration = moment.duration(endTime.diff(startTime));
     viewModel.endTime = date.add(duration).toDate();
-    viewModel.schoolClassName = schoolClassName;
+    viewModel.schoolClassNames = schoolClassNames;
     viewModel.teachers = teachers;
-
     return viewModel;
   }
 
@@ -221,7 +209,7 @@ export class LessonAdminAddModalComponent implements OnInit {
     'startTime': '',
     'endTime': '',
     'teachers': '',
-    'schoolClassName': ''
+    'schoolClassNames': ''
   };
 
   validationMessages: any = {
@@ -229,9 +217,9 @@ export class LessonAdminAddModalComponent implements OnInit {
       'required': 'Lærere feltet skal udfyldes',
       'arrayNotEmpty': 'Lærere feltet skal udfyldes'
     },
-    schoolClassName: {
+    schoolClassNames: {
       'required': 'Klasse feltet skal udfyldes',
-      'isNotEmpty': 'Klasse feltet skal udfyldes'
+      'arrayNotEmpty': 'Klasse feltet skal udfyldes'
     },
     date: {
       'isDateValidator': 'Dato formatet er ikke gyldigt',

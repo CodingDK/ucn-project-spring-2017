@@ -58,26 +58,24 @@ export class LessonDal {
    * Method for creating a new lesson
    * @param newLesson
    */
-  public createLesson(user: any, viewModel: CreateLessonViewModel): Promise<Lesson> {
-    return this.userDal.findStudentsBySchoolClassName(viewModel.schoolClassName)
-      .then((students: Student[]) => {
+  public createLesson(user: any, viewModel: CreateLessonViewModel, students: Student[]): Promise<Lesson> {
+    return new Promise<DbLesson>((resolve: any, reject: any) => { 
         let dbLesson = new DbLesson();
         dbLesson.startTime = viewModel.startTime;
         dbLesson.endTime = viewModel.endTime;
-        dbLesson.schoolClass = viewModel.schoolClassName;
+        dbLesson.schoolClasses = viewModel.schoolClassNames;
         dbLesson.teachers = viewModel.teachers;
         dbLesson.meetUps = students.map((value) => {
           let dbMeetUp = new DbMeetUp();
           dbMeetUp.student = value.id;
           return dbMeetUp;
         });
-        return dbLesson;
-      })
-      .catch((err: any) => {
-        throw DbError.makeNew(err, `Error happen in finding students and attach them to a dbLesson`);
+        return resolve(dbLesson);
       })
       .then((dbLesson: DbLesson) => {
-        return Lessons.create(dbLesson);
+        return Lessons.create(dbLesson).catch((err: any) => {
+          throw DbError.makeNew(err, `Error happened in creating a new lesson in database`);
+        });
       })
       .then((createdLesson: LessonDocument) => {
         return this.getLessonObj(createdLesson);
@@ -85,7 +83,7 @@ export class LessonDal {
       .catch((err: any) => {
         let retError = err;
         if (!(err instanceof DbError)) {
-          retError = DbError.makeNew(err, `Error happened in creating a new lesson in database`);
+          retError = DbError.makeNew(err, `Error happened in creating a new lesson in Dal layer`);
         }
         throw retError;
       });

@@ -7,24 +7,24 @@ export class Lesson {
   startTime: Date;
   endTime: Date;
   teachers: Teacher[];
-  schoolClass: SchoolClass;
+  schoolClasses: SchoolClass[];
   meetups: MeetUp[]; // students who met up
 
   constructor() { }
 
-  static fromData(startTime: Date, teachers: Teacher[], schoolclass: SchoolClass): Lesson {
+  static fromData(startTime: Date, teachers: Teacher[], schoolClasses: SchoolClass[]): Lesson {
     let newObj = new Lesson();
     newObj.startTime = startTime;
     newObj.teachers = teachers;
-    newObj.schoolClass = schoolclass;
+    newObj.schoolClasses = schoolClasses;
     return newObj;
   }
 
-  static createNew(startTime: Date, endTime: Date, schoolClass: string, teachers: string[]) {
+  static createNew(startTime: Date, endTime: Date, schoolClasses: string[], teachers: string[]) {
     let newObj = new Lesson();
     newObj.startTime = startTime;
     newObj.endTime = endTime;
-    newObj.schoolClass = new SchoolClass(schoolClass);
+    newObj.schoolClasses = schoolClasses.map(value => { return new SchoolClass(value) });
     newObj.teachers = teachers.map((value) => {
       let teacher = new Teacher();
       teacher.id = value;

@@ -23,10 +23,11 @@ export class CreateLessonViewModel {
   @ArrayNotEmpty()
   teachers: string[];
 
-  @JsonMember({ type: String })
-  @IsString()
-  @IsNotEmpty()
-  schoolClassName: string;
+  @JsonMember({ type: Array, elements: String })
+  @IsString({ each: true })
+  @IsNotEmpty({ each: true })
+  @ArrayNotEmpty()
+  schoolClassNames: string[];
   
   /*constructor(data: any) {
     this.startTime = data.startTime;

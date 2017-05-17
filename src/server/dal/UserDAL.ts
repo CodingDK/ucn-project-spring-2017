@@ -156,12 +156,12 @@ export class UserDal {
   }
 
   /**
-   * Method to find Students by School Class name
+   * Method to find Students by SchoolClass names
    */
-  public findStudentsBySchoolClassName(name: string): Promise<Student[]> {
+  public findStudentsBySchoolClassNames(user: any, names: string[]): Promise<Student[]> {
     return new Promise<Student[]>((resolve, reject) => {
       Users.find({
-        schoolClass: name,
+        schoolClasses: { $in: names },
         roles: "student"
       }, (err, objs: UserDocument[]) => {
         if (err) {

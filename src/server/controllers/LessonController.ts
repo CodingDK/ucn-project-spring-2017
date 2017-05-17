@@ -46,12 +46,18 @@ export class LessonController extends BaseController {
           throw ResponseError.makeNew(errors, "validation failed");
         } else {
           //console.log("validation succeed");
-          return viewModel;
+          //TODO validate teachers and schoolClass exists
+          return;
         }
+      })      
+      .then(() => {
+        return this.userCtrl.findStudentsBySchoolClassNames(user, viewModel.schoolClassNames)
+          .catch((err: any) => {
+            throw ResponseError.makeNew(err, `Error happen in finding students`);
+          })
       })
-      .then((viewModel: CreateLessonViewModel) => {
-        //TODO validate teachers and schoolClass exists
-        return this.dal.createLesson(user, viewModel);
+      .then((students) => {
+        return this.dal.createLesson(user, viewModel, students);
       })
       .catch(this.errorHandler.bind(this))
   }

@@ -98,7 +98,7 @@ class LessonRouter extends BaseRouter {
   private getTestObject(req: Request, res: Response, next: NextFunction) {
     let startTime = new Date(new Date().getTime() + 1000 * 60 * 60);
     let endDate = new Date(startTime.getTime());
-    let lesson = Lesson.createNew(startTime, endDate, "pwe0916", ["1"]);
+    let lesson = Lesson.createNew(startTime, endDate, ["pwe0916"], ["1"]);
     return this.send(res, lesson); 
   }
 
@@ -114,7 +114,7 @@ class LessonRouter extends BaseRouter {
     let obj = new CreateLessonViewModel();
     obj.startTime = startTime;
     obj.endTime = endDate;
-    obj.schoolClassName = "pwe0916";
+    obj.schoolClassNames = ["pwe0916"];
     obj.teachers = ["1"];   
     return this.send(res, obj); 
   }

@@ -30,8 +30,8 @@ export class UserController extends BaseController {
   /**
    * Method to find Students by School Class name
    */
-  public findStudentsBySchoolClassName(user: any, name: string): Promise<Student[]> {
-    return this.dal.findStudentsBySchoolClassName(name);
+  public findStudentsBySchoolClassNames(user: any, names: string[]): Promise<Student[]> {
+    return this.dal.findStudentsBySchoolClassNames(user, names);
   } 
 
   /**

@@ -7,7 +7,7 @@ import { ToastyService, ToastyConfig, ToastOptions, ToastData } from 'ng2-toasty
 
 import { Lesson } from '../../../../../shared/models/lesson';
 
-import { LessonService } from '../../services/lesson.service';
+import { LessonService } from '../../../services/lesson.service';
 
 @Component({
   selector: 'lesson-admin',

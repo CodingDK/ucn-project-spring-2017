@@ -7,7 +7,7 @@ import { ModalDirective, PopoverDirective } from 'ngx-bootstrap';
 import { IMultiSelectOption, IMultiSelectTexts, IMultiSelectSettings } from 'angular-2-dropdown-multiselect';
 
 import { isDateValidator, isDateLaterValidator } from '../../../validators/validators';
-import { LessonService } from '../../services/lesson.service';
+import { LessonService } from '../../../services/lesson.service';
 import { CreateLessonViewModel } from '../../../viewmodels/createLessonViewModel';
 import { Lesson } from '../../../../../shared/models/lesson';
 

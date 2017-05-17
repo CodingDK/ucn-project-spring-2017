@@ -6,10 +6,10 @@ import 'rxjs/add/operator/toPromise';
 
 import { ToastyService, ToastyConfig, ToastOptions, ToastData } from 'ng2-toasty';
 
-import { Lesson } from '../../../../shared/models/lesson';
-import { AppConstants } from "../../app.constants";
+import { Lesson } from '../../../shared/models/lesson';
+import { AppConstants } from "../app.constants";
 
-import { CreateLessonViewModel } from '../../viewmodels/createLessonViewModel';
+import { CreateLessonViewModel } from '../viewmodels/createLessonViewModel';
 
 @Injectable()
 export class LessonService {

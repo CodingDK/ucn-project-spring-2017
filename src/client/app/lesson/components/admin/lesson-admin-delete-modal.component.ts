@@ -6,7 +6,7 @@ import { ToastyService, ToastOptions } from 'ng2-toasty';
 import { ModalDirective } from 'ngx-bootstrap';
 
 
-import { LessonService } from '../../services/lesson.service';
+import { LessonService } from '../../../services/lesson.service';
 import { LessonConfirmModalComponent } from '../shared/lesson-confirm-modal.component';
 import { Lesson } from '../../../../../shared/models/lesson';
 

@@ -15,7 +15,7 @@ import LessonRouter from './routes/lessonRouter';
 import UserRoutes from './routes/userRouter';
 import PassportConfig from './config/passportConfig';
 
-import {IDatabase} from './config/iDatabase';
+import { IDatabase } from './interfaces/iDatabase';
 import { MongoDatabase } from './dal/mongoDatabase';
 
 import { ValidationError } from 'class-validator';

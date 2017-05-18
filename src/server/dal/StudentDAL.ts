@@ -1,7 +1,7 @@
 // models
-import { Lesson } from '../../shared/models/lesson';
-import { MeetUp } from '../../shared/models/meetUp';
-import { Student } from '../../shared/models/user';
+import { Lesson } from '../models/lesson';
+import { MeetUp } from '../models/meetUp';
+import { User } from '../models/user';
 
 import { DbLesson, LessonDocument, Lessons, DbMeetUp } from './models/dbLesson';
 import { DbError } from '../errors/dbError';
@@ -9,8 +9,8 @@ import { Types } from 'mongoose';
 import { validateObjectId } from './helpers';
 
 // Data Access Layer
-import { LessonDal } from './LessonDAL';
-import { UserDal } from './UserDAL';
+import { LessonDAL } from './LessonDAL';
+import { UserDAL } from './UserDAL';
 
 export class StudentDal {
 
@@ -54,7 +54,7 @@ export class StudentDal {
         
           
         }
-    }
+    
 
     //public getAll(user: any): Promise<Lesson[]> {
     //    return new Promise<Lesson[]>((resolve: any, reject: any) => {

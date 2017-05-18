@@ -1,10 +1,10 @@
 import { IsDate, IsString, MinDate, ArrayNotEmpty, IsNotEmpty } from "class-validator";
-import { IsLaterThan, IsValidDateObj } from "../validators/customValidators";
-import { IsValidTeacherIds } from '../validators/isValidTeacherIdsValidator';
-import { IsValidSchoolClassNames } from '../validators/isValidSchoolClassNamesValidator';
+import { IsLaterThan, IsValidDateObj } from "../../validators/customValidators";
+import { IsValidTeacherIds } from '../../validators/isValidTeacherIdsValidator';
+import { IsValidSchoolClassNames } from '../../validators/isValidSchoolClassNamesValidator';
 import { JsonObject, JsonMember } from "typedjson-npm";
 
-import { ICreateLessonViewModel } from '../../shared/interfaces/iCreateLessonViewModel';
+import { ICreateLessonViewModel } from '../../../shared/interfaces/viewmodels/iCreateLessonViewModel';
 
 @JsonObject
 export class CreateLessonViewModel implements ICreateLessonViewModel {

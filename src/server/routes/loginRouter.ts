@@ -3,7 +3,7 @@ import * as passport from "passport";
 import { GoogleController } from '../controllers/googleController';
 import { BaseRouter } from './baseRouter';
 
-import { User } from '../../shared/models/user';
+import { User } from '../models/user';
 import { ResponseError } from '../errors/responseError';
 
 class LoginRouter extends BaseRouter {

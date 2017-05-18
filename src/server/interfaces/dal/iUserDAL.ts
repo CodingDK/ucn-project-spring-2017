@@ -1,12 +1,12 @@
 //import { IBaseDAL } from './iBaseDAL';
-import { User, Student, GoogleTokens } from '../../../shared/models/user';
+import { User, GoogleTokens } from '../../models/user';
 
 export interface IUserDAL {
-  getAll(user: any): Promise<User[]>;
+  getAll(user: any, roles?: string[]): Promise<User[]>;
 
   findById(user: any, id: string): Promise<User>;
   
-  findStudentsBySchoolClassNames(user: any, names: string[]): Promise<Student[]>;
+  findStudentsBySchoolClassNames(user: any, names: string[]): Promise<User[]>;
   
   findByGoogleId(user: any, googleId: string): Promise<User>;
 

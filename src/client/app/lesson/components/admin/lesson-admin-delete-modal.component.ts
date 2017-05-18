@@ -8,7 +8,8 @@ import { ModalDirective } from 'ngx-bootstrap';
 
 import { LessonService } from '../../../services/lesson.service';
 import { LessonConfirmModalComponent } from '../shared/lesson-confirm-modal.component';
-import { Lesson } from '../../../../../shared/models/lesson';
+
+import { ILesson } from '../../../../../shared/interfaces/iModels';
 
 
 @Component({
@@ -20,7 +21,7 @@ export class LessonAdminDeleteModalComponent implements OnInit {
   @ViewChild(LessonConfirmModalComponent)
   deleteModal: LessonConfirmModalComponent;
 
-  item: Lesson;
+  item: ILesson;
 
   constructor(private lessonService: LessonService, private toastyService: ToastyService,
     private route: ActivatedRoute,

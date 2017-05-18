@@ -5,7 +5,7 @@ import 'rxjs/add/operator/switchMap';
 import { ModalDirective } from 'ngx-bootstrap/modal';
 import { ToastyService, ToastyConfig, ToastOptions, ToastData } from 'ng2-toasty';
 
-import { Lesson } from '../../../../../shared/models/lesson';
+import { ILesson } from '../../../../../shared/interfaces/iModels';
 
 import { LessonService } from '../../../services/lesson.service';
 
@@ -17,7 +17,7 @@ import { LessonService } from '../../../services/lesson.service';
 export class LessonAdminComponent implements AfterViewInit {
   
 
-  activeItem: Lesson;
+  activeItem: ILesson;
   
   constructor(private lessonService: LessonService, private toastyService: ToastyService,
     private route: ActivatedRoute,
@@ -28,7 +28,7 @@ export class LessonAdminComponent implements AfterViewInit {
     //this.addModal.showModal();
   }
 
-  getAll(): Lesson[] {
+  getAll(): ILesson[] {
     return this.lessonService.getAllLessons();
   }
 
@@ -39,7 +39,7 @@ export class LessonAdminComponent implements AfterViewInit {
     //this.toastyService.default('Hi there');
   }
   
-  openDeleteModal(lesson: Lesson) {
+  openDeleteModal(lesson: ILesson) {
     this.router.navigate(['delete', lesson.id], { relativeTo: this.route });
   }
 

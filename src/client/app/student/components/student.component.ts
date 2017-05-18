@@ -2,7 +2,7 @@ import { Injectable, Component } from '@angular/core';
 import { CanActivate } from "@angular/router";
 
 import { StudentService } from '../services/student.service';
-import { Student } from '../../../../shared/models/student';
+import { IUser } from '../../../../shared/interfaces/iModels';
 
 
 @Component({

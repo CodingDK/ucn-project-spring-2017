@@ -1,6 +1,6 @@
 import { Document, model, Schema } from 'mongoose';
 import { getNewSchemaWithDefaultOptions } from '../helpers';
-import { GoogleTokens } from '../../../shared/models/googleTokens';
+import { GoogleTokens } from '../../models/googleTokens';
 
 /**
  * Model class for a dbUser object

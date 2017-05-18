@@ -2,7 +2,7 @@ const GoogleAuth = require('google-auth-library');
 const google = require('googleapis');
 
 import { UserController } from './userController';
-import { User, GoogleTokens, Teacher, Student } from '../../shared/models/user';
+import { User, GoogleTokens } from '../models/user';
 import { ResponseError } from '../errors/responseError';
 
 const UniData = require('../data/mockedUniData.json');

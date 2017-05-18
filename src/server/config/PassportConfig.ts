@@ -1,7 +1,7 @@
 import {Application} from 'express';
 import * as passport from "passport";
 const LocalStrategy = require('passport-local').Strategy;
-import {User} from '../../shared/models/user';
+import {User} from '../models/user';
 import { PassportController } from '../controllers/passportController';
 import config from '../config/config';
 
@@ -45,34 +45,34 @@ export default class PassportConfig {
     // LOCAL SIGNUP //
     // ============ //
 
-    passport.use('local-signup', new LocalStrategy({
-        usernameField: 'email',
-        passwordField: 'password',
-        passReqToCallback: true
-      },
-      (req: any, email: string, password: string, done: any) => {
-        // async
-        process.nextTick(() => {
-          this.ctrl.signUpWithPassport(req, email, password, done);
-        });
-      })
-    );
+    //passport.use('local-signup', new LocalStrategy({
+    //    usernameField: 'email',
+    //    passwordField: 'password',
+    //    passReqToCallback: true
+    //  },
+    //  (req: any, email: string, password: string, done: any) => {
+    //    // async
+    //    process.nextTick(() => {
+    //      this.ctrl.signUpWithPassport(req, email, password, done);
+    //    });
+    //  })
+    //);
 
     // =========== //
     // LOCAL LOGIN //
     // =========== //
     // We create another strategy for the login process
 
-    passport.use(new LocalStrategy({
-        // change default username for email
-        usernameField: 'email',
-        passwordField: 'password',
-        passReqToCallback: true // allows us to pass back the entire request to the callback
-      },
-      (req: any, email: string, password: string, done: any) => {
-        this.ctrl.loginWithPassport(req, email, password, done);
-      })
-    );
+    //passport.use(new LocalStrategy({
+    //    // change default username for email
+    //    usernameField: 'email',
+    //    passwordField: 'password',
+    //    passReqToCallback: true // allows us to pass back the entire request to the callback
+    //  },
+    //  (req: any, email: string, password: string, done: any) => {
+    //    this.ctrl.loginWithPassport(req, email, password, done);
+    //  })
+    //);
     
     // passport setup
     this.app.use(passport.initialize());

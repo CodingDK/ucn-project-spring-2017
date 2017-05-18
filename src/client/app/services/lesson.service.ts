@@ -5,15 +5,15 @@ import 'rxjs/add/operator/toPromise';
 
 import { ToastyService, ToastyConfig, ToastOptions, ToastData } from 'ng2-toasty';
 
-import { Lesson } from '../../../shared/models/lesson';
+import { ILesson } from '../../../shared/interfaces/iModels';
 import { AppConstants } from "../app.constants";
 
-import { CreateLessonViewModel } from '../viewmodels/createLessonViewModel';
+import { CreateLessonViewModel } from '../models/viewmodels/createLessonViewModel';
 
 @Injectable()
 export class LessonService {
   private lessonUrl = AppConstants.Server.url + "lesson/";
-  private allLessons: Lesson[] = [];
+  private allLessons: ILesson[] = [];
 
   constructor(private http: Http, private router: Router, private toastyService: ToastyService) {
     this.init();
@@ -33,21 +33,21 @@ export class LessonService {
       .catch(this.handleError.bind(this));
   }
 
-  getAllLessons(): Lesson[] {
+  getAllLessons(): ILesson[] {
     return this.allLessons;
   }
 
-  getLessonById(id: string): Lesson | undefined {
+  getLessonById(id: string): ILesson | undefined {
     return this.allLessons.find(value => { return value.id === id });
   }
 
-  createLesson(viewModel: CreateLessonViewModel): Promise<Lesson> {
+  createLesson(viewModel: CreateLessonViewModel): Promise<ILesson> {
     return this.http.post(this.lessonUrl, viewModel, { withCredentials: true })
       .toPromise()
       .then(response => {
         return response.json().data;
       })
-      .then((lesson: Lesson) => {
+      .then((lesson: ILesson) => {
         this.refreshAllLessons();
         return lesson;
       })

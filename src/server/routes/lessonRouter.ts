@@ -2,8 +2,8 @@
 
 import { BaseRouter } from './baseRouter';
 import { LessonController } from '../controllers/lessonController';
-import { Lesson } from '../../shared/models/lesson';
-import { CreateLessonViewModel } from '../viewmodels/createLessonViewModel';
+import { Lesson } from '../models/lesson';
+import { CreateLessonViewModel } from '../models/viewmodels/createLessonViewModel';
 
 class LessonRouter extends BaseRouter {
   ctrl: LessonController;

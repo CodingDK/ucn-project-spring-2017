@@ -4,8 +4,7 @@ import { Router } from '@angular/router';
 
 import { AppConstants } from '../app.constants';
 
-import { User } from '../../../shared/models/user';
-
+import { IUser } from '../../../shared/interfaces/iModels';
 
 
 @Injectable()
@@ -16,7 +15,7 @@ export class LocalStorageService {
     
   }
 
-  getCurrentUser(): User | undefined {
+  getCurrentUser(): IUser | undefined {
     let value = localStorage.getItem(this.USER_KEY);
     if (value !== null) {
       return JSON.parse(value);
@@ -24,7 +23,7 @@ export class LocalStorageService {
     return undefined;
   }
 
-  setCurrentUser(user: User) {
+  setCurrentUser(user: IUser) {
     localStorage.setItem(this.USER_KEY, JSON.stringify(user));
   }
 

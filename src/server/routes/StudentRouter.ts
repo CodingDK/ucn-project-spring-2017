@@ -5,8 +5,8 @@ import { BaseRouter } from './baseRouter';
 import { StudentController } from '../controllers/studentController';
 
 // models
-import { Lesson } from '../../shared/models/lesson';
-//import { MeetUp } from '../../shared/models/meetUp';
+import { Lesson } from '../models/lesson';
+//import { MeetUp } from '../models/meetUp';
 //import { CreateLessonViewModel } from '../../shared/viewmodels/createLessonViewModel';
 
 

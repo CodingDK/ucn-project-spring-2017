@@ -6,8 +6,7 @@ import 'rxjs/add/operator/toPromise';
 
 import { ToastyService, ToastyConfig, ToastOptions, ToastData } from 'ng2-toasty';
 
-import { User } from '../../../shared/models/user';
-import { SchoolClass } from '../../../shared/models/schoolClass';
+import { IUser, ISchoolClass } from '../../../shared/interfaces/iModels';
 import { AppConstants } from "../app.constants";
 
 
@@ -23,7 +22,7 @@ export class UserService {
 
   }
 
-  public getAllUsers(roles?: string[]): Promise<User[]> {
+  public getAllUsers(roles?: string[]): Promise<IUser[]> {
     return this.http.get(this.userUrl, { params: {roles}, withCredentials: true })
       .toPromise()
       .then(response => {
@@ -32,8 +31,8 @@ export class UserService {
       .catch(this.handleError.bind(this));
   }
 
-  public getAllSchoolClasses(): Promise<SchoolClass[]> {
-    return new Promise<SchoolClass[]>((resolve) => {
+  public getAllSchoolClasses(): Promise<ISchoolClass[]> {
+    return new Promise<ISchoolClass[]>((resolve) => {
       return resolve(require("../../../shared/data/schoolClasses.json"));
     });
   }

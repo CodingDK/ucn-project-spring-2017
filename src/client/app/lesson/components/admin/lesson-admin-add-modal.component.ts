@@ -9,10 +9,9 @@ import { IMultiSelectOption, IMultiSelectTexts, IMultiSelectSettings } from 'ang
 import { isDateValidator, isDateLaterValidator } from '../../../validators/validators';
 import { LessonService } from '../../../services/lesson.service';
 import { UserService } from '../../../services/user.service';
-import { CreateLessonViewModel } from '../../../viewmodels/createLessonViewModel';
-import { Lesson } from '../../../../../shared/models/lesson';
-import { User } from '../../../../../shared/models/user';
-import { SchoolClass } from '../../../../../shared/models/schoolClass';
+import { CreateLessonViewModel } from '../../../models/viewmodels/createLessonViewModel';
+
+import { ISchoolClass, ILesson, IUser } from '../../../../../shared/interfaces/iModels';
 
 
 import { ValidationError } from 'class-validator';
@@ -70,7 +69,7 @@ export class LessonAdminAddModalComponent implements OnInit {
   private setValuesInDropdowns() {
     //Get All schoolClasses and put them in select field
     this.userService.getAllSchoolClasses()
-      .then((schoolClasses: SchoolClass[]) => {
+      .then((schoolClasses: ISchoolClass[]) => {
         let values = schoolClasses.map((schoolClass) => {
           return <IMultiSelectOption>{
             id: schoolClass.name,
@@ -139,7 +138,7 @@ export class LessonAdminAddModalComponent implements OnInit {
   public submit(): void {
     let viewModel = this.getViewModelFromForm();
     this.lessonService.createLesson(viewModel)
-      .then((lesson: Lesson) => {
+      .then((lesson: ILesson) => {
         this.toastyService.success("Lektiecaféen er blevet oprettet");
         this.addModal.hide();
       })

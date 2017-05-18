@@ -1,7 +1,5 @@
-import { Lesson } from '../../shared/models/lesson';
-import { MeetUp } from '../../shared/models/meetUp';
-import { Student } from '../../shared/models/user';
-import { CreateLessonViewModel } from '../viewmodels/createLessonViewModel';
+import { Lesson } from '../models/lesson';
+import { MeetUp } from '../models/meetUp';
 import { DbLesson, LessonDocument, Lessons, DbMeetUp } from './models/dbLesson';
 import { DbError } from '../errors/dbError';
 import { Types } from 'mongoose';
@@ -167,7 +165,7 @@ export class LessonDAL implements ILessonDAL {
       newDbMeetUp.checkIn = value.checkIn;
       newDbMeetUp.checkOut = value.checkOut;
       newDbMeetUp.topic = value.topic;
-      newDbMeetUp.student = Types.ObjectId((<Student>value.student).id);
+      newDbMeetUp.student = Types.ObjectId(value.student.id);
       return newDbMeetUp;
     })
   }

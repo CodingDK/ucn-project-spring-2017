@@ -3,7 +3,7 @@ import { ValidationError } from 'class-validator';
 
 import { ResponseError } from '../errors/responseError';
 
-import { User, Teacher, Student } from '../../shared/models/user';
+import { User } from '../models/user';
 import { TypedJSON, SerializerSettings } from "typedjson-npm";
 
 export abstract class BaseRouter {
@@ -60,11 +60,8 @@ export abstract class BaseRouter {
     retUser.imageUrl = user.imageUrl;
     retUser.id = user.id;
     retUser.name = user.name;
-    if (user instanceof Teacher) {
-      let retTeacher = retUser as Teacher;
-      retTeacher.roles = user.roles;
-      retUser = retTeacher;
-    }
+    retUser.roles = user.roles;
+    retUser.schoolClasses = user.schoolClasses;
     return retUser;
   }
 

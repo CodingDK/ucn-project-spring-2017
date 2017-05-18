@@ -1,5 +1,5 @@
-import { User, Student, Teacher, GoogleTokens } from '../../shared/models/user';
-import { SchoolClass } from '../../shared/models/schoolClass';
+import { User, GoogleTokens } from '../models/user';
+import { SchoolClass } from '../models/schoolClass';
 import { DbUser, UserDocument, Users } from './models/dbUser';
 import { DbError } from '../errors/dbError';
 
@@ -10,7 +10,7 @@ import { IUserDAL } from '../interfaces/dal/iUserDAL';
 /**
  * Class for handling Users in database
  */
-export class UserDal implements IUserDAL {
+export class UserDAL implements IUserDAL {
 
   /**
    * This Method will create a new user in database or update if an user with the googleId already exists in the database
@@ -93,18 +93,18 @@ export class UserDal implements IUserDAL {
 
 
   private getUserFromDocument(userDoc: UserDocument): User {
-    let newObj: User;
-    let retObj: Student | Teacher;
-    if (userDoc.roles.indexOf("student") == -1) { //check if the user is a teacher
-      retObj = new Teacher();
+    //let newObj: User;
+    let retObj: User = new User();//: Student | Teacher;
+    //if (userDoc.roles.indexOf("student") == -1) { //check if the user is a teacher
+    //  retObj = new Teacher();
       retObj.roles = userDoc.roles;
       retObj.schoolClasses = userDoc.schoolClasses.map((value => {
         return new SchoolClass(value);
       }));
-    } else {
-      retObj = new Student();
-      retObj.schoolClass = new SchoolClass(userDoc.schoolClasses[0]);
-    }
+    //} else {
+    //  retObj = new Student();
+    //  retObj.schoolClass = new SchoolClass(userDoc.schoolClasses[0]);
+    //}
     retObj.email = userDoc.email;
     retObj.googleId = userDoc.googleId;
     retObj.googleTokens = userDoc.googleTokens;
@@ -162,8 +162,8 @@ export class UserDal implements IUserDAL {
   /**
    * Method to find Students by SchoolClass names
    */
-  public findStudentsBySchoolClassNames(user: any, names: string[]): Promise<Student[]> {
-    return new Promise<Student[]>((resolve, reject) => {
+  public findStudentsBySchoolClassNames(user: any, names: string[]): Promise<User[]> {
+    return new Promise<User[]>((resolve, reject) => {
       Users.find({
         roles: "student",
         schoolClasses: { $in: names }
@@ -171,10 +171,10 @@ export class UserDal implements IUserDAL {
         if (err) {
           return reject(DbError.makeNew(err, "A Database error happened"));
         }
-        let retList = new Array<Student>();
+        let retList = new Array<User>();
         if (objs != null) {
           objs.forEach((value: UserDocument) => {
-            retList.push(value.toObject() as Student);
+            retList.push(value.toObject() as User);
           });
         }
         return resolve(retList);

@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 
 import { AuthService } from '../services/auth.service';
-import { LoginViewModel } from '../../../shared/models/loginViewModel';
+import { LoginViewModel } from '../models/viewmodels/loginViewModel';
 
 @Component({
   selector: 'login-form',

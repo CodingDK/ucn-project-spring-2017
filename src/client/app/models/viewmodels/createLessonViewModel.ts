@@ -1,4 +1,4 @@
-import { ICreateLessonViewModel } from '../../../shared/interfaces/iCreateLessonViewModel';
+import { ICreateLessonViewModel } from '../../../../shared/interfaces/viewModels/iCreateLessonViewModel';
 
 export class CreateLessonViewModel implements ICreateLessonViewModel {
   id?: string

@@ -1,9 +1,9 @@
 import { validate, ValidationError } from "class-validator";
 
 // models
-import { Lesson } from '../../shared/models/lesson';
-import { MeetUp } from '../../shared/models/meetUp';
-import { Student } from '../../shared/models/student';
+import { Lesson } from '../models/lesson';
+import { MeetUp } from '../models/meetUp';
+import { User } from '../models/user';
 
 // controllers
 import { LessonController } from './LessonController';

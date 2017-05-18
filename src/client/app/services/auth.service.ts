@@ -3,11 +3,11 @@ import { Headers, Http, Response } from '@angular/http';
 import { Router } from '@angular/router';
 import 'rxjs/add/operator/toPromise';
 
-import { LoginViewModel } from '../../../shared/models/loginViewModel';
+import { LoginViewModel } from '../models/viewmodels/loginViewModel';
 import { AppConstants } from '../app.constants';
 
 import { LocalStorageService } from './localstorage.service';
-import { User } from '../../../shared/models/user';
+import { IUser } from '../../../shared/interfaces/iModels';
 
 import { JsonResponse } from '../../../shared/interfaces/jsonResponse';
 
@@ -86,7 +86,7 @@ export class AuthService {
     return this.loggedIn;
   }
 
-  private setCurrentUserIfValid(jsonObj: JsonResponse<User>): boolean {
+  private setCurrentUserIfValid(jsonObj: JsonResponse<IUser>): boolean {
     this.finishFirstRun = true;
     let user = jsonObj.data;
     let succes = jsonObj.succus;

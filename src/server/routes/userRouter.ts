@@ -2,7 +2,7 @@ import { Router, Request, Response, NextFunction } from 'express';
 
 import { BaseRouter } from './baseRouter';
 import { UserController } from '../controllers/userController';
-import { User } from '../../shared/models/user';
+import { User } from '../models/user';
 
 class UserRouter extends BaseRouter {
   ctrl: UserController;

@@ -1,13 +1,13 @@
 import { validate, ValidationError } from "class-validator";
 
-import { Lesson } from '../../shared/models/lesson';
-import { MeetUp } from '../../shared/models/meetUp';
-import { SchoolClass } from '../../shared/models/schoolClass';
-import { Teacher, Student } from '../../shared/models/user';
+import { Lesson } from '../models/lesson';
+import { MeetUp } from '../models/meetUp';
+import { User } from '../models/user';
+import { SchoolClass } from '../models/schoolClass';
 import { LessonDAL } from '../dal/lessonDAL';
 import { ILessonDAL } from '../interfaces/dal/iLessonDAL';
 
-import { CreateLessonViewModel } from '../viewmodels/createLessonViewModel';
+import { CreateLessonViewModel } from '../models/viewmodels/createLessonViewModel';
 import { ResponseError } from '../errors/responseError';
 
 
@@ -63,7 +63,7 @@ export class LessonController extends BaseController {
         newLesson.endTime = viewModel.endTime;
         newLesson.schoolClasses = viewModel.schoolClassNames.map((value) => { return new SchoolClass(value) });
         newLesson.teachers = viewModel.teachers.map(value => {
-          let teacher = new Teacher();
+          let teacher = new User();
           teacher.id = value;
           return teacher;
         })

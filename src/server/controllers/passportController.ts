@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response, Router } from "express";
 
 import { UserController } from './userController';
-import { User } from '../../shared/models/user';
+import { User } from '../models/user';
 
 /**
  * Controller for handling signup and login in the application

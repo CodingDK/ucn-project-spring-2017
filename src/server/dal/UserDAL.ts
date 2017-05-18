@@ -5,10 +5,12 @@ import { DbError } from '../errors/dbError';
 
 import { Types } from 'mongoose';
 import { validateObjectId } from './helpers';
+
+import { IUserDAL } from '../interfaces/dal/iUserDAL';
 /**
  * Class for handling Users in database
  */
-export class UserDal {
+export class UserDal implements IUserDAL {
 
   /**
    * This Method will create a new user in database or update if an user with the googleId already exists in the database
@@ -210,36 +212,36 @@ export class UserDal {
    * Method for finding an user by email
    * @param email the email to look for
    */
-  public findByEmail(email: string): Promise<User> {
-    return new Promise<User>((resolve, reject) => {
-      Users.findOne({ 'email': email }, (err, userDoc: UserDocument) => {
-        if (err) {
-          return reject(DbError.makeNew(err, "A Database error happened"));
-        }
-        if (userDoc != null) {
-          return resolve(userDoc.toObject() as User);
-        }
-        return resolve(undefined);
-        /*
-        let test = userDoc.toObject() as User;
-        console.log("### userDal start ###");
-        console.log("userDoc", userDoc);
-        console.log("id", userDoc._id);
-        console.log("id type", typeof userDoc._id);
-        console.log("test", test);
-        console.log("id", test.id);
-        console.log("id type", typeof test.id);
-        console.log("### userDal end ###");
-        resolve(userDoc.toObject() as User);*/
-      });
-    });
-  }
+  //public findByEmail(email: string): Promise<User> {
+  //  return new Promise<User>((resolve, reject) => {
+  //    Users.findOne({ 'email': email }, (err, userDoc: UserDocument) => {
+  //      if (err) {
+  //        return reject(DbError.makeNew(err, "A Database error happened"));
+  //      }
+  //      if (userDoc != null) {
+  //        return resolve(userDoc.toObject() as User);
+  //      }
+  //      return resolve(undefined);
+  //      /*
+  //      let test = userDoc.toObject() as User;
+  //      console.log("### userDal start ###");
+  //      console.log("userDoc", userDoc);
+  //      console.log("id", userDoc._id);
+  //      console.log("id type", typeof userDoc._id);
+  //      console.log("test", test);
+  //      console.log("id", test.id);
+  //      console.log("id type", typeof test.id);
+  //      console.log("### userDal end ###");
+  //      resolve(userDoc.toObject() as User);*/
+  //    });
+  //  });
+  //}
 
   /**
    * Method for finding an user by id
    * @param id the id of the user
    */
-  public findById(id: string): Promise<User> {
+  public findById(user:any, id: string): Promise<User> {
     return validateObjectId(id)
       .then((objectId: Types.ObjectId) => {
         return new Promise<User>((resolve, reject) => {
@@ -260,7 +262,7 @@ export class UserDal {
    * Method for finding an user by googleId
    * @param googleId the googleId of the user
    */
-  public findByGoogleId(googleId: string): Promise<User> {
+  public findByGoogleId(user: any, googleId: string): Promise<User> {
     return new Promise<User>((resolve, reject) => {
       Users.findOne({ googleId }, (err, userDoc: UserDocument) => {
         if (err) {
@@ -279,17 +281,17 @@ export class UserDal {
    * @param email the email of the user
    * @param hashedPassword the password for the user
    */
-  public createUser(newUser: User): Promise<User> {
-    return new Promise<User>((resolve, reject) => {
-      Users.create(newUser, (err: any, createdUser: UserDocument) => {
-        if (err) {
-          return reject(DbError.makeNew(err, "A Database error happened"));
-        }
-        if (createdUser != null) {
-          return resolve(createdUser.toObject() as User);
-        }
-        return resolve(undefined);
-      })
-    });
-  }
+  //public createUser(newUser: User): Promise<User> {
+  //  return new Promise<User>((resolve, reject) => {
+  //    Users.create(newUser, (err: any, createdUser: UserDocument) => {
+  //      if (err) {
+  //        return reject(DbError.makeNew(err, "A Database error happened"));
+  //      }
+  //      if (createdUser != null) {
+  //        return resolve(createdUser.toObject() as User);
+  //      }
+  //      return resolve(undefined);
+  //    })
+  //  });
+  //}
 }

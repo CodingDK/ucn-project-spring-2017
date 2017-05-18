@@ -46,23 +46,23 @@ export class UserController extends BaseController {
    * @param id the id of the user
    */
   public findById(user: any, id: string): Promise<User> {
-    return this.dal.findById(id);
+    return this.dal.findById(user, id);
   }
 
   /**
    * Method for finding an user by email
    * @param email the email to look for
    */
-  public findByEmail(email: string): Promise<User> {
-    return this.dal.findByEmail(email);
-  }
+  //public findByEmail(email: string): Promise<User> {
+  //  return this.dal.findByEmail(email);
+  //}
 
   /**
    * Method for finding an user by googleId
    * @param googleId the googleId of the user
    */
-  public findByGoogleId(googleId: string): Promise<User> {
-    return this.dal.findByGoogleId(googleId);
+  public findByGoogleId(user: any, googleId: string): Promise<User> {
+    return this.dal.findByGoogleId(user, googleId);
   }
 
   /**
@@ -70,13 +70,13 @@ export class UserController extends BaseController {
    * @param email the email of the user
    * @param password the password for the user
    */
-  public createUser(email: string, password: string): Promise<User> {
-    const newUser = new User();
-    newUser.email = email;
-    newUser.password = this.generateHash(password);
+  //public createUser(email: string, password: string): Promise<User> {
+  //  const newUser = new User();
+  //  newUser.email = email;
+  //  newUser.password = this.generateHash(password);
 
-    return this.dal.createUser(newUser);
-  }
+  //  return this.dal.createUser(newUser);
+  //}
 
   private generateHash(password: string): string {
     return bcrypt.hashSync(password, bcrypt.genSaltSync(8));

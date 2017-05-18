@@ -5,7 +5,7 @@ export class MeetUp {
   checkIn: Date;
   checkOut: Date;
   topic: string;
-  student: Student | string; // student who met up
+  student: Student; // student who met up
 
   constructor(student: Student) {
     this.student = student;

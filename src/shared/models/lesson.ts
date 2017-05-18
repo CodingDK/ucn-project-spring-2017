@@ -6,7 +6,7 @@ export class Lesson {
   id: string;
   startTime: Date;
   endTime: Date;
-  teachers: Teacher[] | string[];
+  teachers: Teacher[];
   schoolClasses: SchoolClass[];
   meetups: MeetUp[]; // students who met up
 

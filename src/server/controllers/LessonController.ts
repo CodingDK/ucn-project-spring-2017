@@ -2,7 +2,10 @@ import { validate, ValidationError } from "class-validator";
 
 import { Lesson } from '../../shared/models/lesson';
 import { MeetUp } from '../../shared/models/meetUp';
+import { SchoolClass } from '../../shared/models/schoolClass';
+import { Teacher, Student } from '../../shared/models/user';
 import { LessonDal } from '../dal/lessonDAL';
+
 import { CreateLessonViewModel } from '../viewmodels/createLessonViewModel';
 import { ResponseError } from '../errors/responseError';
 
@@ -53,7 +56,21 @@ export class LessonController extends BaseController {
           })
       })
       .then((students) => {
-        return this.dal.createLesson(user, viewModel, students);
+        let newLesson = new Lesson();
+        newLesson.id = <string>viewModel.id;
+        newLesson.startTime = viewModel.startTime;
+        newLesson.endTime = viewModel.endTime;
+        newLesson.schoolClasses = viewModel.schoolClassNames.map((value) => { return new SchoolClass(value) });
+        newLesson.teachers = viewModel.teachers.map(value => {
+          let teacher = new Teacher();
+          teacher.id = value;
+          return teacher;
+        })
+        newLesson.meetups = students.map(value => { return new MeetUp(value) });
+        return newLesson; 
+      })
+      .then(newLesson => {
+        return this.dal.createLesson(user, newLesson);
       })
       .catch(this.errorHandler.bind(this))
       

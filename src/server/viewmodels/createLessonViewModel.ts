@@ -8,6 +8,9 @@ import { ICreateLessonViewModel } from '../../shared/interfaces/iCreateLessonVie
 
 @JsonObject
 export class CreateLessonViewModel implements ICreateLessonViewModel {
+
+  id?: string;
+
   @JsonMember({type: Date})
   @IsValidDateObj()
   @IsNotEmpty()
@@ -34,6 +37,9 @@ export class CreateLessonViewModel implements ICreateLessonViewModel {
   @ArrayNotEmpty()
   @IsValidSchoolClassNames()
   schoolClassNames: string[];
+
+  meetUpStudents: string[];
+  
   
   /*constructor(data: any) {
     this.startTime = data.startTime;

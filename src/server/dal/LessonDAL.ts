@@ -58,11 +58,11 @@ export class LessonDal {
    * Method for creating a new lesson
    * @param newLesson
    */
-  public createLesson(user: any, viewModel: CreateLessonViewModel, students: Student[]): Promise<Lesson> {
+  public createLesson(user: any, newLesson: Lesson): Promise<Lesson> {
     return new Promise<DbLesson>(
       //First validate teachers Ids format and create dbLesson object
       (resolve: any, reject: any) => {
-        const validateTeachersIdsPromises = viewModel.teachers.map((id) => { return validateObjectId(id) });
+        const validateTeachersIdsPromises = newLesson.teachers.map((teacher) => { return validateObjectId(teacher.id) });
         let dbLesson = new DbLesson();
 
         return Promise.all(validateTeachersIdsPromises)
@@ -73,7 +73,7 @@ export class LessonDal {
       })
       //Next validate students Ids format and create meetups for students
       .then((dbLesson) => {
-        const validateStudentIdsPromises = students.map((student) => { return validateObjectId(student.id) });
+        const validateStudentIdsPromises = newLesson.meetups.map((meetUp) => { return validateObjectId(meetUp.student.id) });
         return Promise.all(validateStudentIdsPromises)
           .then((studentsObjectIds) => {
             dbLesson.meetUps = studentsObjectIds.map((value) => {
@@ -86,9 +86,9 @@ export class LessonDal {
       })
       //Set the rest of the properties on dbLesson
       .then((dbLesson) => {
-        dbLesson.startTime = viewModel.startTime;
-        dbLesson.endTime = viewModel.endTime;
-        dbLesson.schoolClasses = viewModel.schoolClassNames;
+        dbLesson.startTime = newLesson.startTime;
+        dbLesson.endTime = newLesson.endTime;
+        dbLesson.schoolClasses = newLesson.schoolClasses.map(value => { return value.name});
 
         return dbLesson;
       })

@@ -7,13 +7,12 @@ import { DbError } from '../errors/dbError';
 import { Types } from 'mongoose';
 import { validateObjectId } from './helpers';
 
-import { UserDal } from './userDAL';
+import { ILessonDAL} from '../interfaces/dal/iLessonDAL';
 
 /**
  * Class for handling Lessons in database
  */
-export class LessonDal {
-  private userDal = new UserDal();
+export class LessonDAL implements ILessonDAL {
 
   public getAll(user: any): Promise<Lesson[]> {
     return new Promise<Lesson[]>((resolve: any, reject: any) => {
@@ -55,10 +54,10 @@ export class LessonDal {
   }
 
   /**
-   * Method for creating a new lesson
+   * Method for creating and inserting a new lesson
    * @param newLesson
    */
-  public createLesson(user: any, newLesson: Lesson): Promise<Lesson> {
+  public insert(user: any, newLesson: Lesson): Promise<Lesson> {
     return new Promise<DbLesson>(
       //First validate teachers Ids format and create dbLesson object
       (resolve: any, reject: any) => {
@@ -128,6 +127,10 @@ export class LessonDal {
           });
         });
       });
+  }
+
+  public update(user: any, lesson: Lesson): Promise<Lesson> {
+    throw new Error("lessonDAl update not implemented yet");
   }
 
   /**

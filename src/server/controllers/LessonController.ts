@@ -4,7 +4,8 @@ import { Lesson } from '../../shared/models/lesson';
 import { MeetUp } from '../../shared/models/meetUp';
 import { SchoolClass } from '../../shared/models/schoolClass';
 import { Teacher, Student } from '../../shared/models/user';
-import { LessonDal } from '../dal/lessonDAL';
+import { LessonDAL } from '../dal/lessonDAL';
+import { ILessonDAL } from '../interfaces/dal/iLessonDAL';
 
 import { CreateLessonViewModel } from '../viewmodels/createLessonViewModel';
 import { ResponseError } from '../errors/responseError';
@@ -18,7 +19,7 @@ import { BaseController } from './baseController';
  */
 export class LessonController extends BaseController {
 
-  private dal: LessonDal = new LessonDal();
+  private dal: ILessonDAL = new LessonDAL();
   private userCtrl = new UserController();
 
   /**
@@ -70,7 +71,7 @@ export class LessonController extends BaseController {
         return newLesson; 
       })
       .then(newLesson => {
-        return this.dal.createLesson(user, newLesson);
+        return this.dal.insert(user, newLesson);
       })
       .catch(this.errorHandler.bind(this))
       

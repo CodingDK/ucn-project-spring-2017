@@ -2,7 +2,7 @@ import * as mongoose from 'mongoose';
 import * as session from 'express-session';
 const MongoStore = require('connect-mongo')(session);
 
-import { IDatabase } from '../interfaces/iDatabase';
+import { IDatabase } from '../interfaces/dal/iDatabase';
 
 /**
  * Class for handling MongoDb

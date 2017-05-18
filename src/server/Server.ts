@@ -8,12 +8,14 @@ import config from './config/config';
 
 import { Response, Request, NextFunction } from 'express';
 
+
 import LoginRouter from './routes/loginRouter';
 import { githubRouter } from './routes/githubRouter';
 import HeroRouter from './routes/heroRouter';
 import LessonRouter from './routes/lessonRouter';
 import UserRoutes from './routes/userRouter';
 import PassportConfig from './config/passportConfig';
+import StudentRouter from './routes/StudentRouter'; // TODO: merge with lesson routes
 
 import {IDatabase} from './config/iDatabase';
 import { MongoDatabase } from './dal/mongoDatabase';
@@ -70,6 +72,8 @@ class Server {
     app.use('/api/v1/heroes', HeroRouter);
     app.use('/api/lesson/', LessonRouter);
     app.use('/api/user/', UserRoutes);
+    app.use('/api/student/', StudentRouter); // TODO: merge with lesson routes
+    
     //app.use(express.static(path.join(__dirname, "/../client")));
   }
 

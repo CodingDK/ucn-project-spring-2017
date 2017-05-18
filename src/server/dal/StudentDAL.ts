@@ -3,7 +3,6 @@ import { Lesson } from '../../shared/models/lesson';
 import { MeetUp } from '../../shared/models/meetUp';
 import { Student } from '../../shared/models/user';
 
-import { CreateLessonViewModel } from '../../shared/viewmodels/createLessonViewModel';
 import { DbLesson, LessonDocument, Lessons, DbMeetUp } from './models/dbLesson';
 import { DbError } from '../errors/dbError';
 import { Types } from 'mongoose';
@@ -15,20 +14,63 @@ import { UserDal } from './UserDAL';
 
 export class StudentDal {
 
-    public studentCheckIn(): Promise<any> {
+    public studentCheckIn(): void //Promise<any>
+    {
         // TODO:
     }
 
-    public studentCheckOut(): Promise<any> {
+    public studentCheckOut(): void //Promise<Lesson[]>
+    {
         // TODO:
     }
 
-    public setStudentTopic(): Promise<any> {
+    public setStudentTopic(): void //Promise<Lesson[]>
+    {
         // TODO:
     }
 
-    public getActiveLessons(): Promise<any> {
-        // TODO:
+    public getActiveLessons(): void //Promise<Lesson[]>
+    {
+        // get current time and date
+        var currentTime = new Date().toLocaleTimeString();
+        var currentDate = new Date().toLocaleDateString();
+        console.log(currentTime);
+        console.log(currentDate);
+
+
+        //Lessons.find({}).exec(err: any, objs: LessonDocument[]) => {
+        //    if (err) {
+        //        return reject(DbError.makeNew(err, "A Database error happened"));
+        //    }
+
+        //    let foundLessons = new Array<Lesson>();
+
+        //    if (objs != null) {
+
+        //    }
+
+        //}
+        
+        
+          
+        }
     }
+
+    //public getAll(user: any): Promise<Lesson[]> {
+    //    return new Promise<Lesson[]>((resolve: any, reject: any) => {
+    //        Lessons.find({}).exec((err: any, objs: LessonDocument[]) => { //.populate('teachers') // .populate('meetUps.student')
+    //            if (err) {
+    //                return reject(DbError.makeNew(err, "A Database error happened"));
+    //            }
+    //            let retList = new Array<Lesson>();
+    //            if (objs != null) {
+    //                objs.forEach((value: LessonDocument) => {
+    //                    retList.push(this.getLessonObj(value));
+    //                });
+    //            }
+    //            return resolve(retList);
+    //        });
+    //    });
+    //}
 
 }

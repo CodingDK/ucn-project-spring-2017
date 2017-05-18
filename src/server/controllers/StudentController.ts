@@ -9,11 +9,14 @@ import { Student } from '../../shared/models/student';
 import { LessonController } from './LessonController';
 import { BaseController } from './baseController';
 
+// Data Access Layer
+import { StudentDal } from '../dal/StudentDAL';
+
 /**
  * Controller for handling students' checkin / checkout from lesson
  */
 export class StudentController extends BaseController {
-
+    private dal: StudentDal = new StudentDal();
 
     public studentCheckIn() {
         // TODO:
@@ -27,7 +30,9 @@ export class StudentController extends BaseController {
         // TODO:
     }
 
-    public getActiveLessons() {
-        // TODO:
+    public getActiveLessons(): any {
+        console.log('get active lessons - controller');
+
+        return this.dal.getActiveLessons();
     }
 }

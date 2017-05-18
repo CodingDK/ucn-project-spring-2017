@@ -14,5 +14,5 @@ export function isLoggedIn(req: Request, res: Response, next: NextFunction): voi
       return next();
     }
     //res.redirect('/');
-    res.send(401, { login: false, text: 'Your are not logged in!' });
+    res.send(401, { login: false, text: 'You are not logged in!' });
 }

@@ -1,6 +1,5 @@
 ﻿import { Component, ViewChild, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { Location } from '@angular/common';
 import * as moment from 'moment';
 import { ToastyService, ToastOptions } from 'ng2-toasty';
 import { ModalDirective } from 'ngx-bootstrap';
@@ -25,26 +24,14 @@ export class LessonAdminDeleteModalComponent implements OnInit {
 
   constructor(private lessonService: LessonService, private toastyService: ToastyService,
     private route: ActivatedRoute,
-    private router: Router,
-    private location: Location) {
+    private router: Router) {
   }
 
   ngOnInit(): void {
     this.route.data
       .subscribe((data: { lesson: ILesson }) => {
         this.item = data.lesson;
-      });
-    //this.route.params.subscribe(params => {
-    //  const id = params['id'];
-    //  const item = this.lessonService.getLessonById(id);
-    //  if (item === undefined) {
-    //    this.router.navigate(['/lesson'], { relativeTo: this.route, replaceUrl: true });
-    //    this.notFoundToasty();
-    //  } else {
-    //    this.item = item;
-    //  }
-    //});
-    
+      });    
   }
     
   public onHidden(): void {
@@ -58,7 +45,7 @@ export class LessonAdminDeleteModalComponent implements OnInit {
         if (deleted) {
           this.toastyService.success("Lektiecaf&eacute;en er blevet slettet");
         } else {
-          this.notFoundToasty();
+          this.toastyService.info("Lektiecaf&eacute;en blev ikke fundet, og er muligvis allerede slettet");
         }
       })
       .catch((err: any) => {
@@ -68,10 +55,6 @@ export class LessonAdminDeleteModalComponent implements OnInit {
           msg: body.message
         });
       });
-  }
-
-  public notFoundToasty() {
-    this.toastyService.info("Lektiecaf&eacute;en blev ikke fundet, og er muligvis allerede slettet");
   }
 }
 

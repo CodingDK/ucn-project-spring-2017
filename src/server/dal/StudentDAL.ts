@@ -1,3 +1,5 @@
+import * as moment from 'moment';
+
 // models
 import { Lesson } from '../models/lesson';
 import { MeetUp } from '../models/meetUp';
@@ -15,8 +17,10 @@ import { UserDAL } from './UserDAL';
 export class StudentDal {
 
     public studentCheckIn(): void //Promise<any>
-    {
-        // TODO:
+    {   
+        console.log('student checkin');
+        let currentTime = moment.now.toString;
+        console.log(currentTime);
     }
 
     public studentCheckOut(): void //Promise<Lesson[]>
@@ -29,48 +33,60 @@ export class StudentDal {
         // TODO:
     }
 
-    public getActiveLessons(): void //Promise<Lesson[]>
-    {
-        // get current time and date
-        var currentTime = new Date().toLocaleTimeString();
-        var currentDate = new Date().toLocaleDateString();
-        console.log(currentTime);
-        console.log(currentDate);
 
+    public getActiveLessons(): Promise<Lesson[]> { 
+        return new Promise<Lesson[]>((resolve: any, reject: any) => {                  
 
-        //Lessons.find({}).exec(err: any, objs: LessonDocument[]) => {
-        //    if (err) {
-        //        return reject(DbError.makeNew(err, "A Database error happened"));
-        //    }
+            Lessons.find({
+                'startTime': { '$lte': moment().toDate()  },
+                'endTime': { '$gte': moment().toDate()   }                
 
-        //    let foundLessons = new Array<Lesson>();
+            }).exec((err: any, objs: LessonDocument[]) => {
 
-        //    if (objs != null) {
+                if (err) {
+                    return reject(DbError.makeNew(err, "A Database error happened"));
+                }
 
-        //    }
+                let retList = new Array<Lesson>();
 
-        //}
-        
-        
-          
+                if (objs != null) {
+                    objs.forEach((value: LessonDocument) => {
+                        retList.push(this.getLessonObj(value));
+                    })
+                }
+
+                console.log(retList);
+
+                return resolve(retList);
+            })         
+        })
+    }
+   
+
+    /**
+    TODO: Delete when moved to main lesson dal class
+   * Make a Lesson object from a DbLesson object
+   * @param dbLesson - the dbLesson object to convert
+   */
+    private getLessonObj(dbLesson: LessonDocument): Lesson {
+        let lesson = dbLesson.toObject() as any;
+        //check and set objectIds to strings for teachers
+        const firstTeacher = lesson.teachers[0];
+        if (firstTeacher && firstTeacher instanceof Types.ObjectId) {
+            lesson.teachers = lesson.teachers.map((value: Types.ObjectId) => {
+                return value.toString();
+            })
         }
-    
+        //check and set objectIds to strings for student
+        const firstMeetUp = lesson.meetUps[0];
+        if (firstMeetUp && firstMeetUp.student && firstMeetUp.student instanceof Types.ObjectId) {
+            lesson.meetUps = lesson.meetUps.map((value: any) => {
+                value.student = value.student.toString();
+                return value;
+            });
+        }
 
-    //public getAll(user: any): Promise<Lesson[]> {
-    //    return new Promise<Lesson[]>((resolve: any, reject: any) => {
-    //        Lessons.find({}).exec((err: any, objs: LessonDocument[]) => { //.populate('teachers') // .populate('meetUps.student')
-    //            if (err) {
-    //                return reject(DbError.makeNew(err, "A Database error happened"));
-    //            }
-    //            let retList = new Array<Lesson>();
-    //            if (objs != null) {
-    //                objs.forEach((value: LessonDocument) => {
-    //                    retList.push(this.getLessonObj(value));
-    //                });
-    //            }
-    //            return resolve(retList);
-    //        });
-    //    });
-    //}
+        return lesson;
+    }
 
 }

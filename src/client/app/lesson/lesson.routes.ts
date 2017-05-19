@@ -23,6 +23,13 @@ import { LessonDetailResolver } from './services/lesson-detail-resolver.service'
           resolve: {
             lesson: LessonDetailResolver
           }
+        },
+        {
+          path: 'edit/:id',
+          component: LessonAdminAddModalComponent,
+          resolve: {
+            lesson: LessonDetailResolver
+          }
         }
       ]
     }//, canActivate: [AuthGuard] }

@@ -27,8 +27,8 @@ export class LessonAdminAddModalComponent implements OnInit {
 
   @ViewChild('datePickerPopup')
   public datePickerPopup: PopoverDirective;
-
-  public isModalShown: boolean = false;
+  
+  item: ILesson; //item for editing view
 
   lessonForm: FormGroup;
   teachersInput: FormControl;
@@ -49,26 +49,31 @@ export class LessonAdminAddModalComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.route.data
+      .subscribe((data: { lesson: ILesson }) => {
+        this.item = data.lesson;
+      });
     this.createForm();
-    this.setValuesInDropdowns();
+    this.setValuesInDropdowns()
+      .then(this.populateFormIfEditing.bind(this));
+
   }
 
-  public showModal(): void {
-    this.isModalShown = true;
-  }
-
+  public isEditing(): boolean {
+    return (this.item != undefined);
+  };
+  
   public hideModal(): void {
     this.addModal.hide();
   }
 
   public onHidden(): void {
-    this.isModalShown = false;
-    this.router.navigate(['../'], { relativeTo: this.route });
+    this.router.navigate(['/lesson'], { relativeTo: this.route });
   }
 
-  private setValuesInDropdowns() {
+  private setValuesInDropdowns(): Promise<void[]> {
     //Get All schoolClasses and put them in select field
-    this.userService.getAllSchoolClasses()
+    const setSchoolClassesPromise = this.userService.getAllSchoolClasses()
       .then((schoolClasses: ISchoolClass[]) => {
         let values = schoolClasses.map((schoolClass) => {
           return <IMultiSelectOption>{
@@ -84,7 +89,7 @@ export class LessonAdminAddModalComponent implements OnInit {
       });
 
     //Get All teachers and put them in select field
-    this.userService.getAllUsers(['teacher'])
+    const setTeachersPromise = this.userService.getAllUsers(['teacher'])
       .then((users) => {
         let values = users.map((user) => {
           return <IMultiSelectOption>{
@@ -98,6 +103,8 @@ export class LessonAdminAddModalComponent implements OnInit {
         console.log("LessonAdminAddModal - getAllUsers: ", err);
         this.promiseErrorHandler(err);
       });
+
+    return Promise.all([setSchoolClassesPromise, setTeachersPromise])
   }
 
   private promiseErrorHandler(err: any): void {
@@ -134,12 +141,35 @@ export class LessonAdminAddModalComponent implements OnInit {
     this.setErrorMessages(); // (re)set validation messages now
   }
 
+  private populateFormIfEditing(): void {
+    if (this.isEditing()) {
+      const item = this.item;
+      this.dateInput.setValue(new Date(item.startTime));
+      this.startTimeInput.setValue(new Date(item.startTime));
+      this.endTimeInput.setValue(new Date(item.endTime));
+      this.teachersInput.setValue(item.teachers.map(v => { return v.id; }));
+      this.schoolClassNamesInput.setValue(item.schoolClasses.map(v => { return v.name }));
+    }
+  }
 
   public submit(): void {
     let viewModel = this.getViewModelFromForm();
-    this.lessonService.createLesson(viewModel)
-      .then((lesson: ILesson) => {
-        this.toastyService.success("Lektiecaféen er blevet oprettet");
+    let promise;
+    if (this.isEditing()) {
+      promise = this.lessonService.updateLesson(viewModel)
+        .then((lesson: ILesson) => {
+          return "Lektiecaféen er blevet opdateret";
+        });
+    } else {
+      promise = this.lessonService.createLesson(viewModel)
+        .then((lesson: ILesson) => {
+          return "Lektiecaféen er blevet oprettet";
+        });
+    }
+
+    promise
+      .then((text) => {
+        this.toastyService.success(text);
         this.addModal.hide();
       })
       .catch((err) => {
@@ -158,11 +188,14 @@ export class LessonAdminAddModalComponent implements OnInit {
             msg: body.message
           });
         }
-      })
+      });
   }
 
   public getViewModelFromForm(): CreateLessonViewModel {
     const viewModel = new CreateLessonViewModel();
+    if (this.isEditing()) {
+      viewModel.id = this.item.id;
+    }
     let schoolClassNames = this.schoolClassNamesInput.value;
     let teachers = this.teachersInput.value;
 
@@ -176,6 +209,7 @@ export class LessonAdminAddModalComponent implements OnInit {
     viewModel.endTime = date.add(duration).toDate();
     viewModel.schoolClassNames = schoolClassNames;
     viewModel.teachers = teachers;
+
     return viewModel;
   }
 

@@ -15,10 +15,7 @@ import { LessonService } from '../../services/lesson.service';
   styleUrls: ['./lesson-admin.component.scss']
 })
 export class LessonAdminComponent implements AfterViewInit {
-  
-
-  activeItem: ILesson;
-  
+    
   constructor(private lessonService: LessonService, private toastyService: ToastyService,
     private route: ActivatedRoute,
     private router: Router) {
@@ -26,6 +23,9 @@ export class LessonAdminComponent implements AfterViewInit {
   
   ngAfterViewInit() {
     //this.addModal.showModal();
+    setTimeout(() => {
+      this.openEditModal(this.getAll()[0]);
+    }, 200);
   }
 
   getAll(): ILesson[] {
@@ -37,6 +37,10 @@ export class LessonAdminComponent implements AfterViewInit {
     
     //console.log("viewChild", );
     //this.toastyService.default('Hi there');
+  }
+
+  openEditModal(lesson: ILesson) {
+    this.router.navigate(['edit', lesson.id], { relativeTo: this.route });
   }
   
   openDeleteModal(lesson: ILesson) {

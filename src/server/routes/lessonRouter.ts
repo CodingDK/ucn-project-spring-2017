@@ -31,7 +31,7 @@ class LessonRouter extends BaseRouter {
     //POST create new lesson
     this.router.post('/', this.createLesson.bind(this));
     //PUT update lesson
-    //this.router.put('/', this.ctrl.updateLesson);
+    this.router.put('/', this.updateLesson.bind(this));
     //DELETE delete a lesson
     this.router.delete('/:id', this.deleteLesson.bind(this));
   }
@@ -77,6 +77,21 @@ class LessonRouter extends BaseRouter {
    * Create a new Lesson
    */
   private createLesson(req: Request, res: Response, next: NextFunction): void {
+    const viewModel = this.parseToObject(req.body, CreateLessonViewModel);
+    this.ctrl.createLesson(req.user, viewModel)
+      .then((lesson: Lesson) => {
+        return this.send(res, lesson);
+      })
+      .catch((err: any) => {
+        //this.errorHandler(res, err, err.message);
+        return next(err);
+      });
+  }
+
+  /**
+   * update a Lesson
+   */
+  private updateLesson(req: Request, res: Response, next: NextFunction): void {
     const viewModel = this.parseToObject(req.body, CreateLessonViewModel);
     this.ctrl.createLesson(req.user, viewModel)
       .then((lesson: Lesson) => {

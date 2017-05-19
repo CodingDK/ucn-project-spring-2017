@@ -72,6 +72,19 @@ export class LessonService {
       .catch(this.handleError.bind(this));
   }
 
+  updateLesson(viewModel: CreateLessonViewModel): Promise<ILesson> {
+    return this.http.put(this.lessonUrl, viewModel, { withCredentials: true })
+      .toPromise()
+      .then(response => {
+        return response.json().data;
+      })
+      .then((lesson: ILesson) => {
+        this.refreshAllLessons();
+        return lesson;
+      })
+      .catch(this.handleError.bind(this));
+  }
+
   deleteLesson(id: string): Promise<boolean> {
     return this.http.delete(this.lessonUrl + id, { withCredentials: true })
       .toPromise()

@@ -28,7 +28,7 @@
       <td>{{l.startTime | amDateFormat:'LT'}}</td>
       <td>{{l.endTime | amDateFormat:'LT'}}</td>
       <td>
-        <button class="btn btn-success btn-xs btnEdit" role="button">Rediger</button> |
+        <button class="btn btn-success btn-xs btnEdit" role="button" (click)="openEditModal(l)">Rediger</button> |
         <button class="btn btn-info btn-xs btnDetails" role="button">Detaljer</button> |
         <button class="btn btn-danger btn-xs btnDelete" role="button" (click)="openDeleteModal(l)">Slet</button>
       </td>

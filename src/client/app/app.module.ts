@@ -22,7 +22,6 @@ import { LoginGoogleComponent } from './components/login-google.component';
 import { AuthGuard } from './services/auth.guard';
 import { AuthService } from './services/auth.service';
 import { LocalStorageService } from './services/localstorage.service';
-import { LessonService } from './services/lesson.service';
 import { UserService } from './services/user.service';
 
 import { MomentModule } from 'angular2-moment';
@@ -55,7 +54,6 @@ import { MomentModule } from 'angular2-moment';
     AuthGuard,
     AuthService,
     LocalStorageService,
-    LessonService,
     UserService
   ],
   bootstrap: [AppComponent]

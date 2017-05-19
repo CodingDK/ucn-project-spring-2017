@@ -15,6 +15,8 @@ import { LessonAdminAddModalComponent } from './components/admin/lesson-admin-ad
 import { LessonAdminDeleteModalComponent } from './components/admin/lesson-admin-delete-modal.component';
 import { LessonConfirmModalComponent } from './components/shared/lesson-confirm-modal.component';
 
+import { LessonService } from './services/lesson.service';
+
 
 @NgModule({
   imports: [
@@ -39,6 +41,7 @@ import { LessonConfirmModalComponent } from './components/shared/lesson-confirm-
     LessonConfirmModalComponent
   ],
   providers: [
+    LessonService
   ],
   exports: [
     LessonComponent

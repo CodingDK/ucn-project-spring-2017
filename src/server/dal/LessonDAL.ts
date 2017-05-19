@@ -1,5 +1,6 @@
 import { Lesson } from '../models/lesson';
 import { MeetUp } from '../models/meetUp';
+import { SchoolClass } from '../models/schoolClass';
 import { DbLesson, LessonDocument, Lessons, DbMeetUp } from './models/dbLesson';
 import { DbError } from '../errors/dbError';
 import { Types, DocumentQuery } from 'mongoose';
@@ -44,7 +45,6 @@ export class LessonDAL implements ILessonDAL {
               if (err) {
                 return reject(DbError.makeNew(err, "A Database error happened"));
               }
-              console.log("object?", lessonDoc);
               if (lessonDoc != null) {
                 return resolve(this.getLessonObj(lessonDoc));
               }
@@ -161,6 +161,11 @@ export class LessonDAL implements ILessonDAL {
         value.student = value.student.toString();
         return value;
       });
+    }
+    //make schoolClasses strings to objects
+    const schoolClasses = lesson.schoolClasses;
+    if (schoolClasses) {
+      lesson.schoolClasses = schoolClasses.map((value: string) => { return new SchoolClass(value) });
     }
 
     return lesson;

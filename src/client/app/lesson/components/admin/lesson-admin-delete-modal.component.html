@@ -29,15 +29,27 @@
   </div>
   <div class="row">
     <div class="col-sm-4">
-      <label>Lærer</label>
+      <label>Lærere</label>
     </div>
-    <div class="col-sm-8">{{item?.teachers}}</div>
+    <div class="col-sm-8">
+      <ul class="list-unstyled teachersList">
+        <li *ngFor="let teacher of item?.teachers">
+          <img [src]="teacher.imageUrl" [title]="teacher.name"/>
+          {{teacher.name}}
+        </li>
+      </ul>           
+    </div>
   </div>
   <div class="row">
     <div class="col-sm-4">
-      <label>Klasse</label>
+      <label>Klasser</label>
     </div>
-    <div class="col-sm-8">{{item?.schoolClass}}</div>
+    <div class="col-sm-8">
+      <ul class="list-unstyled">
+        <li *ngFor="let schoolClass of item?.schoolClasses">
+          {{schoolClass.name}}
+        </li>
+      </ul>
+    </div>
   </div>
-
 </ng-template>

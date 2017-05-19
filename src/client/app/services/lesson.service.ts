@@ -24,7 +24,13 @@ export class LessonService {
   }
 
   refreshAllLessons(): void {
-    this.http.get(this.lessonUrl, { withCredentials: true })
+    this.http
+      .get(this.lessonUrl, {
+        params: {
+          populateTeacher: true
+        },
+        withCredentials: true
+      })
       .toPromise()
       .then(response => {
         this.allLessons = response.json().data;
@@ -54,7 +60,7 @@ export class LessonService {
       .catch(this.handleError.bind(this));
   }
 
-  deleteLesson(id: string) : Promise<boolean> {
+  deleteLesson(id: string): Promise<boolean> {
     return this.http.delete(this.lessonUrl + id, { withCredentials: true })
       .toPromise()
       .then(response => {

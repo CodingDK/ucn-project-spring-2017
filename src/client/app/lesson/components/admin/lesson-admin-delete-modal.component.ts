@@ -30,16 +30,20 @@ export class LessonAdminDeleteModalComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.route.params.subscribe(params => {
-      const id = params['id'];
-      const item = this.lessonService.getLessonById(id);
-      if (item === undefined) {
-        this.router.navigate(['/lesson'], { relativeTo: this.route, replaceUrl: true });
-        this.notFoundToasty();
-      } else {
-        this.item = item;
-      }
-    });
+    this.route.data
+      .subscribe((data: { lesson: ILesson }) => {
+        this.item = data.lesson;
+      });
+    //this.route.params.subscribe(params => {
+    //  const id = params['id'];
+    //  const item = this.lessonService.getLessonById(id);
+    //  if (item === undefined) {
+    //    this.router.navigate(['/lesson'], { relativeTo: this.route, replaceUrl: true });
+    //    this.notFoundToasty();
+    //  } else {
+    //    this.item = item;
+    //  }
+    //});
     
   }
     

@@ -43,8 +43,20 @@ export class LessonService {
     return this.allLessons;
   }
 
-  getLessonById(id: string): ILesson | undefined {
-    return this.allLessons.find(value => { return value.id === id });
+  getLessonById(id: string): Promise<ILesson> {
+    return this.http
+      .get(this.lessonUrl + id, {
+        params: {
+          populateTeacher: true
+        },
+        withCredentials: true
+      })
+      .toPromise()
+      .then(response => {
+        return response.json().data;
+      })
+      .catch(this.handleError.bind(this));
+    //return this.allLessons.find(value => { return value.id === id });
   }
 
   createLesson(viewModel: CreateLessonViewModel): Promise<ILesson> {

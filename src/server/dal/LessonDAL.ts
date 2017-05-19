@@ -38,6 +38,9 @@ export class LessonDAL implements ILessonDAL {
     */
   public findById(user: any, id: string, populateTeacher?: boolean, populateStudent?: boolean): Promise<Lesson> {
     return validateObjectId(id)
+      .catch((err: any) => {
+        return null;
+      })
       .then((objectId: Types.ObjectId) => {
         return new Promise<Lesson>((resolve: any, reject: any) => {
           this.getPopulated(Lessons.findById(objectId), populateTeacher, populateStudent)
@@ -124,6 +127,9 @@ export class LessonDAL implements ILessonDAL {
    */
   public deleteById(user: any, id: string): Promise<boolean> {
     return validateObjectId(id)
+      .catch((err: any) => {
+        return null;
+      })
       .then((objectId: Types.ObjectId) => {
         return new Promise<boolean>((resolve, reject) => {
           Lessons.findByIdAndRemove(objectId, (err: any, lessonDoc: LessonDocument) => {

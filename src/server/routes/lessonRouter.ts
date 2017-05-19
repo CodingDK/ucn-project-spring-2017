@@ -40,7 +40,9 @@ class LessonRouter extends BaseRouter {
    * Get all Lessons
    */
   private getAll(req: Request, res: Response, next: NextFunction): void {
-    this.ctrl.getAll(req.user)
+    let populateTeacher = true; req.query.populateTeacher;
+    let populateStudent = true; req.query.populateStudent;
+    this.ctrl.getAll(req.user, populateTeacher, populateStudent)
       .then((lessons: Lesson[]) => {
         return this.send(res, lessons);
         //next();
@@ -55,7 +57,12 @@ class LessonRouter extends BaseRouter {
    * Get single Lessons
    */
   private getSingle(req: Request, res: Response, next: NextFunction): void {
-    this.ctrl.findById(req.user, req.params['id'])
+    let populateTeacher = req.query.populateTeacher;
+    if (typeof populateTeacher === "string") populateTeacher = (populateTeacher == 'true');
+    let populateStudent = req.query.populateStudent;
+    if (typeof populateStudent === "string") populateStudent = (populateStudent == 'true');
+    
+    this.ctrl.findById(req.user, req.params['id'], populateTeacher, populateStudent)
       .then((lesson: Lesson) => {
         return this.send(res, lesson);
         //next();

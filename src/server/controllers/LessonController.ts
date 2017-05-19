@@ -25,16 +25,16 @@ export class LessonController extends BaseController {
   /**
    * Method for Getting All Lessons
    */
-  public getAll(user: any): Promise<Lesson[]> {
-    return this.dal.getAll(user)
+  public getAll(user: any, populateTeacher?: boolean, populateStudent?: boolean): Promise<Lesson[]> {
+    return this.dal.getAll(user, populateTeacher, populateStudent)
       .catch(this.errorHandler.bind(this));
   }
 
   /**
    * Method for find a lesson by id
    */
-  public findById(user: any, id: string): Promise<Lesson> {
-    return this.dal.findById(user, id)
+  public findById(user: any, id: string, populateTeacher?: boolean, populateStudent?: boolean): Promise<Lesson> {
+    return this.dal.findById(user, id, populateTeacher, populateStudent)
       .catch(this.errorHandler.bind(this))
   }
 

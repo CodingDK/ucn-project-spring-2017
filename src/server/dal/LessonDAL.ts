@@ -2,30 +2,31 @@ import { Lesson } from '../models/lesson';
 import { MeetUp } from '../models/meetUp';
 import { DbLesson, LessonDocument, Lessons, DbMeetUp } from './models/dbLesson';
 import { DbError } from '../errors/dbError';
-import { Types } from 'mongoose';
+import { Types, DocumentQuery } from 'mongoose';
 import { validateObjectId } from './helpers';
 
-import { ILessonDAL} from '../interfaces/dal/iLessonDAL';
+import { ILessonDAL } from '../interfaces/dal/iLessonDAL';
 
 /**
  * Class for handling Lessons in database
  */
 export class LessonDAL implements ILessonDAL {
 
-  public getAll(user: any): Promise<Lesson[]> {
+  public getAll(user: any, populateTeacher: boolean, populateStudent: boolean): Promise<Lesson[]> {
     return new Promise<Lesson[]>((resolve: any, reject: any) => {
-      Lessons.find({}).exec((err: any, objs: LessonDocument[]) => { //.populate('teachers') // .populate('meetUps.student')
-        if (err) {
-          return reject(DbError.makeNew(err, "A Database error happened"));
-        }
-        let retList = new Array<Lesson>();
-        if (objs != null) {
-          objs.forEach((value: LessonDocument) => {
-            retList.push(this.getLessonObj(value));
-          });
-        }
-        return resolve(retList);
-      });
+      this.getPopulated(Lessons.find({}), populateTeacher, populateStudent)
+        .exec((err: any, objs: LessonDocument[]) => {
+          if (err) {
+            return reject(DbError.makeNew(err, "A Database error happened"));
+          }
+          let retList = new Array<Lesson>();
+          if (objs != null) {
+            objs.forEach((value: LessonDocument) => {
+              retList.push(this.getLessonObj(value));
+            });
+          }
+          return resolve(retList);
+        });
     });
   }
 
@@ -34,21 +35,30 @@ export class LessonDAL implements ILessonDAL {
     * Method for find a lesson by the id
     * @param id the id to look for
     */
-  public findById(user: any, id: string): Promise<Lesson> {
+  public findById(user: any, id: string, populateTeacher?: boolean, populateStudent?: boolean): Promise<Lesson> {
     return validateObjectId(id)
       .then((objectId: Types.ObjectId) => {
         return new Promise<Lesson>((resolve: any, reject: any) => {
-          Lessons.findById(objectId, (err: any, lessonDoc: LessonDocument) => {
-            if (err) {
-              return reject(DbError.makeNew(err, "A Database error happened"));
-            }
-            if (lessonDoc != null) {
-              return resolve(this.getLessonObj(lessonDoc));
-            }
-            return resolve(undefined);
-          });
+          this.getPopulated(Lessons.findById(objectId), populateTeacher, populateStudent)
+            .exec((err: any, lessonDoc: LessonDocument) => {
+              if (err) {
+                return reject(DbError.makeNew(err, "A Database error happened"));
+              }
+              console.log("object?", lessonDoc);
+              if (lessonDoc != null) {
+                return resolve(this.getLessonObj(lessonDoc));
+              }
+              return resolve(undefined);
+            });
         });
       });
+  }
+
+  private getPopulated<T>(query: DocumentQuery<T, LessonDocument>, populateTeacher?: boolean, populateStudent?: boolean): DocumentQuery<T, LessonDocument> {
+
+    query = populateTeacher ? query.populate('teachers', 'name imageUrl') : query;
+    query = populateStudent ? query.populate('meetUps.student', 'name imageUrl') : query
+    return query;
   }
 
   /**
@@ -85,7 +95,7 @@ export class LessonDAL implements ILessonDAL {
       .then((dbLesson) => {
         dbLesson.startTime = newLesson.startTime;
         dbLesson.endTime = newLesson.endTime;
-        dbLesson.schoolClasses = newLesson.schoolClasses.map(value => { return value.name});
+        dbLesson.schoolClasses = newLesson.schoolClasses.map(value => { return value.name });
 
         return dbLesson;
       })
@@ -152,7 +162,7 @@ export class LessonDAL implements ILessonDAL {
         return value;
       });
     }
-    
+
     return lesson;
   }
 

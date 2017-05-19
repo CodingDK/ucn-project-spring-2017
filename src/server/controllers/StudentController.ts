@@ -30,9 +30,12 @@ export class StudentController extends BaseController {
         // TODO:
     }
 
-    public getActiveLessons(): any {
-        console.log('get active lessons - controller');
-
-        return this.dal.getActiveLessons();
+    /**
+     * Get all active lessons
+     * @param user
+     */
+    public getActiveLessons(user: any): Promise<Lesson[]> {        
+        return this.dal.getActiveLessons()
+        .catch(this.errorHandler.bind(this));
     }
 }

@@ -31,7 +31,7 @@ class StudentRouter extends BaseRouter {
         //this.router.get('/getTestObjectCreate', this.getTestObjectCreate.bind(this));
 
         // POST student checkin (meetup)
-        this.router.post('/', this.studentCheckIn.bind(this));
+        this.router.get('/', this.studentCheckIn.bind(this));
         // PUT student checkout (meetup)
         this.router.put('/', this.studentCheckOut.bind(this));
         // PUT student update student's topic
@@ -40,30 +40,30 @@ class StudentRouter extends BaseRouter {
         this.router.get('/active', this.getActiveLessons.bind(this));       
     }
 
-    private studentCheckIn(req: Request, res: Response, next: NextFunction): string {
-        return "hello";
+    private studentCheckIn(req: Request, res: Response, next: NextFunction): void {
+        // TODO:
     }
 
     private studentCheckOut(req: Request, res: Response, next: NextFunction): void {
         // TODO:
     }
 
-    private setStudentTopic(req: Request, res: Response, next: NextFunction): string {
-        return 'set student topic';
+    private setStudentTopic(req: Request, res: Response, next: NextFunction): void {
+        // TODO:
     }
 
     private getActiveLessons(req: Request, res: Response, next: NextFunction): void {
         console.log('get active lessons - router');
 
-        this.ctrl.getActiveLessons();
+        this.ctrl.getActiveLessons(req.user)
+            .then((lessons: Lesson[]) => {
+                return this.send(res, lessons);
+            })
+            .catch((err: any) => {
+                return next(err);
+            });
 
-        //this.ctrl.getActiveLessons(req.user)
-        //    .then((lessons: Lesson[]) => {
-        //        return this.send(res, lessons);
-        //    })
-        //    .catch((err: any) => {
-        //        return next(err);
-        //    });            
+               
     } 
 
 }

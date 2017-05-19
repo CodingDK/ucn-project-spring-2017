@@ -9,6 +9,7 @@ import { ICreateLessonViewModel } from '../../../shared/interfaces/viewmodels/iC
 @JsonObject
 export class CreateLessonViewModel implements ICreateLessonViewModel {
 
+  @JsonMember({type: String})
   id?: string;
 
   @JsonMember({type: Date})

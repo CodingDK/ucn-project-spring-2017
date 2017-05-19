@@ -89,11 +89,11 @@ class LessonRouter extends BaseRouter {
   }
 
   /**
-   * update a Lesson
+   * Update a Lesson
    */
   private updateLesson(req: Request, res: Response, next: NextFunction): void {
     const viewModel = this.parseToObject(req.body, CreateLessonViewModel);
-    this.ctrl.createLesson(req.user, viewModel)
+    this.ctrl.updateLesson(req.user, viewModel)
       .then((lesson: Lesson) => {
         return this.send(res, lesson);
       })

@@ -51,10 +51,39 @@ export class LessonController extends BaseController {
         }
       })
       .then(() => {
-        return this.userCtrl.findStudentsBySchoolClassNames(user, viewModel.schoolClassNames)
-          .catch((err: any) => {
-            throw ResponseError.makeNew(err, `Error happen in finding students`);
-          })
+        return this.createLessonFromViewModel(user, viewModel);
+      })
+      .then(newLesson => {
+        return this.dal.insert(user, newLesson);
+      })
+      .catch(this.errorHandler.bind(this))
+  }
+
+  /**
+   * Method for updatering a lesson
+   * @param viewModel the lesson to update with the new informations
+   */
+  public updateLesson(user: any, viewModel: CreateLessonViewModel): Promise<Lesson> {
+    return validate(viewModel, { validationError: { target: false } })
+      .then(errors => { // errors is an array of validation errors
+        if (errors.length > 0) {
+          //console.log("validation failed. errors: ", errors);
+          throw ResponseError.makeNew(errors, "validation failed");
+        }
+      })
+      .then(() => {
+        return this.createLessonFromViewModel(user, viewModel);
+      })
+      .then(lesson => {
+        return this.dal.update(user, lesson);
+      })
+      .catch(this.errorHandler.bind(this));
+  }
+
+  private createLessonFromViewModel(user: any, viewModel: CreateLessonViewModel): Promise<Lesson> {
+    return this.userCtrl.findStudentsBySchoolClassNames(user, viewModel.schoolClassNames)
+      .catch((err: any) => {
+        throw ResponseError.makeNew(err, `Error happen in finding students`);
       })
       .then((students) => {
         let newLesson = new Lesson();
@@ -68,16 +97,10 @@ export class LessonController extends BaseController {
           return teacher;
         })
         newLesson.meetups = students.map(value => { return new MeetUp(value) });
-        return newLesson; 
+        return newLesson;
       })
-      .then(newLesson => {
-        return this.dal.insert(user, newLesson);
-      })
-      .catch(this.errorHandler.bind(this))
-      
-      
   }
-  
+
   /**
    * Delete a lesson from the database by id
    * @param id the id to delete from database
@@ -86,7 +109,7 @@ export class LessonController extends BaseController {
     return this.dal.deleteById(user, id)
       .catch(this.errorHandler.bind(this));
   }
-  
+
   ///**
   // * Method for find a lesson by id
   // * @param id

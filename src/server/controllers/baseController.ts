@@ -7,7 +7,7 @@ export abstract class BaseController {
     if (err instanceof ResponseError) {
       throw err;
     } else if (err instanceof DbError) {
-      throw ResponseError.makeNew(err, err.message);
+      throw ResponseError.makeNew(err, err.message, err.code);
     } else {
       throw ResponseError.makeNew(err, "an unknown error happened");
     }

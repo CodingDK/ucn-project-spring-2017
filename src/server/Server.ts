@@ -103,6 +103,7 @@ class Server {
         message: data.message,
         succus: false,
         errorName: errorName,
+        errorCode: err.code,
         unknownErorr: unknownErorr ? true : undefined
       });
     })

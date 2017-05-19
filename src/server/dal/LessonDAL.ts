@@ -66,33 +66,17 @@ export class LessonDAL implements ILessonDAL {
 
   /**
    * Method for creating and inserting a new lesson
-   * @param newLesson
+   * @param newLesson the lesson to insert
    */
   public insert(user: any, newLesson: Lesson): Promise<Lesson> {
-    return new Promise<DbLesson>(
-      //First validate teachers Ids format and create dbLesson object
-      (resolve: any, reject: any) => {
-        const validateTeachersIdsPromises = newLesson.teachers.map((teacher) => { return validateObjectId(teacher.id) });
-        let dbLesson = new DbLesson();
-
-        return Promise.all(validateTeachersIdsPromises)
-          .then((teachersObjectIds) => {
-            dbLesson.teachers = teachersObjectIds;
-            return resolve(dbLesson);
-          });
-      })
+    //First validate teachers Ids format and create dbLesson object
+    return this.validateTeachersIdsAndCreateDbLesson(newLesson)
       //Next validate students Ids format and create meetups for students
       .then((dbLesson) => {
-        const validateStudentIdsPromises = newLesson.meetups.map((meetUp) => { return validateObjectId(meetUp.student.id) });
-        return Promise.all(validateStudentIdsPromises)
-          .then((studentsObjectIds) => {
-            dbLesson.meetUps = studentsObjectIds.map((value) => {
-              let dbMeetUp = new DbMeetUp();
-              dbMeetUp.student = value;
-              return dbMeetUp;
-            });
-            return dbLesson;
-          })
+        return this.validateStudentsIdsAndCreateDbMeetUps(newLesson).then(meetUps => {
+          dbLesson.meetUps = meetUps;
+          return dbLesson;
+        })
       })
       //Set the rest of the properties on dbLesson
       .then((dbLesson) => {
@@ -122,6 +106,95 @@ export class LessonDAL implements ILessonDAL {
   }
 
   /**
+   * Method for updating a lesson
+   * @param newLesson to update with the new values
+   */
+  public update(user: any, newLesson: Lesson): Promise<Lesson> {
+    //First validate teachers Ids format and create dbLesson object
+    return this.validateTeachersIdsAndCreateDbLesson(newLesson)
+      //Next validate students Ids format and create meetups for students
+      .then((dbLesson) => {
+        return this.validateStudentsIdsAndCreateDbMeetUps(newLesson).then(meetUps => {
+          dbLesson.meetUps = meetUps;
+          return dbLesson;
+        })
+      })
+      //Set the rest of the properties on dbLesson
+      .then((dbLesson) => {
+        dbLesson.startTime = newLesson.startTime;
+        dbLesson.endTime = newLesson.endTime;
+        dbLesson.schoolClasses = newLesson.schoolClasses.map(value => { return value.name });
+
+        return dbLesson;
+      })
+      //Send dbLesson to database
+      .then((dbLesson: DbLesson) => {
+        return new Promise<LessonDocument>((resolve: any, reject: any) => {
+          const setQuery = {
+            $set: <LessonDocument>{
+              startTime: dbLesson.startTime,
+              endTime: dbLesson.endTime,
+              teachers: dbLesson.teachers,
+              schoolClasses: dbLesson.schoolClasses,
+              meetUps: dbLesson.meetUps
+            }
+          }
+          Lessons.findByIdAndUpdate(newLesson.id, setQuery)
+            .exec((err: any, updatedLesson: LessonDocument) => {
+              if (err) {
+                return reject(DbError.makeNew(err, `Database error happened in updating id: ${newLesson.id}`));
+              }
+              console.log("updatedLesson", updatedLesson);
+              if (!updatedLesson) {
+                return reject(DbError.makeNew(err, `The id '${newLesson.id}' does not exist in the database`, 404));
+              }
+              return resolve(updatedLesson);
+            })
+        })
+      })
+      //Convert a db document to a lesson object
+      .then((createdLesson: LessonDocument) => {
+        return this.getLessonObj(createdLesson);
+      })
+      .catch((err: any) => {
+        let retError = err;
+        console.log("lessonDal hvilken fejl?", retError);
+        if (!(err instanceof DbError)) {
+          retError = DbError.makeNew(err, `Error happened in updating a lesson in Dal layer`);
+        }
+        console.log("lessonDal hvilken fejl?", retError);
+        throw retError;
+      });
+  }
+
+  private validateTeachersIdsAndCreateDbLesson(lesson: Lesson): Promise<DbLesson> {
+    return new Promise<DbLesson>(
+      //First validate teachers Ids format and create dbLesson object
+      (resolve: any, reject: any) => {
+        const validateTeachersIdsPromises = lesson.teachers.map((teacher) => { return validateObjectId(teacher.id) });
+        let dbLesson = new DbLesson();
+
+        return Promise.all(validateTeachersIdsPromises)
+          .then((teachersObjectIds) => {
+            dbLesson.teachers = teachersObjectIds;
+            return resolve(dbLesson);
+          });
+      })
+  }
+
+  private validateStudentsIdsAndCreateDbMeetUps(lesson: Lesson): Promise<DbMeetUp[]> {
+    const validateStudentIdsPromises = lesson.meetups.map((meetUp) => { return validateObjectId(meetUp.student.id) });
+    return Promise.all(validateStudentIdsPromises)
+      .then((studentsObjectIds) => {
+        return studentsObjectIds.map((value) => {
+          let dbMeetUp = new DbMeetUp();
+          dbMeetUp.student = value;
+          return dbMeetUp;
+        });
+      })
+  }
+
+  /**
    * Delete a lesson from the database by id
    * @param id the id to delete from database
    */
@@ -141,10 +214,6 @@ export class LessonDAL implements ILessonDAL {
           });
         });
       });
-  }
-
-  public update(user: any, lesson: Lesson): Promise<Lesson> {
-    throw new Error("lessonDAl update not implemented yet");
   }
 
   /**

@@ -31,7 +31,7 @@ class StudentRouter extends BaseRouter {
         //this.router.get('/getTestObjectCreate', this.getTestObjectCreate.bind(this));
 
         // POST student checkin (meetup)
-        this.router.get('/', this.studentCheckIn.bind(this));
+        this.router.post('/:id', this.studentCheckIn.bind(this));
         // PUT student checkout (meetup)
         this.router.put('/', this.studentCheckOut.bind(this));
         // PUT student update student's topic
@@ -41,7 +41,16 @@ class StudentRouter extends BaseRouter {
     }
 
     private studentCheckIn(req: Request, res: Response, next: NextFunction): void {
-        // TODO:
+       // console.log(req.params['googleId']);
+        
+        this.ctrl.studentCheckIn(req.user, req.params['id'])
+            .then((isCheckedIn: boolean) => {
+                
+                return this.send(res, isCheckedIn);
+            })
+            .catch((err: any) => {
+                return next(err);
+            });
     }
 
     private studentCheckOut(req: Request, res: Response, next: NextFunction): void {

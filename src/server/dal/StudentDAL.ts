@@ -7,7 +7,7 @@ import { User } from '../models/user';
 
 import { DbLesson, LessonDocument, Lessons, DbMeetUp } from './models/dbLesson';
 import { DbError } from '../errors/dbError';
-import { Types } from 'mongoose';
+import { Types, DocumentQuery } from 'mongoose';
 import { validateObjectId } from './helpers';
 
 // Data Access Layer
@@ -16,11 +16,29 @@ import { UserDAL } from './UserDAL';
 
 export class StudentDal {
 
-    public studentCheckIn(): void //Promise<any>
-    {   
-        console.log('student checkin');
-        let currentTime = moment.now.toString;
-        console.log(currentTime);
+    public studentCheckIn(user: any, id: string): Promise<Lesson>
+    {          
+
+        return validateObjectId(id)
+            .catch((err: any) => {
+                return null;
+            })
+            .then((objectId: Types.ObjectId) => {
+                return new Promise<Lesson>((resolve: any, reject: any) => {
+                    this.getPopulated(Lessons.findById(objectId), true, true)
+                        .exec((err: any, lessonDoc: LessonDocument) => {
+                            if (err) {
+                                return reject(DbError.makeNew(err, "A Database error happened"));
+                            }
+                            if (lessonDoc != null) {
+                                console.log(lessonDoc);
+                                return resolve(this.getLessonObj(lessonDoc));
+                            }
+                            return resolve(undefined);
+                        });                    
+                });
+
+            });
     }
 
     public studentCheckOut(): void //Promise<Lesson[]>
@@ -33,6 +51,12 @@ export class StudentDal {
         // TODO:
     }
 
+    private getPopulated<T>(query: DocumentQuery<T, LessonDocument>, populateTeacher?: boolean, populateStudent?: boolean): DocumentQuery<T, LessonDocument> {
+
+        query = populateTeacher ? query.populate('teachers', 'name imageUrl') : query;
+        query = populateStudent ? query.populate('meetUps.student', 'name imageUrl') : query
+        return query;
+    }
 
     public getActiveLessons(): Promise<Lesson[]> { 
         return new Promise<Lesson[]>((resolve: any, reject: any) => {                  

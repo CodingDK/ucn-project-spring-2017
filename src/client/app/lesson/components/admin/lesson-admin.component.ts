@@ -23,9 +23,7 @@ export class LessonAdminComponent implements AfterViewInit {
   
   ngAfterViewInit() {
     //this.addModal.showModal();
-    setTimeout(() => {
-      this.openEditModal(this.getAll()[0]);
-    }, 200);
+    
   }
 
   getAll(): ILesson[] {

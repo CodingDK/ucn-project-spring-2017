@@ -5,6 +5,8 @@ import * as session from 'express-session';
 import * as cookieParser from 'cookie-parser';
 import * as cors from 'cors';
 import config from './config/config';
+import { JL } from 'jsnlog';
+const jsnlog_nodejs = require('jsnlog-nodejs').jsnlog_nodejs;
 
 import { Response, Request, NextFunction } from 'express';
 
@@ -62,6 +64,8 @@ class Server {
         store: dbHandler.getStoreForSessions()
     }));
     PassportConfig.setup(app);
+
+    JL().setOptions({ "appenders": [dbHandler.getJSNLogAppenderForErrorLogging(config.db.development)] });
   }
 
   // Configure API endpoints.
@@ -73,7 +77,14 @@ class Server {
     app.use('/api/lesson/', LessonRouter);
     app.use('/api/user/', UserRoutes);
     app.use('/api/student/', StudentRouter); // TODO: merge with lesson routes
-    
+
+
+    // jsnlog.js on the client by default sends log messages to /jsnlog.logger, using POST.
+    app.post('*.logger', function (req, res) {
+      jsnlog_nodejs(JL, req.body);
+      // Send empty response. This is ok, because client side jsnlog does not use response from server.
+      res.send('');
+    });
     //app.use(express.static(path.join(__dirname, "/../client")));
   }
 
@@ -94,8 +105,14 @@ class Server {
         if (typeof parent[0] !== 'undefined' && parent[0] instanceof ValidationError) {
           data = parent;
           errorName = "ValidationError";
+          JL('onValidationError').info(parent);
         }
-
+        else {
+          JL('onResponseError').error(err);
+        }
+      }
+      else {
+        JL('onServerError').fatal(err);
       }
 
       return res.status(400).json({

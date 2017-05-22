@@ -20,16 +20,15 @@
             <div class="form-group">
               <input class="form-control" placeholder="Password" name="password" type="password" value=""
                      autocomplete="off"
-                     [(ngModel)]="model.password"
-                     >
+                     [(ngModel)]="model.password">
             </div>
             <!--<div class="checkbox">
               <label>
                 <input name="remember" type="checkbox" value="Remember Me">Remember Me
               </label>
             </div>-->
-            
-            <button class="btn btn-lg btn-success btn-block" (click)="submit()" >Login</button> <!--[disabled]="isSubmitted"-->
+
+            <button class="btn btn-lg btn-success btn-block" (click)="submit()">Login</button> <!--[disabled]="isSubmitted"-->
           </fieldset>
         </form>
       </div>
@@ -42,6 +41,18 @@
       </div>
       <div class="panel-body">
         <login-google></login-google>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="row">
+  <div class="col-sm-3 col-sm-offset-5">
+    <div class="panel panel-default">
+      <div class="panel-heading">Fejl h&aring;ndtering</div>
+      <div class="panel-body">
+        <button class="btn btn-danger" onclick="console.log('error after this'); throw new Error('this is a control error');">
+          Send en fejl (udenfor Angular)
+        </button>
       </div>
     </div>
   </div>

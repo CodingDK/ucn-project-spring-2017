@@ -2,6 +2,13 @@ import * as mongoose from 'mongoose';
 import * as session from 'express-session';
 const MongoStore = require('connect-mongo')(session);
 
+import { transports } from 'winston';
+import { MongoDB } from 'winston-mongodb';
+
+const winston = require('winston');
+require('winston-mongodb').MongoDB;
+
+
 import { IDatabase } from '../interfaces/dal/iDatabase';
 
 /**
@@ -34,5 +41,14 @@ export class MongoDatabase implements IDatabase {
    */
   getStoreForSessions(): any {
     return new MongoStore({ mongooseConnection: mongoose.connection });
+  }
+
+  /**
+   * Get an appender for JSNLog logger for logging errors in the application
+   * @param connectionString string for connection to the database
+   */
+  getJSNLogAppenderForErrorLogging(connectionString: string): any {
+    let dbName = mongoose.connection.db.databaseName;
+    return new winston.transports.MongoDB({ db: connectionString, collection: 'errorLog' }); 
   }
 }

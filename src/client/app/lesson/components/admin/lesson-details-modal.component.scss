@@ -8,3 +8,35 @@
     height: 25px;
   }
 }
+
+.studentPanel {
+  margin-top: 15px;
+
+  .panel-body {
+    padding: 0;
+  }
+
+  .table {
+    margin-bottom: 0;
+
+    td:not(.nameCol), th {
+      width: 1px;
+
+      &.nameCol {
+        width: auto;
+      }
+
+      &.checkInCol {
+        width: 90px;
+      }
+
+      &.checkOutCol {
+        width: 90px;
+      }
+    }
+  }
+
+  .checkInCol, .checkOutCol {
+    vertical-align: middle;
+  }
+}

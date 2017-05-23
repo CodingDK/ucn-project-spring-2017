@@ -6,11 +6,12 @@
 <table class="table table-striped">
   <thead>
     <tr>
-      <th>Dag</th>
-      <th>Klasser</th>
-      <th>Lærere</th>
-      <th>Start</th>
-      <th>Slut</th>
+      <th>Dag <i class="fa fa-calendar" aria-hidden="true"></i></th>
+      <th>Klasser <i class="fa fa-users" aria-hidden="true"></i></th>
+      <th>Antal <i class="fa fa-users" aria-hidden="true"></i></th>
+      <th>Lærere <i class="fa fa-user" aria-hidden="true"></i></th>
+      <th>Start <i class="fa fa-clock-o" aria-hidden="true"></i></th>
+      <th>Slut <i class="fa fa-clock-o" aria-hidden="true"></i></th>
       <th></th>
     </tr>
   </thead>
@@ -18,6 +19,7 @@
     <tr *ngFor="let l of getAll()">
       <td>{{l.startTime | amDateFormat:'dddd DD/MM'}}</td>
       <td>{{getSchoolClassNames(l)}}</td>
+      <td>{{l.meetUps.length}}</td>
       <td>
         <ul class="list-inline teachersList">
           <li *ngFor="let teacher of l.teachers">

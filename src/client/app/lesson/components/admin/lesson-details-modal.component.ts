@@ -8,7 +8,7 @@ import { ModalDirective } from 'ngx-bootstrap';
 import { LessonService } from '../../services/lesson.service';
 import { LessonConfirmModalComponent } from '../shared/lesson-confirm-modal.component';
 
-import { ILesson } from '../../../../../shared/interfaces/iModels';
+import { ILesson, IMeetUp } from '../../../../../shared/interfaces/iModels';
 
 
 @Component({
@@ -17,8 +17,8 @@ import { ILesson } from '../../../../../shared/interfaces/iModels';
   styleUrls: ['./lesson-details-modal.component.scss']
 })
 export class LessonDetailsModalComponent implements OnInit {
-  @ViewChild(LessonConfirmModalComponent)
-  deleteModal: LessonConfirmModalComponent;
+  @ViewChild('detailsModal')
+  detailsModal: ModalDirective;
 
   item: ILesson;
 
@@ -33,15 +33,27 @@ export class LessonDetailsModalComponent implements OnInit {
         this.item = data.lesson;
       });    
   }
+
+  public hideModal(): void {
+    this.detailsModal.hide();
+  }
     
   public onHidden(): void {
     this.router.navigate(['/lesson'], { relativeTo: this.route});
   }
 
+  public checkClicked(m: IMeetUp, checkIn: boolean) {
+    if (checkIn) {
+      m.checkIn = new Date();
+    } else {
+      m.checkOut = new Date();
+    }
+  }
+
   public onConfirmedDelete(event: any) {
-    this.lessonService.deleteLesson(this.item.id)
+    /*this.lessonService.deleteLesson(this.item.id)
       .then((deleted: boolean) => {
-        this.deleteModal.hideModal();
+        this.detailsModal.hide();
         if (deleted) {
           this.toastyService.success("Lektiecaf&eacute;en er blevet slettet");
         } else {
@@ -54,7 +66,7 @@ export class LessonDetailsModalComponent implements OnInit {
           title: "Der opstod en fejl",
           msg: body.message
         });
-      });
+      });*/
   }
 }
 

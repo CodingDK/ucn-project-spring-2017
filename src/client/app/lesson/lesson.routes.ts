@@ -22,6 +22,9 @@ import { LessonDetailResolver } from './services/lesson-detail-resolver.service'
           component: LessonAdminDeleteModalComponent,
           resolve: {
             lesson: LessonDetailResolver
+          },
+          data: {
+            populateTeacher: true
           }
         },
         {
@@ -29,6 +32,20 @@ import { LessonDetailResolver } from './services/lesson-detail-resolver.service'
           component: LessonAdminAddModalComponent,
           resolve: {
             lesson: LessonDetailResolver
+          },
+          data: {
+            populateTeacher: true
+          }
+        },
+        {
+          path: 'details/:id',
+          component: LessonAdminAddModalComponent,
+          resolve: {
+            lesson: LessonDetailResolver
+          },
+          data: {
+            populateTeacher: true,
+            populateStudent: true
           }
         }
       ]

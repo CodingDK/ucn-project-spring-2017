@@ -14,7 +14,10 @@ export class LessonDetailResolver implements Resolve<ILesson> {
 
   resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Promise<ILesson> {
     let id = route.params['id'];
-    return this.ls.getLessonById(id).then(lesson => {
+    let populateStudent = route.data['populateStudent'];
+    let populateTeacher = route.data['populateTeacher'];
+    
+    return this.ls.getLessonById(id, populateTeacher, populateStudent).then(lesson => {
       if (lesson) {
         return lesson;
       } else { // id not found

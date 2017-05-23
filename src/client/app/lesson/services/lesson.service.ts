@@ -43,11 +43,12 @@ export class LessonService {
     return this.allLessons;
   }
 
-  getLessonById(id: string): Promise<ILesson> {
+  getLessonById(id: string, populateTeacher: boolean = true, populateStudent?: boolean): Promise<ILesson> {
     return this.http
       .get(this.lessonUrl + id, {
         params: {
-          populateTeacher: true
+          populateTeacher,
+          populateStudent
         },
         withCredentials: true
       })

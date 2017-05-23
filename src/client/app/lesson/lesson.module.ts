@@ -13,6 +13,7 @@ import { LessonComponent } from './components/lesson.component';
 import { LessonAdminComponent } from './components/admin/lesson-admin.component';
 import { LessonAdminAddModalComponent } from './components/admin/lesson-admin-add-modal.component';
 import { LessonAdminDeleteModalComponent } from './components/admin/lesson-admin-delete-modal.component';
+import { LessonDetailsModalComponent } from './components/admin/lesson-details-modal.component';
 import { LessonConfirmModalComponent } from './components/shared/lesson-confirm-modal.component';
 
 import { LessonService } from './services/lesson.service';
@@ -38,6 +39,7 @@ import { LessonDetailResolver } from './services/lesson-detail-resolver.service'
     LessonAdminComponent,
     LessonAdminAddModalComponent,
     LessonAdminDeleteModalComponent,
+    LessonDetailsModalComponent,
     LessonConfirmModalComponent
   ],
   providers: [

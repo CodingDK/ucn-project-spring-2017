@@ -5,6 +5,7 @@ import { LessonComponent } from './components/lesson.component';
 import { AuthGuard } from '../services/auth.guard';
 import { LessonAdminAddModalComponent } from './components/admin/lesson-admin-add-modal.component';
 import { LessonAdminDeleteModalComponent } from './components/admin/lesson-admin-delete-modal.component';
+import { LessonDetailsModalComponent } from './components/admin/lesson-details-modal.component';
 import { LessonDetailResolver } from './services/lesson-detail-resolver.service';
 
 @NgModule({
@@ -39,7 +40,7 @@ import { LessonDetailResolver } from './services/lesson-detail-resolver.service'
         },
         {
           path: 'details/:id',
-          component: LessonAdminAddModalComponent,
+          component: LessonDetailsModalComponent,
           resolve: {
             lesson: LessonDetailResolver
           },

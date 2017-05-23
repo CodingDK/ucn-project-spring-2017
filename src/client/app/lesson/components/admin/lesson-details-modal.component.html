@@ -1,0 +1,70 @@
+﻿<div [config]="{ show: true }" (onHidden)="onHiddenModal()"
+     bsModal #confirmModal="bs-modal" class="modal fade"
+     tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-sm">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title pull-left">{{title}}</h4>
+        <button type="button" class="close pull-right" aria-label="Close" (click)="hideModal()">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <h4>
+          Er du sikker på at du vil slette lektiecaféen
+          med følgende oplysninger:
+        </h4>
+        <div class="row">
+          <div class="col-sm-4">
+            <label>Dato</label>
+          </div>
+          <div class="col-sm-8">
+            {{item?.startTime | amDateFormat:"dddd [d.] LL"}}
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-sm-4">
+            <label>Periode</label>
+          </div>
+          <div class="col-sm-8">
+            kl. {{item?.startTime | amDateFormat:"LT"}}
+            til {{item?.endTime | amDateFormat:'LT'}}
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-sm-4">
+            <label>Lærere</label>
+          </div>
+          <div class="col-sm-8">
+            <ul class="list-unstyled teachersList">
+              <li *ngFor="let teacher of item?.teachers">
+                <img [src]="teacher.imageUrl" [title]="teacher.name" />
+                {{teacher.name}}
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-sm-4">
+            <label>Klasser</label>
+          </div>
+          <div class="col-sm-8">
+            <ul class="list-unstyled">
+              <li *ngFor="let schoolClass of item?.schoolClasses">
+                {{schoolClass.name}}
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-succus"
+                (click)="confirm()"
+                [ngClass]="btnClass ? btnClass : 'btn-success'">
+          {{btnText ? btnText : 'Bekræft'}}
+        </button>
+        <button type="button" class="btn btn-default" (click)="hideModal()">Annuller</button>
+      </div>
+    </div>
+  </div>
+</div>

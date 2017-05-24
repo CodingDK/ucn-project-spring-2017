@@ -31,23 +31,80 @@ export class LessonDetailsModalComponent implements OnInit {
     this.route.data
       .subscribe((data: { lesson: ILesson }) => {
         this.item = data.lesson;
-      });    
+      });
   }
 
   public hideModal(): void {
     this.detailsModal.hide();
   }
-    
+
   public onHidden(): void {
-    this.router.navigate(['/lesson'], { relativeTo: this.route});
+    this.router.navigate(['/lesson'], { relativeTo: this.route });
   }
 
-  public checkClicked(m: IMeetUp, checkIn: boolean) {
-    if (checkIn) {
-      m.checkIn = new Date();
-    } else {
-      m.checkOut = new Date();
+  public checkClicked(m: IMeetUp, isCheckIn: boolean) {
+    const newMeetUp = <IMeetUp>{
+      checkIn: m.checkIn,
+      checkOut: m.checkOut,
+      student: m.student,
+      topic: m.topic
     }
+    if (isCheckIn) {
+      newMeetUp.checkIn = new Date();
+    } else {
+      newMeetUp.checkOut = new Date();
+    }
+    this.lessonService.updateMeetUp(this.item.id, newMeetUp)
+      .then(returnedMeetUp => {
+        m.checkIn = returnedMeetUp.checkIn;
+        m.checkOut = returnedMeetUp.checkOut;
+        m.topic = returnedMeetUp.topic;
+
+        let message = `${returnedMeetUp.student.name} er blevet tjekket `;
+        isCheckIn ? message += "ind" : message += "ud"
+
+        this.toastyService.success(message);
+      })
+      .catch(err => {
+        let body = JSON.parse(err._body);
+        this.toastyService.error(<ToastOptions>{
+          title: "Der opstod en fejl",
+          msg: body.message
+        });
+      })
+  }
+
+  public removeChecked(m: IMeetUp, isCheckIn: boolean) {
+    const newMeetUp = <IMeetUp>{
+      //checkIn: m.checkIn,
+      //checkOut: m.checkOut,
+      student: m.student,
+      topic: m.topic
+    }
+    if (!isCheckIn) {
+      newMeetUp.checkIn = m.checkIn;
+    }
+
+    this.lessonService.updateMeetUp(this.item.id, newMeetUp)
+      .then(returnedMeetUp => {
+        m.checkIn = returnedMeetUp.checkIn;
+        m.checkOut = returnedMeetUp.checkOut;
+        m.topic = returnedMeetUp.topic;
+
+        let message;
+        isCheckIn ? message = "ind" : message = "ind og ud"
+
+        message = `Tjek ${message} for ${returnedMeetUp.student.name} er blevet fjernet`;
+        this.toastyService.success(message);
+
+      })
+      .catch(err => {
+        let body = JSON.parse(err._body);
+        this.toastyService.error(<ToastOptions>{
+          title: "Der opstod en fejl",
+          msg: body.message
+        });
+      })
   }
 
   public onConfirmedDelete(event: any) {

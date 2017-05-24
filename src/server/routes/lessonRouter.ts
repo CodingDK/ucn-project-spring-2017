@@ -4,6 +4,7 @@ import { BaseRouter } from './baseRouter';
 import { LessonController } from '../controllers/lessonController';
 import { Lesson } from '../models/lesson';
 import { CreateLessonViewModel } from '../models/viewmodels/createLessonViewModel';
+import { IMeetUp } from '../../shared/interfaces/iModels';
 
 class LessonRouter extends BaseRouter {
   ctrl: LessonController;
@@ -16,7 +17,7 @@ class LessonRouter extends BaseRouter {
     this.ctrl = new LessonController();
     this.init();
   }
-  
+
   /**
    * Take each handler, and attach to one of the Express.Router's
    * endpoints.
@@ -34,6 +35,10 @@ class LessonRouter extends BaseRouter {
     this.router.put('/', this.updateLesson.bind(this));
     //DELETE delete a lesson
     this.router.delete('/:id', this.deleteLesson.bind(this));
+
+    //this.router.put('/:id/meetup', this.updateMeetup.bind(this));
+    //PUT update meetUp for student
+    this.router.put('/:lessonId/meetup/:studentId', this.updateMeetUp.bind(this));
   }
 
   /**
@@ -61,7 +66,7 @@ class LessonRouter extends BaseRouter {
     if (typeof populateTeacher === "string") populateTeacher = (populateTeacher == 'true');
     let populateStudent = req.query.populateStudent;
     if (typeof populateStudent === "string") populateStudent = (populateStudent == 'true');
-    
+
     this.ctrl.findById(req.user, req.params['id'], populateTeacher, populateStudent)
       .then((lesson: Lesson) => {
         return this.send(res, lesson);
@@ -117,11 +122,25 @@ class LessonRouter extends BaseRouter {
       });
   }
 
+  private updateMeetUp(req: Request, res: Response, next: NextFunction): void {
+    //TODO validation for req.body is a real meetUp
+    let lessonId = req.params['lessonId'];
+    let studentId = req.params['studentId'];
+    this.ctrl.updateMeetUp(req.user, lessonId, studentId, req.body)
+      .then((meetUp: IMeetUp) => {
+        return this.send(res, meetUp);
+      })
+      .catch((err: any) => {
+        //this.errorHandler(res, err, err.message);
+        return next(err);
+      });
+  }
+
   private getTestObject(req: Request, res: Response, next: NextFunction) {
     let startTime = new Date(new Date().getTime() + 1000 * 60 * 60);
     let endDate = new Date(startTime.getTime());
     let lesson = Lesson.createNew(startTime, endDate, ["pwe0916"], ["1"]);
-    return this.send(res, lesson); 
+    return this.send(res, lesson);
   }
 
   private getTestObjectCreate(req: Request, res: Response, next: NextFunction) {
@@ -137,8 +156,8 @@ class LessonRouter extends BaseRouter {
     obj.startTime = startTime;
     obj.endTime = endDate;
     obj.schoolClassNames = ["pwe0916"];
-    obj.teachers = ["1"];   
-    return this.send(res, obj); 
+    obj.teachers = ["1"];
+    return this.send(res, obj);
   }
 }
 

@@ -5,7 +5,7 @@ import 'rxjs/add/operator/toPromise';
 
 import { ToastyService, ToastyConfig, ToastOptions, ToastData } from 'ng2-toasty';
 
-import { ILesson } from '../../../../shared/interfaces/iModels';
+import { ILesson, IMeetUp } from '../../../../shared/interfaces/iModels';
 import { AppConstants } from "../../app.constants";
 
 import { CreateLessonViewModel } from '../../models/viewmodels/createLessonViewModel';
@@ -95,6 +95,20 @@ export class LessonService {
       .then((deleted: boolean) => {
         this.refreshAllLessons();
         return deleted;
+      })
+      .catch(this.handleError.bind(this));
+  }
+
+  updateMeetUp(lessonId: string, meetUp: IMeetUp): Promise<IMeetUp> {
+    const url = `${this.lessonUrl + lessonId}/meetup/${meetUp.student.id}`
+    return this.http.put(url, meetUp, { withCredentials: true })
+      .toPromise()
+      .then(response => {
+        return response.json().data;
+      })
+      .then((meetUp: IMeetUp) => {
+        //TODO maybe refresh allLesson? (or just this meetUp)
+        return meetUp;
       })
       .catch(this.handleError.bind(this));
   }

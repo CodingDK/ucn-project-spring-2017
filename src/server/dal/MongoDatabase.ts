@@ -23,7 +23,7 @@ export class MongoDatabase implements IDatabase {
     //workaround for https://github.com/Automattic/mongoose/issues/4951#issuecomment-283327958
     (<any>mongoose).Promise = global.Promise;
     mongoose.connect(connectionString);
-    //mongoose.set('debug', true);
+    mongoose.set('debug', true);
   }
 
   /**

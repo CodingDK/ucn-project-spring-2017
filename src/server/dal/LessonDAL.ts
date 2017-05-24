@@ -6,6 +6,8 @@ import { DbError } from '../errors/dbError';
 import { Types, DocumentQuery } from 'mongoose';
 import { validateObjectId } from './helpers';
 
+import { IMeetUp } from '../../shared/interfaces/iModels';
+
 import { ILessonDAL } from '../interfaces/dal/iLessonDAL';
 
 /**
@@ -183,7 +185,7 @@ export class LessonDAL implements ILessonDAL {
   }
 
   private validateStudentsIdsAndCreateDbMeetUps(lesson: Lesson): Promise<DbMeetUp[]> {
-    const validateStudentIdsPromises = lesson.meetups.map((meetUp) => { return validateObjectId(meetUp.student.id) });
+    const validateStudentIdsPromises = lesson.meetUps.map((meetUp) => { return validateObjectId(meetUp.student.id) });
     return Promise.all(validateStudentIdsPromises)
       .then((studentsObjectIds) => {
         return studentsObjectIds.map((value) => {
@@ -213,6 +215,43 @@ export class LessonDAL implements ILessonDAL {
             return resolve(deleted);
           });
         });
+      });
+  }
+
+  /**
+   * Update a meetup on a lesson
+   * @param lessonId the id of the lesson to update on
+   * @param studentId the id of the student to update
+   * @param meetUp the new meetUp
+   */
+  public updateMeetUp(user: any, lessonId: string, studentId: string, meetUp: IMeetUp): Promise<IMeetUp> {
+    //TODO better validation (also for converting lessonId and studentIds to objectId)
+    return this.getPopulated(Lessons.findOneAndUpdate(
+      { "_id": lessonId, "meetUps.student": studentId },
+      {
+        "$set": {
+          "meetUps.$.checkIn": meetUp.checkIn,
+          "meetUps.$.checkOut": meetUp.checkOut,
+          "meetUps.$.topic": meetUp.topic,
+        }
+      }), false, true)
+      .exec((err: any, lessonDocument) => {
+        if (err) {
+          throw DbError.makeNew(err, `Database error happened in updating meetup`);
+        }
+        return lessonDocument;
+      })
+      .then(lessonDoc => {
+        return meetUp;
+        //TODO make this return the new meetUp in db, because lessonDoc right now is the object in db before it gets updated
+        //return this.getLessonObj(lessonDoc);
+      //})
+      //.then(lesson => {
+      //  console.log("here?", lesson);
+      //  return <IMeetUp>lesson.meetUps.find(x => { return x.student.id == studentId })
+      }).catch(err => {
+        console.log("here?", err);
+        throw err
       });
   }
 
@@ -249,8 +288,8 @@ export class LessonDAL implements ILessonDAL {
   /**
    * Method for make MeetUp object to DbMeetUp object
    */
-  private getMeetUpsAsDbObjects(meetups: MeetUp[]): DbMeetUp[] {
-    return meetups.map((value) => {
+  private getMeetUpsAsDbObjects(meetUps: MeetUp[]): DbMeetUp[] {
+    return meetUps.map((value) => {
       let newDbMeetUp = new DbMeetUp();
       newDbMeetUp.checkIn = value.checkIn;
       newDbMeetUp.checkOut = value.checkOut;

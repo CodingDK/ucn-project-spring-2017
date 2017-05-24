@@ -65,7 +65,7 @@
         <div class="panel panel-default studentPanel">
           <div class="panel-heading">Elever</div>
           <div class="panel-body">
-            <table class="table table-striped table-bordered">
+            <table class="table table-striped table-bordered" *ngIf="item.meetUps.length; else noStudentsTemplate">
               <thead>
                 <tr>
                   <th class="text-center"><i class="fa fa-user-circle-o" aria-hidden="true"></i></th>
@@ -81,7 +81,7 @@
                   </td>
                   <td class="nameCol">{{m.student.name}}</td>
                   <td class="text-center checkInCol" [class.verticalMiddle]="!m.checkIn">
-                    <span *ngIf="m.checkIn; else checkInTemplate">
+                    <span *ngIf="m.checkIn; else checkInTemplate" (click)="removeChecked(m, true)">
                       {{m.checkIn | amDateFormat:'LT'}}
                     </span>
                     <ng-template #checkInTemplate>
@@ -91,7 +91,7 @@
                     </ng-template>
                   </td>
                   <td class="text-center checkOutCol" [class.verticalMiddle]="m.checkIn && !m.checkOut">
-                    <span *ngIf="m.checkOut; else checkOutTemplate">
+                    <span *ngIf="m.checkOut; else checkOutTemplate" (click)="removeChecked(m, false)">
                       {{m.checkOut | amDateFormat:'LT'}}
                     </span>
                     <ng-template #checkOutTemplate>
@@ -103,11 +103,11 @@
                 </tr>
               </tbody>
             </table>
-          </div>
-        </div>
-        <div class="row">
-          <div class="col-sm-12">
-
+            <ng-template #noStudentsTemplate>
+              
+                    <p class="noStudents">Der er ingen elever tilknyttet lektiecaféen</p>
+                  
+            </ng-template>
           </div>
         </div>
       </div>

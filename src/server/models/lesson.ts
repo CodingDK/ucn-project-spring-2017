@@ -1,14 +1,15 @@
 import { SchoolClass } from './schoolClass';
 import { MeetUp } from './meetUp';
 import { User } from './user';
+import { ILesson} from '../../shared/interfaces/iModels';
 
-export class Lesson {
+export class Lesson implements ILesson {
   id: string;
   startTime: Date;
   endTime: Date;
   teachers: User[];
   schoolClasses: SchoolClass[];
-  meetups: MeetUp[]; // students who met up
+  meetUps: MeetUp[]; // students who met up
 
   constructor() { }
 

@@ -4,7 +4,7 @@ export interface ILesson {
   endTime: Date;
   teachers: IUser[];
   schoolClasses: ISchoolClass[];
-  meetups: IMeetUp[];
+  meetUps: IMeetUp[];
 }
 
 export interface IUser {

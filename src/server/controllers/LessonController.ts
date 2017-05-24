@@ -8,6 +8,7 @@ import { LessonDAL } from '../dal/lessonDAL';
 import { ILessonDAL } from '../interfaces/dal/iLessonDAL';
 
 import { CreateLessonViewModel } from '../models/viewmodels/createLessonViewModel';
+import { IMeetUp } from '../../shared/interfaces/iModels';
 import { ResponseError } from '../errors/responseError';
 
 
@@ -96,7 +97,7 @@ export class LessonController extends BaseController {
           teacher.id = value;
           return teacher;
         })
-        newLesson.meetups = students.map(value => { return new MeetUp(value) });
+        newLesson.meetUps = students.map(value => { return new MeetUp(value) });
         return newLesson;
       })
   }
@@ -107,6 +108,17 @@ export class LessonController extends BaseController {
    */
   public deleteById(user: any, id: string): Promise<boolean> {
     return this.dal.deleteById(user, id)
+      .catch(this.errorHandler.bind(this));
+  }
+
+  /**
+   * Update a meetup on a lesson
+   * @param lessonId the id of the lesson to update on
+   * @param studentId the id of the student to update
+   * @param meetUp the new meetUp
+   */
+  public updateMeetUp(user: any, lessonId: string, studentId: string, meetUp: IMeetUp) {
+    return this.dal.updateMeetUp(user, lessonId, studentId, meetUp)
       .catch(this.errorHandler.bind(this));
   }
 

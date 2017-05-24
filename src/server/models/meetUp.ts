@@ -1,6 +1,7 @@
 import { User } from './user';
+import { IMeetUp } from '../../shared/interfaces/iModels';
 
-export class MeetUp {
+export class MeetUp implements IMeetUp {
 
   checkIn: Date;
   checkOut: Date;

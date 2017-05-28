@@ -1,0 +1,32 @@
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th>Dag <i class="fa fa-calendar" aria-hidden="true"></i></th>
+      <th>Klasser <i class="fa fa-users" aria-hidden="true"></i></th>
+      <th>Antal <i class="fa fa-users" aria-hidden="true"></i></th>
+      <th>Lærere <i class="fa fa-user" aria-hidden="true"></i></th>
+      <th>Start <i class="fa fa-clock-o" aria-hidden="true"></i></th>
+      <th>Slut <i class="fa fa-clock-o" aria-hidden="true"></i></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let l of lessons">
+      <td>{{l.startTime | amDateFormat:'dddd DD/MM'}}</td>
+      <td>{{getSchoolClassNames(l)}}</td>
+      <td>{{l.meetUps.length}}</td>
+      <td>
+        <ul class="list-inline teachersList">
+          <li *ngFor="let teacher of l.teachers">
+            <img [src]="teacher.imageUrl" [title]="teacher.name" />
+          </li>
+        </ul>   
+      </td>
+      <td>{{l.startTime | amDateFormat:'LT'}}</td>
+      <td>{{l.endTime | amDateFormat:'LT'}}</td>
+      <td>
+        <ng-container *ngTemplateOutlet="btnCol; context: {$implicit: l}"></ng-container>
+      </td>
+    </tr>
+  </tbody>
+</table>

@@ -2,49 +2,10 @@
   Planlagte Lektiécafer
   <button type="button" class="btn btn-primary btnCreate" (click)="openAddModal()">Opret ny</button>
 </h1>
+<lesson-table [lessons]="getAll()" [btnCol]="btnColTemplate"></lesson-table>
 
-<table class="table table-striped">
-  <thead>
-    <tr>
-      <th>Dag <i class="fa fa-calendar" aria-hidden="true"></i></th>
-      <th>Klasser <i class="fa fa-users" aria-hidden="true"></i></th>
-      <th>Antal <i class="fa fa-users" aria-hidden="true"></i></th>
-      <th>Lærere <i class="fa fa-user" aria-hidden="true"></i></th>
-      <th>Start <i class="fa fa-clock-o" aria-hidden="true"></i></th>
-      <th>Slut <i class="fa fa-clock-o" aria-hidden="true"></i></th>
-      <th></th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr *ngFor="let l of getAll()">
-      <td>{{l.startTime | amDateFormat:'dddd DD/MM'}}</td>
-      <td>{{getSchoolClassNames(l)}}</td>
-      <td>{{l.meetUps.length}}</td>
-      <td>
-        <ul class="list-inline teachersList">
-          <li *ngFor="let teacher of l.teachers">
-            <img [src]="teacher.imageUrl" [title]="teacher.name" />
-          </li>
-        </ul>   
-      </td>
-      <td>{{l.startTime | amDateFormat:'LT'}}</td>
-      <td>{{l.endTime | amDateFormat:'LT'}}</td>
-      <td>
-        <button class="btn btn-success btn-xs btnEdit" role="button" (click)="openEditModal(l)">Rediger</button> |
-        <button class="btn btn-info btn-xs btnDetails" role="button" (click)="openDetailsModal(l)">Detaljer</button> |
-        <button class="btn btn-danger btn-xs btnDelete" role="button" (click)="openDeleteModal(l)">Slet</button>
-      </td>
-    </tr>
-  </tbody>
-</table>
-
-
-
-<!--<lesson-admin-add-modal></lesson-admin-add-modal>-->
-
-<!--
-  startTime: Date;
-  endTime: Date;
-  teachers: Teacher[];
-  schoolClass: SchoolClass;
--->
+<ng-template let-lesson #btnColTemplate>
+  <button class="btn btn-success btn-xs btnEdit" role="button" (click)="openEditModal(lesson)">Rediger</button> |
+  <button class="btn btn-info btn-xs btnDetails" role="button" (click)="openDetailsModal(lesson)">Detaljer</button> |
+  <button class="btn btn-danger btn-xs btnDelete" role="button" (click)="openDeleteModal(lesson)">Slet</button>   
+</ng-template>

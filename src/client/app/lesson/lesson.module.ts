@@ -18,6 +18,8 @@ import { LessonConfirmModalComponent } from './components/shared/lesson-confirm-
 
 import { LessonService } from './services/lesson.service';
 import { LessonDetailResolver } from './services/lesson-detail-resolver.service';
+import { LessonTeacherComponent } from "./components/teacher/lesson-teacher.component";
+import { LessonTableComponent } from "./components/shared/lesson-table.component";
 
 @NgModule({
   imports: [
@@ -40,7 +42,9 @@ import { LessonDetailResolver } from './services/lesson-detail-resolver.service'
     LessonAdminAddModalComponent,
     LessonAdminDeleteModalComponent,
     LessonDetailsModalComponent,
-    LessonConfirmModalComponent
+    LessonConfirmModalComponent,
+    LessonTeacherComponent,
+    LessonTableComponent
   ],
   providers: [
     LessonService,

@@ -1,0 +1,31 @@
+// Place your settings in this file to overwrite default and user settings.
+{
+    "workbench.iconTheme": "vscode-icons",
+    "ng2ComponentGenerator.config": {
+        "global": {
+            //"quotes": "single", // or "double",
+            "generateFolder": false // or false
+        }//,
+        //"files": {
+            /*"component": {
+                "create": true,
+                "extension": "ts",
+                "template": "${workspaceRoot}/myComponent.template"
+            },
+            "css": {
+                "create": true,
+                "extension": "scss"
+            },
+            "html": {
+                "create": true,
+                "extension": "html"
+            },*/
+        /*    "module": {
+                "create": false,
+                "extension": "ts"
+            }
+        }*/
+    },
+    "editor.tabSize": 2,
+    "editor.detectIndentation": false
+}

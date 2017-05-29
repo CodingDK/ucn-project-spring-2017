@@ -5,19 +5,22 @@
     </div>
     <ul class="nav navbar-nav">
       <li routerLinkActive="active"><a routerLink="/home" routerLinkActive="active">Home</a></li>
-      <li routerLinkActive="active" *ngIf="authService.isLoggedIn()">
-        <a routerLink="/lesson">Administrator</a>
+      <li routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" *ngIf="isLoggedIn() && (isTeacher() || isStudent())">
+        <a routerLink="/lesson">{{isStudent() ? 'Elev' : 'Lærer'}}</a>
+      </li>
+      <li routerLinkActive="active" *ngIf="isLoggedIn() && isAdmin()">
+        <a routerLink="/lesson/admin">Administrator</a>
       </li>
       <!--<li>
         <a (click)="addToast()" style="cursor:pointer;">Notification test</a>
       </li>-->
     </ul>
     <ul class="nav navbar-nav navbar-right">
-      <li routerLinkActive="active" *ngIf="!authService.isLoggedIn()">
+      <li routerLinkActive="active" *ngIf="!isLoggedIn()">
         <a routerLink="/login"><span class="fa fa-sign-in"></span> Login</a>
       </li>
-      <li *ngIf="authService.isLoggedIn()">
-        <a (click)="authService.logout()"><span class="fa fa-sign-out"></span> Logout</a>
+      <li *ngIf="isLoggedIn()">
+        <a (click)="logOut()"><span class="fa fa-sign-out"></span> Logout</a>
       </li>
     </ul>
   </div>

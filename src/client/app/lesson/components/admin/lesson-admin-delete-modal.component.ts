@@ -35,7 +35,7 @@ export class LessonAdminDeleteModalComponent implements OnInit {
   }
     
   public onHidden(): void {
-    this.router.navigate(['/lesson'], { relativeTo: this.route});
+    this.router.navigate(['../../'], { relativeTo: this.route});
   }
 
   public onConfirmedDelete(event: any) {

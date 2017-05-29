@@ -37,10 +37,6 @@ export class LessonAdminComponent implements AfterViewInit {
     //this.toastyService.default('Hi there');
   }
 
-  openDetailsModal(lesson: ILesson) {
-    this.router.navigate(['details', lesson.id], { relativeTo: this.route });
-  }
-
   openEditModal(lesson: ILesson) {
     this.router.navigate(['edit', lesson.id], { relativeTo: this.route });
   }

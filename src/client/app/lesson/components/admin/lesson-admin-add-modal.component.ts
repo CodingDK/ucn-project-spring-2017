@@ -68,7 +68,8 @@ export class LessonAdminAddModalComponent implements OnInit {
   }
 
   public onHidden(): void {
-    this.router.navigate(['/lesson'], { relativeTo: this.route });
+    const routeStr = this.isEditing() ? '../../' : '../';
+    this.router.navigate([routeStr], { relativeTo: this.route });
   }
 
   private setValuesInDropdowns(): Promise<void[]> {

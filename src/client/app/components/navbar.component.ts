@@ -36,4 +36,24 @@ export class NavbarComponent {
     this.toastyService.error(toastOptions);
     this.toastyService.warning(toastOptions);
   }
+
+  isLoggedIn() : boolean {
+    return this.authService.isLoggedIn();
+  }
+
+  logOut(): void {
+    return this.authService.logout();
+  }
+
+  isTeacher(): boolean {
+    return this.authService.isUserInRole("teacher");
+  }
+
+  isStudent(): boolean {
+    return this.authService.isUserInRole("student");
+  }
+
+  isAdmin(): boolean {
+    return this.authService.isUserInRole("admin");
+  }
 }

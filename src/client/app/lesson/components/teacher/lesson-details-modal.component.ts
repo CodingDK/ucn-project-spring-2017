@@ -39,7 +39,7 @@ export class LessonDetailsModalComponent implements OnInit {
   }
 
   public onHidden(): void {
-    this.router.navigate(['/lesson'], { relativeTo: this.route });
+    this.router.navigate(['../../'], { relativeTo: this.route });
   }
 
   public checkClicked(m: IMeetUp, isCheckIn: boolean) {

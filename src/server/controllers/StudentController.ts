@@ -18,7 +18,7 @@ import { StudentDal } from '../dal/StudentDAL';
 export class StudentController extends BaseController {
     private dal: StudentDal = new StudentDal();
 
-    public studentCheckIn(user: any, id: string): Promise<boolean> {
+    public studentCheckIn(user: any, id: string): Promise<any> {
         return this.dal.studentCheckIn(user, id)
             .catch(this.errorHandler.bind(this));
     }

@@ -86,6 +86,15 @@ export class AuthService {
     return this.loggedIn;
   }
 
+  getUser() : IUser | undefined {
+    return this.localStorageService.getCurrentUser();
+  }
+
+  isUserInRole(role: string): boolean {
+    const user = this.localStorageService.getCurrentUser();
+    return user != null && user.roles.indexOf(role) != -1;
+  }
+
   private setCurrentUserIfValid(jsonObj: JsonResponse<IUser>): boolean {
     this.finishFirstRun = true;
     let user = jsonObj.data;

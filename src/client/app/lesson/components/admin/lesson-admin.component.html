@@ -6,6 +6,7 @@
 
 <ng-template let-lesson #btnColTemplate>
   <button class="btn btn-success btn-xs btnEdit" role="button" (click)="openEditModal(lesson)">Rediger</button> |
-  <button class="btn btn-info btn-xs btnDetails" role="button" (click)="openDetailsModal(lesson)">Detaljer</button> |
   <button class="btn btn-danger btn-xs btnDelete" role="button" (click)="openDeleteModal(lesson)">Slet</button>   
 </ng-template>
+
+<router-outlet></router-outlet>

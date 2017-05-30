@@ -27,5 +27,7 @@
         }*/
     },
     "editor.tabSize": 2,
-    "editor.detectIndentation": false
+    "editor.detectIndentation": false,
+    "terminal.integrated.shell.windows": "C:\\Windows\\sysnative\\cmd.exe"
+ 
 }

@@ -4,6 +4,7 @@ import * as bodyParser from 'body-parser';
 import * as session from 'express-session';
 import * as cookieParser from 'cookie-parser';
 import * as cors from 'cors';
+import * as compression from 'compression';
 import config from './config/config';
 import { JL } from 'jsnlog';
 const jsnlog_nodejs = require('jsnlog-nodejs').jsnlog_nodejs;
@@ -50,11 +51,20 @@ class Server {
     process.on('SIGINT', dbHandler.closeConnectionEvent);
     process.on('SIGTERM', dbHandler.closeConnectionEvent);
 
+
+    app.use(compression());
     app.use(cors({ origin: config.origin, credentials: true})); //
     app.use(logger('dev'));
     app.use(cookieParser(config.cookie.secret));
     app.use(bodyParser.urlencoded({ extended: true }));
     app.use(bodyParser.json());
+
+    app.use((req, res, next) => {
+      res.header('Cache-Control', 'private, no-cache, no-store, must-revalidate');
+      res.header('Expires', '-1');
+      res.header('Pragma', 'no-cache');
+      next();
+    });
 
     app.use(session({
         secret: config.session.secret,

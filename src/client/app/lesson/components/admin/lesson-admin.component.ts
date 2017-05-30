@@ -19,6 +19,7 @@ export class LessonAdminComponent implements AfterViewInit {
   constructor(private lessonService: LessonService, private toastyService: ToastyService,
     private route: ActivatedRoute,
     private router: Router) {
+      this.lessonService.refreshAllLessons();
   }
   
   ngAfterViewInit() {

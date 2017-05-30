@@ -17,6 +17,7 @@ export class LessonTeacherComponent {
     private toastyService: ToastyService,
     private route: ActivatedRoute,
     private router: Router) {
+      this.lessonService.refreshAllLessons();
   }
   
   getAll(): ILesson[] {

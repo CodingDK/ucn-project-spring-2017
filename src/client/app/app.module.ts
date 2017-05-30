@@ -25,6 +25,8 @@ import { LocalStorageService } from './services/localstorage.service';
 import { UserService } from './services/user.service';
 
 import { MomentModule } from 'angular2-moment';
+import { LoginSimpleComponent } from "./components/login-simple.component";
+import { MultiselectDropdownModule } from 'angular-2-dropdown-multiselect';
 
 
 @NgModule({
@@ -33,8 +35,8 @@ import { MomentModule } from 'angular2-moment';
     NavbarComponent,
     HomeComponent,
     LoginComponent,
-    LoginGoogleComponent
-
+    LoginGoogleComponent,
+    LoginSimpleComponent
   ],
   imports: [
     BrowserModule,
@@ -44,6 +46,7 @@ import { MomentModule } from 'angular2-moment';
     HttpModule,
     ToastyModule.forRoot(),
     MomentModule,
+    MultiselectDropdownModule,
     GithubModule,
     LessonModule,
     StudentModule,

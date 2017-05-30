@@ -56,4 +56,12 @@ export class NavbarComponent {
   isAdmin(): boolean {
     return this.authService.isUserInRole("admin");
   }
+
+  getDisplayUser() {
+    const user = this.authService.getUser();
+    if (user) {
+      return `${user.name} (${user.roles.join(", ")})`;
+    }
+    return "";
+  }
 }

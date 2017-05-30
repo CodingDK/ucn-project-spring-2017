@@ -1,0 +1,21 @@
+<div class="login-panel panel panel-default">
+  <div class="panel-heading">
+    <h3 class="panel-title">Login med en bestemt bruger</h3>
+  </div>
+  <div class="panel-body">
+    <!--<form role="form">
+          <fieldset>-->
+            <div class="form-group">
+              <ss-multiselect-dropdown 
+                [options]="options" 
+                [texts]="texts" 
+                [settings]="settings" 
+                [(ngModel)]="selectedArr"></ss-multiselect-dropdown>
+              <!--<input class="form-control" placeholder="E-mail" name="email" 
+              type="email" autofocus required autocomplete="off" [(ngModel)]="user">-->
+            </div>
+            <button class="btn btn-success btn-block" (click)="submit()" [disabled]="!selectedArr.length">Login</button>
+          <!--</fieldset>
+        </form>-->
+  </div>
+</div>

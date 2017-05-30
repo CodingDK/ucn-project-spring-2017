@@ -20,7 +20,10 @@
         <a routerLink="/login"><span class="fa fa-sign-in"></span> Login</a>
       </li>
       <li *ngIf="isLoggedIn()">
-        <a (click)="logOut()"><span class="fa fa-sign-out"></span> Logout</a>
+        <p class="navbar-text"><span class="fa fa-user"></span> {{getDisplayUser()}}</p>
+      </li>
+      <li *ngIf="isLoggedIn()">
+        <a (click)="logOut()" style="cursor:pointer;"><span class="fa fa-sign-out"></span> Logout</a>
       </li>
     </ul>
   </div>

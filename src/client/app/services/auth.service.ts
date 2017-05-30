@@ -22,6 +22,7 @@ export class AuthService {
   private logoutUrl = AppConstants.Server.url + AppConstants.Server.endpoint.login.logout;
   private statusUrl = AppConstants.Server.url + AppConstants.Server.endpoint.login.status;
   private googleLoginUrl = AppConstants.Server.url + AppConstants.Server.endpoint.login.googleLogin;
+  private loginSimpleUrl = AppConstants.Server.url + 'login/simple'; 
 
   constructor(private http: Http, private router: Router, private localStorageService: LocalStorageService) {
     //TODO Maybe this promise should be moved or angular gives some other opportunities for setting the loggedIn value 
@@ -42,6 +43,15 @@ export class AuthService {
       .catch(this.handleError);
   }
 
+  loginSimple(userId: string) : Promise<boolean> {
+    return this.http.post(this.loginSimpleUrl, { userId }, { withCredentials: true })
+      .toPromise()
+      .then(response => {
+        return this.setCurrentUserIfValid(response.json());
+      })
+      .catch(this.handleError);
+  }
+
   login(loginModel: LoginViewModel) : Promise<boolean> {
     console.log("service: loginModel: ", loginModel);
 
@@ -52,6 +62,7 @@ export class AuthService {
         return this.setCurrentUserIfValid(response.json());
       });
   }
+  
 
   // This method will log the use out
   logout() {

@@ -5,6 +5,7 @@ import { BaseRouter } from './baseRouter';
 
 import { User } from '../models/user';
 import { ResponseError } from '../errors/responseError';
+import { UserController } from "../controllers/userController";
 
 class LoginRouter extends BaseRouter {
   ctrl: GoogleController;
@@ -48,6 +49,9 @@ class LoginRouter extends BaseRouter {
 
     // POST /auth/google
     router.post('/auth/google', this.loginWithGoogle.bind(this));
+
+    //POST /simple
+    router.post('/simple', this.loginSimple.bind(this));
   }
 
   private getStatus(req: Request, res: Response, next: NextFunction) {
@@ -70,10 +74,38 @@ class LoginRouter extends BaseRouter {
         //Logging in with the found or new user
         req.login(user, (err: any) => {
           if (err) {
-            throw ResponseError.makeNew(err, "Error in logging user in with passport");
+            throw ResponseError.makeNew(err, "Error in logging user in with google route, passport part");
           }
           let safeUser = this.getClientSafeUser(user);
           this.send(res, safeUser, "Succes logging in with Google")
+          //res.json({ login: true, isGoogleUsed: true, message: "ok" });
+        });
+      })
+      .catch((err: any) => {
+        /*let errorMessage = "An unknown error happen"
+        if (err instanceof ResponseError) {
+          errorMessage = err.message;
+        }
+        this.errorHandler(res, err, errorMessage);*/
+        return next(err);
+      });
+  }
+
+  private loginSimple(req: Request, res: Response, next: NextFunction) {
+    const userId = req.body.userId;
+    const userCtrl = new UserController();
+    userCtrl.findById(null, userId)
+      .then((user: User) => {
+        if (!user) {
+          throw ResponseError.makeNew(new Error("User is not defined"), "Error in logging user in with simple login");
+        }
+        //Logging in with the found user
+        req.login(user, (err: any) => {
+          if (err) {
+            throw ResponseError.makeNew(err, "Error in logging user in with simple login, passport part");
+          }
+          let safeUser = this.getClientSafeUser(user);
+          this.send(res, safeUser, "Succes logging in with Simple")
           //res.json({ login: true, isGoogleUsed: true, message: "ok" });
         });
       })

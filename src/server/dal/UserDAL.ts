@@ -17,15 +17,17 @@ export class UserDAL implements IUserDAL {
    * @throws DbErrors throws if an error happen in creating or updating an user
    * @returns the created user or the updated user
    */
-  public createOrUpdateWithGoogleInfo(googleId: string, name: string, imageUrl: string, googleTokens: GoogleTokens, schoolClasses: string[], roles: string[]): Promise<User> {
-    let promise = this.updateWithGoogleInfo(googleId, name, imageUrl, googleTokens, schoolClasses, roles)
+  public createOrUpdateWithGoogleInfo(googleId: string, name: string, imageUrl: string,
+    googleTokens: GoogleTokens, schoolClasses: string[], roles: string[]): Promise<User> {
+
+    const promise = this.updateWithGoogleInfo(googleId, name, imageUrl, googleTokens, schoolClasses, roles)
       .then((userDoc: UserDocument) => {
         if (!userDoc) {
           //User not found in db, so we need to create the user
           return this.createWithGoogleInfo(googleId, name, imageUrl, googleTokens, schoolClasses, roles)
-            .then((userDoc: UserDocument) => {
-              return userDoc;
-            })
+            .then((createdUser: UserDocument) => {
+              return createdUser;
+            });
         } else {
           //User found in db just return it
           return userDoc;
@@ -48,9 +50,11 @@ export class UserDAL implements IUserDAL {
   /**
    * private method for find and update an user with google info
    */
-  private updateWithGoogleInfo(googleId: string, name: string, imageUrl: string, googleTokens: GoogleTokens, schoolClasses: string[], roles: string[]): Promise<UserDocument> {
+  private updateWithGoogleInfo(googleId: string, name: string, imageUrl: string,
+    googleTokens: GoogleTokens, schoolClasses: string[], roles: string[]): Promise<UserDocument> {
+
     return new Promise<UserDocument>((resolve, reject) => {
-      let updateQuery: any = {
+      const updateQuery: any = {
         $set: {
           name: name,
           imageUrl: imageUrl,
@@ -77,7 +81,9 @@ export class UserDAL implements IUserDAL {
   /**
    * private method for creating a new user with google info
    */
-  private createWithGoogleInfo(googleId: string, name: string, imageUrl: string, googleTokens: GoogleTokens, schoolClasses: string[], roles: string[]): Promise<UserDocument> {
+  private createWithGoogleInfo(googleId: string, name: string, imageUrl: string,
+    googleTokens: GoogleTokens, schoolClasses: string[], roles: string[]): Promise<UserDocument> {
+
     const newUser = new DbUser();
     newUser.googleId = googleId;
     newUser.googleTokens = googleTokens;
@@ -94,13 +100,13 @@ export class UserDAL implements IUserDAL {
 
   private getUserFromDocument(userDoc: UserDocument): User {
     //let newObj: User;
-    let retObj: User = new User();//: Student | Teacher;
+    const retObj: User = new User(); //: Student | Teacher;
     //if (userDoc.roles.indexOf("student") == -1) { //check if the user is a teacher
     //  retObj = new Teacher();
-      retObj.roles = userDoc.roles;
-      retObj.schoolClasses = userDoc.schoolClasses.map((value => {
-        return new SchoolClass(value);
-      }));
+    retObj.roles = userDoc.roles;
+    retObj.schoolClasses = userDoc.schoolClasses.map((value => {
+      return new SchoolClass(value);
+    }));
     //} else {
     //  retObj = new Student();
     //  retObj.schoolClass = new SchoolClass(userDoc.schoolClasses[0]);
@@ -120,7 +126,7 @@ export class UserDAL implements IUserDAL {
    * @returns will return a query for updating needed fields in database
    */
   private getUpdateQueryForGoogleInfo(name: string, imageUrl: string, googleTokens: GoogleTokens): any {
-    let updateQuery: any = {
+    const updateQuery: any = {
       $set: {
         name: name,
         imageUrl: imageUrl,
@@ -139,7 +145,7 @@ export class UserDAL implements IUserDAL {
    * @param roles the roles to get, or just undefined to get all users
    */
   public getAll(user: any, roles?: string[]): Promise<User[]> {
-    let query: any = {};
+    const query: any = {};
     if (roles) {
       query.roles = { $in: roles };
     }
@@ -148,7 +154,7 @@ export class UserDAL implements IUserDAL {
         if (err) {
           return reject(DbError.makeNew(err, "A Database error happened"));
         }
-        let retList = new Array<User>();
+        const retList = new Array<User>();
         if (objs != null) {
           objs.forEach((value: UserDocument) => {
             retList.push(value.toObject() as User);
@@ -171,7 +177,7 @@ export class UserDAL implements IUserDAL {
         if (err) {
           return reject(DbError.makeNew(err, "A Database error happened"));
         }
-        let retList = new Array<User>();
+        const retList = new Array<User>();
         if (objs != null) {
           objs.forEach((value: UserDocument) => {
             retList.push(value.toObject() as User);
@@ -187,13 +193,13 @@ export class UserDAL implements IUserDAL {
    */
   public checkIdsExist(user: any, ids: string[], roles?: string[]): Promise<boolean> {
     return new Promise<boolean>((resolve, reject) => {
-      const validatePromises = ids.map((id) => { return validateObjectId(id) });
+      const validatePromises = ids.map((id) => { return validateObjectId(id); });
 
       Promise.all(validatePromises)
         .then((objectIds) => {
-          let query: any = { _id: { $in: ids } };
+          const query: any = { _id: { $in: ids } };
           if (roles) {
-            query.roles = { $in: roles } ;
+            query.roles = { $in: roles };
           }
           Users.count(query, (err: any, dbCount: number) => {
             if (err) {
@@ -204,7 +210,7 @@ export class UserDAL implements IUserDAL {
         })
         .catch((err: any) => {
           return reject(DbError.makeNew(err, "Some of the Ids is not valid"));
-        })
+        });
     });
   }
 
@@ -241,7 +247,7 @@ export class UserDAL implements IUserDAL {
    * Method for finding an user by id
    * @param id the id of the user
    */
-  public findById(user:any, id: string): Promise<User> {
+  public findById(user: any, id: string): Promise<User> {
     return validateObjectId(id)
       .then((objectId: Types.ObjectId) => {
         return new Promise<User>((resolve, reject) => {

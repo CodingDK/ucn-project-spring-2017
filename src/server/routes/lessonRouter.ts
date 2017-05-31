@@ -1,4 +1,4 @@
-﻿import { Router, Request, Response, NextFunction } from 'express';
+﻿import { Request, Response, NextFunction } from 'express';
 
 import { BaseRouter } from './baseRouter';
 import { LessonController } from '../controllers/lessonController';
@@ -23,30 +23,41 @@ class LessonRouter extends BaseRouter {
    * endpoints.
    */
   private init() {
-    this.router.get('/getTestObject', this.getTestObject.bind(this));
-    this.router.get('/getTestObjectCreate', this.getTestObjectCreate.bind(this));
+    this.router.use(this.isLoggedIn.bind(this));
+
     //GET all lessons
     this.router.get('/', this.getAll.bind(this));
+
     //GET single lesson
     this.router.get('/:id', this.getSingle.bind(this));
-    //POST create new lesson
-    this.router.post('/', this.createLesson.bind(this));
-    //PUT update lesson
-    this.router.put('/', this.updateLesson.bind(this));
-    //DELETE delete a lesson
-    this.router.delete('/:id', this.deleteLesson.bind(this));
 
-    //this.router.put('/:id/meetup', this.updateMeetup.bind(this));
-    //PUT update meetUp for student
-    this.router.put('/:lessonId/meetup/:studentId', this.updateMeetUp.bind(this));
+    //POST create new lesson
+    this.router.post('/', (req, res, next) => {
+      this.handleHasRoleAccess(req, res, next, ['admin']);
+    }, this.createLesson.bind(this));
+
+    //PUT update lesson
+    this.router.put('/', (req, res, next) => {
+      this.handleHasRoleAccess(req, res, next, ['admin']);
+    }, this.updateLesson.bind(this));
+
+    //DELETE delete a lesson
+    this.router.delete('/:id', (req, res, next) => {
+      this.handleHasRoleAccess(req, res, next, ['admin']);
+    }, this.deleteLesson.bind(this));
+
+    //PUT update meetUp for a student
+    this.router.put('/:lessonId/meetup/:studentId', (req, res, next) => {
+      this.handleHasRoleAccess(req, res, next, ['teacher']);
+    }, this.updateMeetUp.bind(this));
   }
 
   /**
    * Get all Lessons
    */
   private getAll(req: Request, res: Response, next: NextFunction): void {
-    let populateTeacher = true; req.query.populateTeacher;
-    let populateStudent = true; req.query.populateStudent;
+    const populateTeacher = req.query.populateTeacher;
+    const populateStudent = req.query.populateStudent;
     this.ctrl.getAll(req.user, populateTeacher, populateStudent)
       .then((lessons: Lesson[]) => {
         return this.send(res, lessons);
@@ -63,9 +74,13 @@ class LessonRouter extends BaseRouter {
    */
   private getSingle(req: Request, res: Response, next: NextFunction): void {
     let populateTeacher = req.query.populateTeacher;
-    if (typeof populateTeacher === "string") populateTeacher = (populateTeacher == 'true');
+    if (typeof populateTeacher === "string") {
+      populateTeacher = (populateTeacher === 'true');
+    }
     let populateStudent = req.query.populateStudent;
-    if (typeof populateStudent === "string") populateStudent = (populateStudent == 'true');
+    if (typeof populateStudent === "string") {
+      populateStudent = (populateStudent === 'true');
+    }
 
     this.ctrl.findById(req.user, req.params['id'], populateTeacher, populateStudent)
       .then((lesson: Lesson) => {
@@ -124,8 +139,8 @@ class LessonRouter extends BaseRouter {
 
   private updateMeetUp(req: Request, res: Response, next: NextFunction): void {
     //TODO validation for req.body is a real meetUp
-    let lessonId = req.params['lessonId'];
-    let studentId = req.params['studentId'];
+    const lessonId = req.params['lessonId'];
+    const studentId = req.params['studentId'];
     this.ctrl.updateMeetUp(req.user, lessonId, studentId, req.body)
       .then((meetUp: IMeetUp) => {
         return this.send(res, meetUp);
@@ -134,30 +149,6 @@ class LessonRouter extends BaseRouter {
         //this.errorHandler(res, err, err.message);
         return next(err);
       });
-  }
-
-  private getTestObject(req: Request, res: Response, next: NextFunction) {
-    let startTime = new Date(new Date().getTime() + 1000 * 60 * 60);
-    let endDate = new Date(startTime.getTime());
-    let lesson = Lesson.createNew(startTime, endDate, ["pwe0916"], ["1"]);
-    return this.send(res, lesson);
-  }
-
-  private getTestObjectCreate(req: Request, res: Response, next: NextFunction) {
-    let startTime = new Date(new Date().getTime() + 1000 * 60 * 60);
-    let endDate = new Date(startTime.getTime());
-    /*let obj = new CreateLessonViewModel({
-      startTime: startTime,
-      endTime: endDate,
-      schoolClassName: "pwe0916",
-      teachers: ["1"]
-    });*/
-    let obj = new CreateLessonViewModel();
-    obj.startTime = startTime;
-    obj.endTime = endDate;
-    obj.schoolClassNames = ["pwe0916"];
-    obj.teachers = ["1"];
-    return this.send(res, obj);
   }
 }
 

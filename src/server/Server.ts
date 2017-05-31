@@ -68,9 +68,9 @@ class Server {
 
     app.use(session({
         secret: config.session.secret,
-        saveUninitialized: true,
-        resave: true,
-        cookie: { httpOnly: true },//, maxAge: 2419200000 },
+        saveUninitialized: false,
+        resave: false,
+        cookie: { httpOnly: true }, //, maxAge: 2419200000 },
         store: dbHandler.getStoreForSessions()
     }));
     PassportConfig.setup(app);
@@ -80,7 +80,7 @@ class Server {
 
   // Configure API endpoints.
   private routes(): void {
-    let app = this.express;
+    const app = this.express;
     app.use('/api/github', githubRouter);
     app.use('/api/login', LoginRouter);
     app.use('/api/v1/heroes', HeroRouter);
@@ -101,7 +101,7 @@ class Server {
   private errorHandler(): void {
     this.express.use((err: any, req: Request, res: Response, next: NextFunction) => {
       console.log("errorHandler in server.ts");
-      console.error(err.stack)
+      console.error(err.stack);
       let data = err;
       let unknownErorr = true;
       let errorName;
@@ -111,17 +111,15 @@ class Server {
       //check if parentError is validationErrors and send them as data object instead
       if (err instanceof ResponseError) {
         unknownErorr = false;
-        let parent = err.getParentError();
+        const parent = err.getParentError();
         if (typeof parent[0] !== 'undefined' && parent[0] instanceof ValidationError) {
           data = parent;
           errorName = "ValidationError";
           JL('onValidationError').info(parent);
-        }
-        else {
+        } else {
           JL('onResponseError').error(err);
         }
-      }
-      else {
+      } else {
         JL('onServerError').fatal(err);
       }
 
@@ -133,7 +131,7 @@ class Server {
         errorCode: err.code,
         unknownErorr: unknownErorr ? true : undefined
       });
-    })
+    });
   }
 }
 

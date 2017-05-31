@@ -11,10 +11,8 @@ export class Lesson implements ILesson {
   schoolClasses: SchoolClass[];
   meetUps: MeetUp[]; // students who met up
 
-  constructor() { }
-
   static fromData(startTime: Date, teachers: User[], schoolClasses: SchoolClass[]): Lesson {
-    let newObj = new Lesson();
+    const newObj = new Lesson();
     newObj.startTime = startTime;
     newObj.teachers = teachers;
     newObj.schoolClasses = schoolClasses;
@@ -22,15 +20,17 @@ export class Lesson implements ILesson {
   }
 
   static createNew(startTime: Date, endTime: Date, schoolClasses: string[], teachers: string[]) {
-    let newObj = new Lesson();
+    const newObj = new Lesson();
     newObj.startTime = startTime;
     newObj.endTime = endTime;
-    newObj.schoolClasses = schoolClasses.map(value => { return new SchoolClass(value) });
+    newObj.schoolClasses = schoolClasses.map(value => { return new SchoolClass(value); });
     newObj.teachers = teachers.map((value) => {
-      let teacher = new User();
+      const teacher = new User();
       teacher.id = value;
       return teacher;
-    })
+    });
     return newObj;
   }
+
+  constructor() {}
 }

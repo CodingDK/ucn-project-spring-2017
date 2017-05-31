@@ -40,13 +40,10 @@ class LoginRouter extends BaseRouter {
     );
 
     router.get('/logout', (req: Request, res: Response, next: NextFunction) => {
-      console.log("session before", req.session);
       req.logout();
-      console.log("session after", req.session);
       if (req.session != null) {
         req.session.destroy(() => {});
       }
-      console.log("session after again", req.session);
       res.json({ login: false });
       //res.redirect('/');
     });

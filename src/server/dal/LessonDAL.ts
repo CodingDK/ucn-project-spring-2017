@@ -6,7 +6,7 @@ import { DbError } from '../errors/dbError';
 import { Types, DocumentQuery } from 'mongoose';
 import { validateObjectId } from './helpers';
 
-import { IMeetUp } from '../../shared/interfaces/iModels';
+import { IMeetUp, IUser } from '../../shared/interfaces/iModels';
 
 import { ILessonDAL } from '../interfaces/dal/iLessonDAL';
 
@@ -15,14 +15,16 @@ import { ILessonDAL } from '../interfaces/dal/iLessonDAL';
  */
 export class LessonDAL implements ILessonDAL {
 
-  public getAll(user: any, populateTeacher: boolean, populateStudent: boolean): Promise<Lesson[]> {
+  public getAll(user: IUser, populateTeacher: boolean, populateStudent: boolean): Promise<Lesson[]> {
+    const queryAndProjection = this.getQueryAndProjection(user);
+
     return new Promise<Lesson[]>((resolve: any, reject: any) => {
-      this.getPopulated(Lessons.find({}), populateTeacher, populateStudent)
+      this.getPopulated(Lessons.find(queryAndProjection.query, queryAndProjection.projection), populateTeacher, populateStudent)
         .exec((err: any, objs: LessonDocument[]) => {
           if (err) {
             return reject(DbError.makeNew(err, "A Database error happened"));
           }
-          let retList = new Array<Lesson>();
+          const retList = new Array<Lesson>();
           if (objs != null) {
             objs.forEach((value: LessonDocument) => {
               retList.push(this.getLessonObj(value));
@@ -33,19 +35,20 @@ export class LessonDAL implements ILessonDAL {
     });
   }
 
-
   /**
     * Method for find a lesson by the id
     * @param id the id to look for
     */
-  public findById(user: any, id: string, populateTeacher?: boolean, populateStudent?: boolean): Promise<Lesson> {
+  public findById(user: IUser, id: string, populateTeacher?: boolean, populateStudent?: boolean): Promise<Lesson> {
     return validateObjectId(id)
       .catch((err: any) => {
         return null;
       })
       .then((objectId: Types.ObjectId) => {
+        const queryAndProjection = this.getQueryAndProjection(user, { _id: objectId});
+
         return new Promise<Lesson>((resolve: any, reject: any) => {
-          this.getPopulated(Lessons.findById(objectId), populateTeacher, populateStudent)
+          this.getPopulated(Lessons.findOne(queryAndProjection.query, queryAndProjection.projection), populateTeacher, populateStudent)
             .exec((err: any, lessonDoc: LessonDocument) => {
               if (err) {
                 return reject(DbError.makeNew(err, "A Database error happened"));
@@ -59,10 +62,45 @@ export class LessonDAL implements ILessonDAL {
       });
   }
 
-  private getPopulated<T>(query: DocumentQuery<T, LessonDocument>, populateTeacher?: boolean, populateStudent?: boolean): DocumentQuery<T, LessonDocument> {
+  private getQueryAndProjection(user: IUser, query: any = {}, projection: any = {}) {
+    if (user != null) {
+      if (user.roles.indexOf("student") !== -1) {
+        query = Object.assign(query, this.getStudentQuery(user.id));
+        projection = Object.assign(projection, this.getStudentProjection(user.id));
+      } else if (user.roles.indexOf("admin") === -1 && user.roles.indexOf("teacher") !== -1) {
+        query = Object.assign(query, { teachers: Types.ObjectId(user.id)});
+      }
+    }
+    return {
+      query,
+      projection
+    };
+  }
+
+  private getStudentQuery(userId: string) {
+    return { "meetUps.student": Types.ObjectId(userId) };
+  }
+
+  private getStudentProjection(userId: string) {
+    return {
+      _id: 1,
+      teachers: 1,
+      startTime: 1,
+      endTime: 1,
+      schoolClasses: 1,
+      meetUps: {
+        $elemMatch: {
+          student: Types.ObjectId(userId)
+        }
+      }
+    };
+  }
+
+  private getPopulated<T>(query: DocumentQuery<T, LessonDocument>,
+    populateTeacher?: boolean, populateStudent?: boolean): DocumentQuery<T, LessonDocument> {
 
     query = populateTeacher ? query.populate('teachers', 'name imageUrl') : query;
-    query = populateStudent ? query.populate('meetUps.student', 'name imageUrl') : query
+    query = populateStudent ? query.populate('meetUps.student', 'name imageUrl') : query;
     return query;
   }
 
@@ -70,7 +108,7 @@ export class LessonDAL implements ILessonDAL {
    * Method for creating and inserting a new lesson
    * @param newLesson the lesson to insert
    */
-  public insert(user: any, newLesson: Lesson): Promise<Lesson> {
+  public insert(user: IUser, newLesson: Lesson): Promise<Lesson> {
     //First validate teachers Ids format and create dbLesson object
     return this.validateTeachersIdsAndCreateDbLesson(newLesson)
       //Next validate students Ids format and create meetups for students
@@ -78,13 +116,13 @@ export class LessonDAL implements ILessonDAL {
         return this.validateStudentsIdsAndCreateDbMeetUps(newLesson).then(meetUps => {
           dbLesson.meetUps = meetUps;
           return dbLesson;
-        })
+        });
       })
       //Set the rest of the properties on dbLesson
       .then((dbLesson) => {
         dbLesson.startTime = newLesson.startTime;
         dbLesson.endTime = newLesson.endTime;
-        dbLesson.schoolClasses = newLesson.schoolClasses.map(value => { return value.name });
+        dbLesson.schoolClasses = newLesson.schoolClasses.map(value => { return value.name; });
 
         return dbLesson;
       })
@@ -111,7 +149,7 @@ export class LessonDAL implements ILessonDAL {
    * Method for updating a lesson
    * @param newLesson to update with the new values
    */
-  public update(user: any, newLesson: Lesson): Promise<Lesson> {
+  public update(user: IUser, newLesson: Lesson): Promise<Lesson> {
     //First validate teachers Ids format and create dbLesson object
     return this.validateTeachersIdsAndCreateDbLesson(newLesson)
       //Next validate students Ids format and create meetups for students
@@ -119,13 +157,13 @@ export class LessonDAL implements ILessonDAL {
         return this.validateStudentsIdsAndCreateDbMeetUps(newLesson).then(meetUps => {
           dbLesson.meetUps = meetUps;
           return dbLesson;
-        })
+        });
       })
       //Set the rest of the properties on dbLesson
       .then((dbLesson) => {
         dbLesson.startTime = newLesson.startTime;
         dbLesson.endTime = newLesson.endTime;
-        dbLesson.schoolClasses = newLesson.schoolClasses.map(value => { return value.name });
+        dbLesson.schoolClasses = newLesson.schoolClasses.map(value => { return value.name; });
 
         return dbLesson;
       })
@@ -140,19 +178,19 @@ export class LessonDAL implements ILessonDAL {
               schoolClasses: dbLesson.schoolClasses,
               meetUps: dbLesson.meetUps
             }
-          }
+          };
           Lessons.findByIdAndUpdate(newLesson.id, setQuery)
             .exec((err: any, updatedLesson: LessonDocument) => {
               if (err) {
                 return reject(DbError.makeNew(err, `Database error happened in updating id: ${newLesson.id}`));
               }
-              console.log("updatedLesson", updatedLesson);
+              //console.log("updatedLesson", updatedLesson);
               if (!updatedLesson) {
                 return reject(DbError.makeNew(err, `The id '${newLesson.id}' does not exist in the database`, 404));
               }
               return resolve(updatedLesson);
-            })
-        })
+            });
+        });
       })
       //Convert a db document to a lesson object
       .then((createdLesson: LessonDocument) => {
@@ -173,34 +211,34 @@ export class LessonDAL implements ILessonDAL {
     return new Promise<DbLesson>(
       //First validate teachers Ids format and create dbLesson object
       (resolve: any, reject: any) => {
-        const validateTeachersIdsPromises = lesson.teachers.map((teacher) => { return validateObjectId(teacher.id) });
-        let dbLesson = new DbLesson();
+        const validateTeachersIdsPromises = lesson.teachers.map((teacher) => { return validateObjectId(teacher.id); });
+        const dbLesson = new DbLesson();
 
         return Promise.all(validateTeachersIdsPromises)
           .then((teachersObjectIds) => {
             dbLesson.teachers = teachersObjectIds;
             return resolve(dbLesson);
           });
-      })
+      });
   }
 
   private validateStudentsIdsAndCreateDbMeetUps(lesson: Lesson): Promise<DbMeetUp[]> {
-    const validateStudentIdsPromises = lesson.meetUps.map((meetUp) => { return validateObjectId(meetUp.student.id) });
+    const validateStudentIdsPromises = lesson.meetUps.map((meetUp) => { return validateObjectId(meetUp.student.id); });
     return Promise.all(validateStudentIdsPromises)
       .then((studentsObjectIds) => {
         return studentsObjectIds.map((value) => {
-          let dbMeetUp = new DbMeetUp();
+          const dbMeetUp = new DbMeetUp();
           dbMeetUp.student = value;
           return dbMeetUp;
         });
-      })
+      });
   }
 
   /**
    * Delete a lesson from the database by id
    * @param id the id to delete from database
    */
-  public deleteById(user: any, id: string): Promise<boolean> {
+  public deleteById(user: IUser, id: string): Promise<boolean> {
     return validateObjectId(id)
       .catch((err: any) => {
         return null;
@@ -211,7 +249,7 @@ export class LessonDAL implements ILessonDAL {
             if (err) {
               return reject(DbError.makeNew(err, `Database error happened in deleting id: ${id}`));
             }
-            let deleted = typeof lessonDoc !== "undefined" && lessonDoc != null;
+            const deleted = typeof lessonDoc !== "undefined" && lessonDoc != null;
             return resolve(deleted);
           });
         });
@@ -224,7 +262,7 @@ export class LessonDAL implements ILessonDAL {
    * @param studentId the id of the student to update
    * @param meetUp the new meetUp
    */
-  public updateMeetUp(user: any, lessonId: string, studentId: string, meetUp: IMeetUp): Promise<IMeetUp> {
+  public updateMeetUp(user: IUser, lessonId: string, studentId: string, meetUp: IMeetUp): Promise<IMeetUp> {
     //TODO better validation (also for converting lessonId and studentIds to objectId)
     return this.getPopulated(Lessons.findOneAndUpdate(
       { "_id": lessonId, "meetUps.student": studentId },
@@ -245,13 +283,13 @@ export class LessonDAL implements ILessonDAL {
         return meetUp;
         //TODO make this return the new meetUp in db, because lessonDoc right now is the object in db before it gets updated
         //return this.getLessonObj(lessonDoc);
-      //})
-      //.then(lesson => {
-      //  console.log("here?", lesson);
-      //  return <IMeetUp>lesson.meetUps.find(x => { return x.student.id == studentId })
+        //})
+        //.then(lesson => {
+        //  console.log("here?", lesson);
+        //  return <IMeetUp>lesson.meetUps.find(x => { return x.student.id == studentId })
       }).catch(err => {
         console.log("here?", err);
-        throw err
+        throw err;
       });
   }
 
@@ -260,13 +298,13 @@ export class LessonDAL implements ILessonDAL {
    * @param dbLesson - the dbLesson object to convert
    */
   private getLessonObj(dbLesson: LessonDocument): Lesson {
-    let lesson = dbLesson.toObject() as any;
+    const lesson = dbLesson.toObject() as any;
     //check and set objectIds to strings for teachers
     const firstTeacher = lesson.teachers[0];
     if (firstTeacher && firstTeacher instanceof Types.ObjectId) {
       lesson.teachers = lesson.teachers.map((value: Types.ObjectId) => {
         return value.toString();
-      })
+      });
     }
     //check and set objectIds to strings for student
     const firstMeetUp = lesson.meetUps[0];
@@ -279,7 +317,7 @@ export class LessonDAL implements ILessonDAL {
     //make schoolClasses strings to objects
     const schoolClasses = lesson.schoolClasses;
     if (schoolClasses) {
-      lesson.schoolClasses = schoolClasses.map((value: string) => { return new SchoolClass(value) });
+      lesson.schoolClasses = schoolClasses.map((value: string) => { return new SchoolClass(value); });
     }
 
     return lesson;
@@ -290,13 +328,12 @@ export class LessonDAL implements ILessonDAL {
    */
   private getMeetUpsAsDbObjects(meetUps: MeetUp[]): DbMeetUp[] {
     return meetUps.map((value) => {
-      let newDbMeetUp = new DbMeetUp();
+      const newDbMeetUp = new DbMeetUp();
       newDbMeetUp.checkIn = value.checkIn;
       newDbMeetUp.checkOut = value.checkOut;
       newDbMeetUp.topic = value.topic;
       newDbMeetUp.student = Types.ObjectId(value.student.id);
       return newDbMeetUp;
-    })
+    });
   }
-
 }

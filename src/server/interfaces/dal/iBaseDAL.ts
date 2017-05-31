@@ -1,8 +1,9 @@
+import { IUser } from '../../../shared/interfaces/iModels';
+
 export interface IBaseDAL<T> {
-  insert(user: any, item: T): Promise<T>;
+  insert(user: IUser, item: T): Promise<T>;
 
-  deleteById(user: any, id: string): Promise<boolean>;
+  deleteById(user: IUser, id: string): Promise<boolean>;
 
-  update(user: any, item: T): Promise<T>;
-  
+  update(user: IUser, item: T): Promise<T>;
 }

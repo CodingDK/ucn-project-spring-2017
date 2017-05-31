@@ -27,25 +27,20 @@ class StudentRouter extends BaseRouter {
      * endpoints.
      */
     private init() {
-        //this.router.get('/student/getTestObject', this.getTestObject.bind(this));
-        //this.router.get('/getTestObjectCreate', this.getTestObjectCreate.bind(this));
-
         // POST student checkin (meetup)
-        this.router.post('/:id', this.studentCheckIn.bind(this));
+        this.router.put('/:lessonId/meetup/:studentId/checkin', this.studentCheckIn.bind(this));
         // PUT student checkout (meetup)
-        this.router.put('/', this.studentCheckOut.bind(this));
+        this.router.put('/:lessonId/meetup/:studentId/checkout', this.studentCheckOut.bind(this));
         // PUT student update student's topic
-        this.router.put('/topic', this.setStudentTopic.bind(this));
+        this.router.put('/:lessonId/meetup/:studentId/topic/:topic', this.setStudentTopic.bind(this));
         // GET get activate lessons
         this.router.get('/active', this.getActiveLessons.bind(this));       
     }
 
     private studentCheckIn(req: Request, res: Response, next: NextFunction): void {
-       // console.log(req.params['googleId']);
         
-        this.ctrl.studentCheckIn(req.user, req.params['id'])
-            .then((isCheckedIn: boolean) => {
-                
+        this.ctrl.studentCheckIn(req.user, req.params['lessonId'], req.params['studentId'])
+            .then((isCheckedIn: boolean) => {                
                 return this.send(res, isCheckedIn);
             })
             .catch((err: any) => {
@@ -54,30 +49,37 @@ class StudentRouter extends BaseRouter {
     }
 
     private studentCheckOut(req: Request, res: Response, next: NextFunction): void {
-        // TODO:
+        this.ctrl.studentCheckIn(req.user, req.params['lessonId'], req.params['studentId'])
+            .then((isCheckedIn: boolean) => {
+                return this.send(res, isCheckedIn);
+            })
+            .catch((err: any) => {
+                return next(err);
+            });
     }
 
     private setStudentTopic(req: Request, res: Response, next: NextFunction): void {
-        // TODO:
+        this.ctrl.setStudentTopic(req.user, req.params['lessonId'], req.params['studentId'], req.params['topic'])
+            .then((topicHasChanged: boolean) => {
+                return this.send(res, topicHasChanged);
+            })
+            .catch((err: any) => {
+                return next(err);
+            });
     }
 
     private getActiveLessons(req: Request, res: Response, next: NextFunction): void {
-        console.log('get active lessons - router');
-
+        
         this.ctrl.getActiveLessons(req.user)
             .then((lessons: Lesson[]) => {
                 return this.send(res, lessons);
             })
             .catch((err: any) => {
                 return next(err);
-            });
-
-               
+            });               
     } 
-
 }
 
 // Create the LessonRouter, and export its configured Express.Router
 const studentRoutes = new StudentRouter();
-
 export default studentRoutes.router;

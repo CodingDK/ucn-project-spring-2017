@@ -16,42 +16,90 @@ import { UserDAL } from './UserDAL';
 
 export class StudentDal {
 
-    public studentCheckIn(user: any, id: string): Promise<Lesson>
+    public studentCheckIn(user: any, lessonId: string, studentId: string): Promise<any>
     {          
+        return this.getPopulated(Lessons.findOneAndUpdate(
+            {
+                "_id": lessonId, "meetUps.student": studentId
+            },
+            {
+                "$set": {
+                    "meetUps.$.checkIn": moment().toDate()
+                }
 
-        return validateObjectId(id)
-            .catch((err: any) => {
-                return null;
+            }), false, true)
+            .exec((err: any, lessonDocument) => {
+                if (err) {
+                    throw DbError.makeNew(err, `Database error in checking student in`);
+                }
+                return lessonDocument;
             })
-            .then((objectId: Types.ObjectId) => {
-                return new Promise<Lesson>((resolve: any, reject: any) => {
-                    this.getPopulated(Lessons.findById(objectId), true, true)
-                        .exec((err: any, lessonDoc: LessonDocument) => {
-                            if (err) {
-                                return reject(DbError.makeNew(err, "A Database error happened"));
-                            }
-                            if (lessonDoc != null) {
-                                console.log(lessonDoc);
-                                return resolve(this.getLessonObj(lessonDoc));
-                            }
-                            return resolve(undefined);
-                        });                    
-                });
-
+            .then(lessonDoc => {
+                return true;
+               
+            }).catch(err => {
+                console.log("here?", err);
+                throw err
             });
     }
 
-    public studentCheckOut(): void //Promise<Lesson[]>
+    public studentCheckOut(user: any, lessonId: string, studentId: string): Promise<any>
     {
-        // TODO:
+        return this.getPopulated(Lessons.findOneAndUpdate(
+            {
+                "_id": lessonId, "meetUps.student": studentId
+            },
+            {
+                "$set": {
+                    "meetUps.$.checkOut": moment().toDate()
+                }
+
+            }), false, true)
+            .exec((err: any, lessonDocument) => {
+                if (err) {
+                    throw DbError.makeNew(err, `Database error in checking student in`);
+                }
+                return lessonDocument;
+            })
+            .then(lessonDoc => {
+                return true;
+
+            }).catch(err => {
+                console.log("here?", err);
+                throw err
+            });
     }
 
-    public setStudentTopic(): void //Promise<Lesson[]>
+    public setStudentTopic(user: any, lessonId: string, studentId: string, topic: string): Promise<any>
     {
-        // TODO:
-    }
+        return this.getPopulated(Lessons.findOneAndUpdate(
+            {
+                "_id": lessonId, "meetUps.student": studentId
+            },
+            {
+                "$set": {
+                    "meetUps.$.topic": topic
+                }
 
-    private getPopulated<T>(query: DocumentQuery<T, LessonDocument>, populateTeacher?: boolean, populateStudent?: boolean): DocumentQuery<T, LessonDocument> {
+            }), false, true)
+            .exec((err: any, lessonDocument) => {
+                if (err) {
+                    throw DbError.makeNew(err, `Database error in checking student in`);
+                }
+                return lessonDocument;
+            })
+            .then(lessonDoc => {
+                return true;
+
+            }).catch(err => {
+                console.log("here?", err);
+                throw err
+            });
+    }
+        
+        
+
+    private getPopulated<T>(query: DocumentQuery < T, LessonDocument >, populateTeacher ?: boolean, populateStudent ?: boolean): DocumentQuery < T, LessonDocument > {
 
         query = populateTeacher ? query.populate('teachers', 'name imageUrl') : query;
         query = populateStudent ? query.populate('meetUps.student', 'name imageUrl') : query
@@ -62,8 +110,8 @@ export class StudentDal {
         return new Promise<Lesson[]>((resolve: any, reject: any) => {                  
 
             Lessons.find({
-                'startTime': { '$lte': moment().toDate()  },
-                'endTime': { '$gte': moment().toDate()   }                
+                //'startTime': { '$lte': moment().toDate()  },
+                //'endTime': { '$gte': moment().toDate()   }                
 
             }).exec((err: any, objs: LessonDocument[]) => {
 

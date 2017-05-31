@@ -14,6 +14,9 @@
       <!--<li>
         <a (click)="addToast()" style="cursor:pointer;">Notification test</a>
       </li>-->
+        <li routerLinkActive="active" *ngIf="isLoggedIn() && isAdmin()">
+            <a routerLink="lesson/student">Elev</a>
+        </li>
     </ul>
     <ul class="nav navbar-nav navbar-right">
       <li routerLinkActive="active" *ngIf="!isLoggedIn()">

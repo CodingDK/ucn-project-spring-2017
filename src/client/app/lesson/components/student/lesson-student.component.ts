@@ -1,18 +1,18 @@
-import { Injectable, Component } from '@angular/core';
-import { CanActivate } from "@angular/router";
-
-import { StudentService } from '../services/student.service';
-import { IUser } from '../../../../shared/interfaces/iModels';
-
+import { Component } from '@angular/core';
+import { LessonService } from "../../services/lesson.service";
+import { ToastyService } from "ng2-toasty";
+import { ActivatedRoute, Router } from "@angular/router";
+import { ILesson, IUser } from "../../../../../shared/interfaces/iModels";
+import { AuthService } from "../../../services/auth.service";
 
 @Component({
-    selector: 'student',
-    templateUrl: './student.component.html',
-    styleUrls: ['./student.component.scss']   
+    selector: 'lesson-student',
+    templateUrl: 'lesson-student.component.html',
+    styleUrls: ['lesson-student.component.scss']
 })
+export class LessonStudentComponent {
 
-export class StudentComponent {
-    studentCheckedIn: boolean; 
+    studentCheckedIn: boolean;
     activateLessons: boolean;
 
     // mock variables
@@ -22,8 +22,7 @@ export class StudentComponent {
 
     studentName: string;
     className: string;
-    studentTopic: string;   
-
+    studentTopic: string; 
 
     constructor() {
         this.studentCheckedIn = false;
@@ -50,7 +49,7 @@ export class StudentComponent {
         // TODO: proper backend function call
 
         this.studentCheckedIn = false;
-        console.log('student Checked out');    
+        console.log('student Checked out');
     }
 
     public getActiveLessons(): boolean {

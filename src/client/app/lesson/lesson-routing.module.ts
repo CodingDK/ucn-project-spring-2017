@@ -10,6 +10,10 @@ import { LessonDetailsModalComponent } from './components/teacher/lesson-details
 import { LessonDetailResolver } from './services/lesson-detail-resolver.service';
 import { LessonAdminComponent } from "./components/admin/lesson-admin.component";
 
+// student
+
+import { LessonStudentComponent } from './components/student/lesson-student.component';
+
 @NgModule({
   imports: [RouterModule.forChild([
     {
@@ -68,8 +72,18 @@ import { LessonAdminComponent } from "./components/admin/lesson-admin.component"
             populateTeacher: true
           }
         }]
-      }]
-    }//, canActivate: [AuthGuard] }
+      },
+      {
+          path: 'student',
+          component: LessonStudentComponent,
+          canActivate: [RoleGuard],
+          data: { roles: ['teacher', 'admin', 'student'] }
+          
+      }
+      ]
+      }//, canActivate: [AuthGuard] }
+    
+
   ])],
   exports: [RouterModule]
 })

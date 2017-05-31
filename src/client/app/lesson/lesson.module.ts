@@ -22,6 +22,11 @@ import { LessonTeacherComponent } from "./components/teacher/lesson-teacher.comp
 import { LessonTableComponent } from "./components/shared/lesson-table.component";
 import { OrderByDatePipe } from "./pipes/order-by-date.pipe";
 
+// student
+import { LessonStudentComponent } from './components/student/lesson-student.component';
+import { StudentTableComponent } from './components/student/student-table.component';
+import { StudentInformationComponent } from  './components/student/student-information.component';
+
 @NgModule({
   imports: [
     CommonModule,
@@ -46,6 +51,9 @@ import { OrderByDatePipe } from "./pipes/order-by-date.pipe";
     LessonConfirmModalComponent,
     LessonTeacherComponent,
     LessonTableComponent,
+    LessonStudentComponent,
+    StudentTableComponent,
+    StudentInformationComponent,
     OrderByDatePipe
   ],
   providers: [

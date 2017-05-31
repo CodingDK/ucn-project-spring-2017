@@ -127,7 +127,7 @@ export class StudentDal {
                     })
                 }
 
-                console.log(retList);
+                //console.log(retList);
 
                 return resolve(retList);
             })         

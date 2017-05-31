@@ -10,7 +10,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { GithubModule } from './github/github.module';
 
 import { LessonModule } from './lesson/lesson.module';
-import { StudentModule } from './student/student.module';
+
 
 
 import { AppComponent } from './components/app.component';
@@ -50,7 +50,6 @@ import { RoleGuard } from "./guards/role.guard";
     MultiselectDropdownModule,
     GithubModule,
     LessonModule,
-    StudentModule,
     AppRoutingModule // Must be last import. So Rounting childs works
   ],
   providers: [

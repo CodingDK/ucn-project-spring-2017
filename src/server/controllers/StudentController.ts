@@ -13,22 +13,44 @@ import { BaseController } from './baseController';
 import { StudentDal } from '../dal/StudentDAL';
 
 /**
- * Controller for handling students' checkin / checkout from lesson
+ * Controller for handling students' checkin / checkout from lesson and change of topic for student's meetup
  */
 export class StudentController extends BaseController {
     private dal: StudentDal = new StudentDal();
 
-    public studentCheckIn(user: any, id: string): Promise<any> {
-        return this.dal.studentCheckIn(user, id)
+    /**
+     * Checkout for student in a specific lesson
+     * @param user
+     * @param lessonId
+     * @param studentId
+     */
+    public studentCheckIn(user: any, lessonId: string, studentId: string): Promise<any>
+    {
+        return this.dal.studentCheckIn(user, lessonId, studentId)
             .catch(this.errorHandler.bind(this));
     }
 
-    public studentCheckOut() {
-        // TODO:
+    /**
+     * Checkin for student in a specific lesson
+     * @param user
+     * @param lessonId
+     * @param studentId
+     */
+    public studentCheckOut(user: any, lessonId: string, studentId: string): Promise<any> {
+        return this.dal.studentCheckIn(user, lessonId, studentId)
+            .catch(this.errorHandler.bind(this));
     }
 
-    public setStudentTopic() {
-        // TODO:
+    /**
+     * Set topic for student in a specific lesson
+     * @param user
+     * @param lessonId
+     * @param studentId
+     * @param topic
+     */
+    public setStudentTopic(user: any, lessonId: string, studentId: string, topic: string): Promise<any> {
+        return this.dal.setStudentTopic(user, lessonId, studentId, topic)
+            .catch(this.errorHandler.bind(this));
     }
 
     /**

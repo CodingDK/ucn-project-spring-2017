@@ -19,7 +19,7 @@ import { HomeComponent } from './components/home.component';
 import { LoginComponent } from './components/login.component';
 import { LoginGoogleComponent } from './components/login-google.component';
 
-import { AuthGuard } from './services/auth.guard';
+import { AuthGuard } from './guards/auth.guard';
 import { AuthService } from './services/auth.service';
 import { LocalStorageService } from './services/localstorage.service';
 import { UserService } from './services/user.service';
@@ -27,6 +27,7 @@ import { UserService } from './services/user.service';
 import { MomentModule } from 'angular2-moment';
 import { LoginSimpleComponent } from "./components/login-simple.component";
 import { MultiselectDropdownModule } from 'angular-2-dropdown-multiselect';
+import { RoleGuard } from "./guards/role.guard";
 
 
 @NgModule({
@@ -51,9 +52,9 @@ import { MultiselectDropdownModule } from 'angular-2-dropdown-multiselect';
     LessonModule,
     StudentModule,
     AppRoutingModule // Must be last import. So Rounting childs works
-    
   ],
   providers: [
+    RoleGuard,
     AuthGuard,
     AuthService,
     LocalStorageService,

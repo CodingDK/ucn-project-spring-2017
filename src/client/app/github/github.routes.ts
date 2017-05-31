@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
 
 import { GithubComponent } from './components/github.component';
-import { AuthGuard } from '../services/auth.guard';
+import { AuthGuard } from '../guards/auth.guard';
 
 @NgModule({
   imports: [RouterModule.forChild([

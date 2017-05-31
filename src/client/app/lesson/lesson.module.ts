@@ -8,7 +8,7 @@ import { MultiselectDropdownModule } from 'angular-2-dropdown-multiselect';
 
 import { ModalModule, PopoverModule, DatepickerModule, TimepickerModule } from 'ngx-bootstrap';
 
-import { LessonRoutingModule } from './lesson.routes';
+import { LessonRoutingModule } from './lesson-routing.module';
 import { LessonComponent } from './components/lesson.component';
 import { LessonAdminComponent } from './components/admin/lesson-admin.component';
 import { LessonAdminAddModalComponent } from './components/admin/lesson-admin-add-modal.component';

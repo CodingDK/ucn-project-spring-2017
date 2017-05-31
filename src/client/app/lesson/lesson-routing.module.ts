@@ -2,7 +2,8 @@ import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
 
 import { LessonComponent } from './components/lesson.component';
-import { AuthGuard } from '../services/auth.guard';
+import { AuthGuard } from '../guards/auth.guard';
+import { RoleGuard } from "../guards/role.guard";
 import { LessonAdminAddModalComponent } from './components/admin/lesson-admin-add-modal.component';
 import { LessonAdminDeleteModalComponent } from './components/admin/lesson-admin-delete-modal.component';
 import { LessonDetailsModalComponent } from './components/teacher/lesson-details-modal.component';
@@ -13,10 +14,15 @@ import { LessonAdminComponent } from "./components/admin/lesson-admin.component"
   imports: [RouterModule.forChild([
     {
       path: 'lesson',
+      canActivate: [AuthGuard, RoleGuard],
+      data: { roles: ['teacher', 'admin', 'student'] },
+      //canActivateChild: [AuthGuard],
       children: [{
         path: '',
         //pathMatch: 'full',
         component: LessonComponent,
+        canActivate: [RoleGuard],
+        data: { roles: ['teacher', 'student'] },
         children: [
           {
             path: 'details/:id',
@@ -24,7 +30,9 @@ import { LessonAdminComponent } from "./components/admin/lesson-admin.component"
             resolve: {
               lesson: LessonDetailResolver
             },
+            canActivate: [RoleGuard],
             data: {
+              roles: ['teacher'],
               populateTeacher: true,
               populateStudent: true
             }
@@ -34,6 +42,8 @@ import { LessonAdminComponent } from "./components/admin/lesson-admin.component"
       {
         path: 'admin',
         component: LessonAdminComponent,
+        canActivate: [RoleGuard],
+        data: { roles: ['teacher', 'admin'] },
         children: [{
           path: 'add',
           component: LessonAdminAddModalComponent

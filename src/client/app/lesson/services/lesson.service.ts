@@ -118,7 +118,7 @@ export class LessonService {
   private handleError(error: any): void {
     console.error('LessonService - An error occurred', error);
     if (error.status === 401) {
-      this.toastyService.error("Du er ikke logget ind eller ogs� har du ikke adgang til funtionen");
+      this.toastyService.error("Du er ikke logget ind eller også har du ikke adgang til funtionen");
       this.router.navigate(['/login'], { queryParams: { returnUrl: this.router.url } });
     } else {
       throw error;

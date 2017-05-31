@@ -29,7 +29,7 @@ const schema = getNewSchemaWithDefaultOptions({
   imageUrl: { type: String },
   email: { type: String },
   password: { type: String },
-  googleId: { type: String, required: true },
+  googleId: { type: String, required: true, index: true },
   googleTokens: googleTokensSchema,
   schoolClasses: [{
     type: String

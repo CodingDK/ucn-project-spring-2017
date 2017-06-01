@@ -1,4 +1,7 @@
-<table class="table table-striped">
+<ng-template #emptyTemplate>
+  <h4>Der er ingen lektiecaféer at vise</h4>
+</ng-template>
+<table class="table table-striped" *ngIf="lessons.length > 0; else emptyTemplate">
   <thead>
     <tr>
       <th>Dag <i class="fa fa-calendar" aria-hidden="true"></i></th>

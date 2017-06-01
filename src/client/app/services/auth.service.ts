@@ -40,6 +40,10 @@ export class AuthService {
       .then(response => {
         return this.setCurrentUserIfValid(response.json());
       })
+      .then(response => {
+        this.redirectLogin();
+        return response;
+      })
       .catch(this.handleError);
   }
 
@@ -48,6 +52,10 @@ export class AuthService {
       .toPromise()
       .then(response => {
         return this.setCurrentUserIfValid(response.json());
+      })
+      .then(response => {
+        this.redirectLogin();
+        return response;
       })
       .catch(this.handleError);
   }
@@ -104,6 +112,15 @@ export class AuthService {
   isUserInRole(role: string): boolean {
     const user = this.localStorageService.getCurrentUser();
     return user != null && user.roles.indexOf(role) !== -1;
+  }
+
+  private redirectLogin() {
+    if (this.isUserInRole("admin") && !this.isUserInRole("teacher")) {
+      this.router.navigateByUrl('/lesson/admin');
+    } else {
+      this.router.navigateByUrl('/lesson');
+    }
+
   }
 
   private setCurrentUserIfValid(jsonObj: JsonResponse<IUser>): boolean {

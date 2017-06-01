@@ -1,3 +1,31 @@
-<h1>Elev Lektiecafe</h1>
-<student-table></student-table>
-<student-information></student-information>
+<h1>Lektiecafe</h1>
+
+<lesson-table [lessons]="getAll()" [btnCol]="btnColTemplate"></lesson-table>
+<ng-template let-lesson #btnColTemplate>
+    <button class="btn btn-success btn-xs" role="button" (click)="setTopic(lesson)">Check Ind</button>
+</ng-template>
+
+
+    <p><i class="fa fa-clock-o" aria-hidden="true"></i> {{ lessonStartTime | amDateFormat:'LT' }} - {{ lessonEndTime | amDateFormat:'LT'}}</p>
+
+    <h1>Elevens Oplysninger</h1>
+    <div class="row">
+        <div class="col-md-3">Tilknyttet lærere</div>
+        <div class="col-md-3"><p *ngFor="let teacher of teachers"></p></div>
+    </div>
+    <div class="row">
+        <div class="col-md-3">Elevens navn:</div>
+        <div class="col-md-3">{{ studentName }}</div>
+    </div>
+    <div class="row">
+        <div class="col-md-3">Klasse:</div>
+        <div class="col-md-3">{{ schoolClasses }}</div>
+    </div>
+    <div class="row">
+        <div class="col-md-3">Emne:</div>
+        <div class="col-md-3">{{ studentTopic }}</div>
+    </div>
+    <br />
+    <p>{{ lessonId }}</p>
+    <button class="btn btn-primary">Redigere Dit Emne</button>
+    <button class="btn btn-danger" (click)="checkOut()">Check-ud Af Lektiecafe</button>

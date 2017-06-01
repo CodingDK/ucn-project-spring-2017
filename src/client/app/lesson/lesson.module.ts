@@ -24,8 +24,7 @@ import { OrderByDatePipe } from "./pipes/order-by-date.pipe";
 
 // student
 import { LessonStudentComponent } from './components/student/lesson-student.component';
-import { StudentTableComponent } from './components/student/student-table.component';
-import { StudentInformationComponent } from  './components/student/student-information.component';
+import { StudentTopicModalComponent } from './components/student/student-topic-modal';
 
 @NgModule({
   imports: [
@@ -52,8 +51,7 @@ import { StudentInformationComponent } from  './components/student/student-infor
     LessonTeacherComponent,
     LessonTableComponent,
     LessonStudentComponent,
-    StudentTableComponent,
-    StudentInformationComponent,
+    StudentTopicModalComponent,
     OrderByDatePipe
   ],
   providers: [

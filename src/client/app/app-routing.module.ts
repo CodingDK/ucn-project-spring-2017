@@ -4,8 +4,6 @@ import { RouterModule, Routes } from '@angular/router';
 import { HomeComponent } from './components/home.component';
 import { LoginComponent } from './components/login.component';
 
-import { StudentComponent } from './student/components/student.component';
-
 
 const appRoutes: Routes = [
   { path: '', redirectTo: 'home', pathMatch: 'full' },

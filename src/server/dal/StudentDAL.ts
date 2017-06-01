@@ -110,8 +110,8 @@ export class StudentDal {
         return new Promise<Lesson[]>((resolve: any, reject: any) => {                  
 
             Lessons.find({
-                //'startTime': { '$lte': moment().toDate()  },
-                //'endTime': { '$gte': moment().toDate()   }                
+                'startTime': { '$lte': moment().toDate()  },
+                'endTime': { '$gte': moment().toDate()   }                
 
             }).exec((err: any, objs: LessonDocument[]) => {
 

@@ -12,7 +12,8 @@ import { CreateLessonViewModel } from '../../models/viewmodels/createLessonViewM
 
 @Injectable()
 export class LessonService {
-  private lessonUrl = AppConstants.Server.url + "lesson/";
+    private lessonUrl = AppConstants.Server.url + "lesson/";
+    private studentUrl = AppConstants.Server.url + "student/";
   private allLessons: ILesson[] = [];
 
   constructor(private http: Http, private router: Router, private toastyService: ToastyService) {
@@ -43,6 +44,19 @@ export class LessonService {
   getAllLessons(): ILesson[] {
     return this.allLessons;
   }
+
+  //getActiveLessons(): Promise<any>  {
+
+      //return this.http.
+      //    get(this.studentUrl + "active", {          
+      //    withCredentials: true
+      //    })
+      //    .toPromise()
+      //    .then(response => {
+      //        return response.json().data;
+      //    })
+      //    .catch(this.handleError.bind(this));
+  //}
 
   getLessonById(id: string, populateTeacher: boolean = true, populateStudent?: boolean): Promise<ILesson> {
     return this.http

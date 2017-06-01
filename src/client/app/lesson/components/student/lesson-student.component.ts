@@ -2,8 +2,9 @@ import { Component } from '@angular/core';
 import { LessonService } from "../../services/lesson.service";
 import { ToastyService } from "ng2-toasty";
 import { ActivatedRoute, Router } from "@angular/router";
-import { ILesson, IUser } from "../../../../../shared/interfaces/iModels";
+import { ILesson, IUser, ISchoolClass, IMeetUp } from "../../../../../shared/interfaces/iModels";
 import { AuthService } from "../../../services/auth.service";
+
 
 @Component({
     selector: 'lesson-student',
@@ -11,54 +12,90 @@ import { AuthService } from "../../../services/auth.service";
     styleUrls: ['lesson-student.component.scss']
 })
 export class LessonStudentComponent {
+    isCheckedIn: boolean;
 
-    studentCheckedIn: boolean;
-    activateLessons: boolean;
-
-    // mock variables
-    teachers: string[];
-    startTime: string;
-    endTime: string;
-
+    lessonId: string;
     studentName: string;
-    className: string;
-    studentTopic: string; 
+    schoolClasses: ISchoolClass[];
+    lessonStartTime: Date;
+    lessonEndTime: Date;
+    studentTopic: string;
+    teachers: IUser[];
 
-    constructor() {
-        this.studentCheckedIn = false;
-        this.activateLessons = this.getActiveLessons();
+    constructor(private lessonService: LessonService,
+        private authService: AuthService,
+        private toastyService: ToastyService,
+        private route: ActivatedRoute,
+        private router: Router) {
+        this.lessonService.refreshAllLessons();
 
-        // set up mock data
-        this.teachers = ["Ditte", "Hans"];
-        this.startTime = "13:00";
-        this.endTime = "15:00";
-
-        this.studentName = "Anne Larsen";
-        this.className = "klasse1";
+        this.isCheckedIn = false;
+        this.lessonId = "";
+        this.studentName = "";
+        this.lessonStartTime = new Date();
+        this.lessonEndTime = new Date();
         this.studentTopic = "";
+        
+        
     }
 
-    public studentCheckIn(): void {
-        // TODO: proper backend function call
+    //getActiveLessons(): Promise<ILesson> {
+    //    let allActiveLessons = this.lessonService.getActiveLessons();
+    //    const user = this.authService.getUser();
 
-        this.studentCheckedIn = true;
-        console.log('student Checked in');
+    //    if (user != null && user.roles.indexOf("admin") != -1) {
+    //        allLessons = allLessons.filter(lesson => lesson.teachers.findIndex(teacher => teacher.id == user.id) != -1);
+    //    }
+    //    return allActiveLessons;
+    //}
+
+    checkIn(lesson: ILesson) {
+        console.log('checkin');
+        this.isCheckedIn = true;
+        console.log(lesson.id);
+
+        lesson.startTime
+
+        this.lessonId = lesson.id;
+        this.lessonStartTime = lesson.startTime;
+        this.lessonEndTime = lesson.endTime;
+
+        const user = this.authService.getUser();
+        this.studentName = user.name;
+
+        this.schoolClasses = user.schoolClasses;
+        this.teachers = lesson.teachers;
     }
 
-    public studentCheckOut(): void {
-        // TODO: proper backend function call
-
-        this.studentCheckedIn = false;
-        console.log('student Checked out');
+    checkOut() {
+        console.log('checkOut');
+        this.isCheckedIn = false;
     }
 
-    public getActiveLessons(): boolean {
-        // TODO: proper check from backend
-        return true;
+    setTopic(lesson: ILesson) {
+        this.openTopicsModal(lesson);        
     }
 
-    public setStudentTopic(topic: string): void {
-        //this.studentTopic = topic;
-        console.log('Change topic');
+    getAll(): ILesson[] {
+        let allLessons = this.lessonService.getAllLessons();
+    const user = this.authService.getUser();
+    if (user != null && user.roles.indexOf("admin") != -1) {
+      allLessons = allLessons.filter(lesson => lesson.teachers.findIndex(teacher => teacher.id == user.id) != -1);
     }
+    return allLessons;
+    }
+
+    openTopicsModal(lesson: ILesson) {
+        this.router.navigate(['topic', lesson], { relativeTo: this.route });
+    }
+
+    //getAll(): ILesson[] {
+    //    let allLessons = this.lessonService.getAllLessons();
+    //    const user = this.authService.getUser();
+    //    if (user != null && user.roles.indexOf("admin") != -1) {
+    //        allLessons = allLessons.filter(lesson => lesson.teachers.findIndex(teacher => teacher.id == user.id) != -1);
+    //    }
+    //    return allLessons;
+    //}
+    
 }

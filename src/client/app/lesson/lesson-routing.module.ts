@@ -11,8 +11,8 @@ import { LessonDetailResolver } from './services/lesson-detail-resolver.service'
 import { LessonAdminComponent } from "./components/admin/lesson-admin.component";
 
 // student
-
 import { LessonStudentComponent } from './components/student/lesson-student.component';
+import { StudentTopicModalComponent } from './components/student/student-topic-modal';
 
 @NgModule({
   imports: [RouterModule.forChild([
@@ -77,8 +77,11 @@ import { LessonStudentComponent } from './components/student/lesson-student.comp
           path: 'student',
           component: LessonStudentComponent,
           canActivate: [RoleGuard],
-          data: { roles: ['teacher', 'admin', 'student'] }
-          
+          data: { roles: ['teacher', 'admin', 'student'] },     
+          children: [{
+              path: 'topic',
+              component: StudentTopicModalComponent
+          }]
       }
       ]
       }//, canActivate: [AuthGuard] }

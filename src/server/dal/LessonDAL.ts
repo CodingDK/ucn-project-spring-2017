@@ -16,11 +16,19 @@ import { ILessonDAL } from '../interfaces/dal/iLessonDAL';
  */
 export class LessonDAL implements ILessonDAL {
 
-  public getAll(user: IUser, populateTeacher: boolean, populateStudent: boolean): Promise<Lesson[]> {
+  public getAll(user: IUser, populateTeacher?: boolean, populateStudent?: boolean, onlyActive?: boolean): Promise<Lesson[]> {
     const queryAndProjection = this.getQueryAndProjection(user);
-
+    let query = queryAndProjection.query;
+    if (onlyActive) {
+      query = Object.assign(query, {
+        startTime: { '$lte': new Date() },
+        endTime: { '$gte': new Date() }
+      });
+    }
+    console.log("dal onlyActive", onlyActive);
+    console.log("query", query);
     return new Promise<Lesson[]>((resolve: any, reject: any) => {
-      this.getPopulated(Lessons.find(queryAndProjection.query, queryAndProjection.projection), populateTeacher, populateStudent)
+      this.getPopulated(Lessons.find(query, queryAndProjection.projection), populateTeacher, populateStudent)
         .exec((err: any, objs: LessonDocument[]) => {
           if (err) {
             return reject(DbError.makeNew(err, "A Database error happened"));
@@ -46,7 +54,7 @@ export class LessonDAL implements ILessonDAL {
         return null;
       })
       .then((objectId: Types.ObjectId) => {
-        const queryAndProjection = this.getQueryAndProjection(user, { _id: objectId});
+        const queryAndProjection = this.getQueryAndProjection(user, { _id: objectId });
 
         return new Promise<Lesson>((resolve: any, reject: any) => {
           this.getPopulated(Lessons.findOne(queryAndProjection.query, queryAndProjection.projection), populateTeacher, populateStudent)
@@ -69,7 +77,7 @@ export class LessonDAL implements ILessonDAL {
         query = Object.assign(query, this.getStudentQuery(user.id));
         projection = Object.assign(projection, this.getStudentProjection(user.id, allFields));
       } else if (user.roles.indexOf("admin") === -1 && user.roles.indexOf("teacher") !== -1) {
-        query = Object.assign(query, { teachers: Types.ObjectId(user.id)});
+        query = Object.assign(query, { teachers: Types.ObjectId(user.id) });
       }
     }
     return {
@@ -301,7 +309,7 @@ export class LessonDAL implements ILessonDAL {
    * @param meetUp the founded meetUp
    */
   public findMeetUp(user: IUser, lessonId: string, studentId: string): Promise<IMeetUp> {
-    let query = { "_id": lessonId, "meetUps.student": studentId };
+    const query = { "_id": lessonId, "meetUps.student": studentId };
 
     const projection = {
       meetUps: {

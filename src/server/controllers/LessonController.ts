@@ -27,8 +27,8 @@ export class LessonController extends BaseController {
   /**
    * Method for Getting All Lessons
    */
-  public getAll(user: any, populateTeacher?: boolean, populateStudent?: boolean): Promise<Lesson[]> {
-    return this.dal.getAll(user, populateTeacher, populateStudent)
+  public getAll(user: any, populateTeacher?: boolean, populateStudent?: boolean, onlyActive?: boolean): Promise<Lesson[]> {
+    return this.dal.getAll(user, populateTeacher, populateStudent, onlyActive)
       .catch(this.errorHandler.bind(this));
   }
 

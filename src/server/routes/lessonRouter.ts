@@ -75,7 +75,8 @@ class LessonRouter extends BaseRouter {
   private getAll(req: Request, res: Response, next: NextFunction): void {
     const populateTeacher = req.query.populateTeacher;
     const populateStudent = req.query.populateStudent;
-    this.ctrl.getAll(req.user, populateTeacher, populateStudent)
+    const onlyActive = req.query.onlyActive;
+    this.ctrl.getAll(req.user, populateTeacher, populateStudent, onlyActive)
       .then((lessons: Lesson[]) => {
         return this.send(res, lessons);
         //next();

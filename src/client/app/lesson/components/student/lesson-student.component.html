@@ -1,31 +1,113 @@
-<h1>Lektiecafe</h1>
-
-<lesson-table [lessons]="getAll()" [btnCol]="btnColTemplate"></lesson-table>
-<ng-template let-lesson #btnColTemplate>
-    <button class="btn btn-success btn-xs" role="button" (click)="setTopic(lesson)">Check Ind</button>
+<h1>
+  Lektiecafe <span *ngIf="hasActiveLesson()">- {{item.startTime | amDateFormat:"dddd [d.] LL"}}</span>
+</h1>
+<div class="infoWrapper" *ngIf="hasActiveLesson(); else noActiveLessonTemplate">
+  <div class="row">
+          <div class="col-sm-4">
+            <div class="row">
+              <div class="col-sm-12">
+                <label>
+                  Dato <i class="fa fa-calendar" aria-hidden="true"></i>
+                </label>
+              </div>
+              <div class="col-sm-12">
+                {{item.startTime | amDateFormat:"dddd [d.] LL"}}
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-sm-12">
+                <label>Periode <i class="fa fa-clock-o" aria-hidden="true"></i></label>
+              </div>
+              <div class="col-sm-12">
+                kl. {{item.startTime | amDateFormat:"LT"}}
+                til {{item.endTime | amDateFormat:'LT'}}
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-4">
+            <div class="row">
+              <div class="col-sm-12">
+                <label>Lærere <i class="fa fa-user" aria-hidden="true"></i></label>
+              </div>
+              <div class="col-sm-12">
+                <ul class="list-unstyled teachersList">
+                  <li *ngFor="let teacher of item?.teachers">
+                    <img [src]="teacher.imageUrl" [title]="teacher.name" />
+                    {{teacher.name}}
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-4">
+            <div class="row">
+              <div class="col-sm-12">
+                <label>Klasser <i class="fa fa-users" aria-hidden="true"></i></label>
+              </div>
+              <div class="col-sm-12">
+                <ul class="list-unstyled">
+                  <li *ngFor="let schoolClass of item?.schoolClasses">
+                    {{schoolClass.name}}
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+        <hr />
+        <div class="row">
+          <div class="col-sm-4">
+            <div class="row">
+              <div class="col-sm-12">
+                <label>
+                  Emne <i class="fa fa-book" aria-hidden="true"></i>
+                  <button class="btn btn-info btn-sm btnEdit" (click)="openEditTopic()">
+                    <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+                  </button>
+                </label>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-sm-12">{{getMeetUp().topic}}</div>
+            </div>
+          </div>
+          <div class="col-sm-4">
+            <div class="row">
+              <div class="col-sm-12">
+                <label>{{getCheckIn() ? 'Tjekket ind' : 'Tjek ind'}}</label>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-sm-12">
+                <div *ngIf="getCheckIn(); else checkInTemplate">
+                  {{ getCheckIn() | amDateFormat:'LT' }} 
+                </div>
+                <ng-template #checkInTemplate>
+                  <button class="btn btn-success" (click)=clickedCheckBtn(true)>Tjek ind <i class="fa fa-sign-in" aria-hidden="true"></i></button>
+                </ng-template>
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-4" *ngIf="getCheckIn()">
+            <div class="row">
+              <div class="col-sm-12">
+                <label>{{getCheckOut() ? 'Tjekket ud' : 'Tjek ud'}}</label>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-sm-12">
+                <div *ngIf="getCheckOut(); else checkOutTemplate">
+                  {{ getCheckOut() | amDateFormat:'LT' }} 
+                </div>
+                <ng-template #checkOutTemplate>
+                  <button class="btn btn-danger" (click)=clickedCheckBtn(false)>Tjek ud <i class="fa fa-sign-out" aria-hidden="true"></i></button>
+                </ng-template>
+              </div>
+            </div>
+          </div>
+        </div>
+  <lesson-student-topic-modal (onConfirmed)="submitNewTopic($event)"></lesson-student-topic-modal>
+</div>
+<ng-template #noActiveLessonTemplate>
+  <h3>Der er ingen aktive lektiecaféer</h3>
 </ng-template>
-
-
-    <p><i class="fa fa-clock-o" aria-hidden="true"></i> {{ lessonStartTime | amDateFormat:'LT' }} - {{ lessonEndTime | amDateFormat:'LT'}}</p>
-
-    <h1>Elevens Oplysninger</h1>
-    <div class="row">
-        <div class="col-md-3">Tilknyttet l�rere</div>
-        <div class="col-md-3"><p *ngFor="let teacher of teachers"></p></div>
-    </div>
-    <div class="row">
-        <div class="col-md-3">Elevens navn:</div>
-        <div class="col-md-3">{{ studentName }}</div>
-    </div>
-    <div class="row">
-        <div class="col-md-3">Klasse:</div>
-        <div class="col-md-3">{{ schoolClasses }}</div>
-    </div>
-    <div class="row">
-        <div class="col-md-3">Emne:</div>
-        <div class="col-md-3">{{ studentTopic }}</div>
-    </div>
-    <br />
-    <p>{{ lessonId }}</p>
-    <button class="btn btn-primary">Redigere Dit Emne</button>
-    <button class="btn btn-danger" (click)="checkOut()">Check-ud Af Lektiecafe</button>

@@ -1,101 +1,110 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { LessonService } from "../../services/lesson.service";
-import { ToastyService } from "ng2-toasty";
+import { ToastyService, ToastOptions } from "ng2-toasty";
 import { ActivatedRoute, Router } from "@angular/router";
 import { ILesson, IUser, ISchoolClass, IMeetUp } from "../../../../../shared/interfaces/iModels";
 import { AuthService } from "../../../services/auth.service";
+import { LessonStudentTopicModalComponent } from "./lesson-student-topic-modal";
 
 
 @Component({
-    selector: 'lesson-student',
-    templateUrl: 'lesson-student.component.html',
-    styleUrls: ['lesson-student.component.scss']
+  selector: 'lesson-student',
+  templateUrl: 'lesson-student.component.html',
+  styleUrls: ['lesson-student.component.scss']
 })
-export class LessonStudentComponent {
-    isCheckedIn: boolean;
+export class LessonStudentComponent implements OnInit {
+  @ViewChild(LessonStudentTopicModalComponent)
+  topicModal: LessonStudentTopicModalComponent;
 
-    lessonId: string;
-    studentName: string;
-    schoolClasses: ISchoolClass[];
-    lessonStartTime: Date;
-    lessonEndTime: Date;
-    studentTopic: string;
-    teachers: IUser[];
+  item: ILesson;
 
-    constructor(private lessonService: LessonService,
-        private authService: AuthService,
-        private toastyService: ToastyService,
-        private route: ActivatedRoute,
-        private router: Router) {
-        this.lessonService.refreshAllLessons();
+  constructor(
+    private lessonService: LessonService,
+    private authService: AuthService,
+    private toastyService: ToastyService,
+    private route: ActivatedRoute,
+    private router: Router) { }
 
-        this.isCheckedIn = false;
-        this.lessonId = "";
-        this.studentName = "";
-        this.lessonStartTime = new Date();
-        this.lessonEndTime = new Date();
-        this.studentTopic = "";
-        
-        
+  ngOnInit(): void {
+    this.item = this.lessonService.getAllLessons()[0];
+  }
+
+  hasActiveLesson(): boolean {
+    return this.item !== undefined;
+  }
+
+  getMeetUp() {
+    return this.item.meetUps[0];
+  }
+
+  getCheckIn() {
+    return this.getMeetUp().checkIn;
+  }
+
+  getCheckOut() {
+    return this.getMeetUp().checkOut;
+  }
+
+  openEditTopic() {
+    this.topicModal.showModal(this.getMeetUp().topic);
+  }
+
+  submitNewTopic(newTopic: string | undefined) {
+    const m = this.getMeetUpCopy();
+    const oldTopic = m.topic;
+    newTopic = newTopic && newTopic.length > 0 ? newTopic : undefined;
+
+    if (newTopic !== m.topic) { //
+      m.topic = <string>newTopic;
+      this.updateMeetUp(m, "Dit emne er blevet opdateret", () => { 
+        this.topicModal.hideModal();
+      });
+    } else {
+      this.topicModal.hideModal();
     }
+  }
 
-    //getActiveLessons(): Promise<ILesson> {
-    //    let allActiveLessons = this.lessonService.getActiveLessons();
-    //    const user = this.authService.getUser();
-
-    //    if (user != null && user.roles.indexOf("admin") != -1) {
-    //        allLessons = allLessons.filter(lesson => lesson.teachers.findIndex(teacher => teacher.id == user.id) != -1);
-    //    }
-    //    return allActiveLessons;
-    //}
-
-    checkIn(lesson: ILesson) {
-        console.log('checkin');
-        this.isCheckedIn = true;
-        console.log(lesson.id);
-
-        lesson.startTime
-
-        this.lessonId = lesson.id;
-        this.lessonStartTime = lesson.startTime;
-        this.lessonEndTime = lesson.endTime;
-
-        const user = this.authService.getUser();
-        this.studentName = user.name;
-
-        this.schoolClasses = user.schoolClasses;
-        this.teachers = lesson.teachers;
+  clickedCheckBtn(isCheckIn: boolean) {
+    const m = this.getMeetUpCopy();
+    if (isCheckIn) {
+      m.checkIn = new Date();
+    } else {
+      m.checkOut = new Date();
     }
+    let message = `Du er blevet tjekket `;
+    isCheckIn ? message += "ind" : message += "ud";
+    this.updateMeetUp(m, message);
+  }
 
-    checkOut() {
-        console.log('checkOut');
-        this.isCheckedIn = false;
-    }
+  private getMeetUpCopy() {
+    const m = this.getMeetUp();
+    return <IMeetUp>{
+      checkIn: m.checkIn,
+      checkOut: m.checkOut,
+      student: m.student,
+      topic: m.topic
+    };
+  }
 
-    setTopic(lesson: ILesson) {
-        this.openTopicsModal(lesson);        
-    }
+  public updateMeetUp(newMeetUp: IMeetUp, message: string, action?: () => void) {
+    const m = this.getMeetUp();
+    let promise = this.lessonService.updateMeetUp(this.item.id, newMeetUp)
+      .then(returnedMeetUp => {
+        m.checkIn = returnedMeetUp.checkIn;
+        m.checkOut = returnedMeetUp.checkOut;
+        m.topic = returnedMeetUp.topic;
+        this.toastyService.success(message);
+      });
+      if (action !== undefined) {
+        promise = promise.then(action);
+      }
+    return promise.catch(err => {
+        const body = JSON.parse(err._body);
+        this.toastyService.error(<ToastOptions>{
+          title: "Der opstod en fejl",
+          msg: body.message
+        });
+      });
+  }
 
-    getAll(): ILesson[] {
-        let allLessons = this.lessonService.getAllLessons();
-    const user = this.authService.getUser();
-    if (user != null && user.roles.indexOf("admin") != -1) {
-      allLessons = allLessons.filter(lesson => lesson.teachers.findIndex(teacher => teacher.id == user.id) != -1);
-    }
-    return allLessons;
-    }
-
-    openTopicsModal(lesson: ILesson) {
-        this.router.navigate(['topic', lesson], { relativeTo: this.route });
-    }
-
-    //getAll(): ILesson[] {
-    //    let allLessons = this.lessonService.getAllLessons();
-    //    const user = this.authService.getUser();
-    //    if (user != null && user.roles.indexOf("admin") != -1) {
-    //        allLessons = allLessons.filter(lesson => lesson.teachers.findIndex(teacher => teacher.id == user.id) != -1);
-    //    }
-    //    return allLessons;
-    //}
-    
 }

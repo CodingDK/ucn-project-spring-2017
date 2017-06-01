@@ -14,18 +14,18 @@ import { JsonResponse } from '../../../shared/interfaces/jsonResponse';
 
 @Injectable()
 export class AuthService {
-  private loggedIn: boolean = false;
-  private finishFirstRun: boolean = false;
+  private loggedIn = false;
+  private finishFirstRun = false;
   private promise: Promise<any>;
-  
+
   private loginUrl = AppConstants.Server.url + AppConstants.Server.endpoint.login.login;
   private logoutUrl = AppConstants.Server.url + AppConstants.Server.endpoint.login.logout;
   private statusUrl = AppConstants.Server.url + AppConstants.Server.endpoint.login.status;
   private googleLoginUrl = AppConstants.Server.url + AppConstants.Server.endpoint.login.googleLogin;
-  private loginSimpleUrl = AppConstants.Server.url + 'login/simple'; 
+  private loginSimpleUrl = AppConstants.Server.url + 'login/simple';
 
   constructor(private http: Http, private router: Router, private localStorageService: LocalStorageService) {
-    //TODO Maybe this promise should be moved or angular gives some other opportunities for setting the loggedIn value 
+    //TODO Maybe this promise should be moved or angular gives some other opportunities for setting the loggedIn value
     this.promise = this.http.get(this.statusUrl, { withCredentials: true })
       .toPromise()
       .then(response => {
@@ -33,7 +33,7 @@ export class AuthService {
       })
       .catch(this.handleError);
   }
-  
+
   googleLoginSucceed(auth_code: string): Promise<boolean> {
     return this.http.post(this.googleLoginUrl, { auth_code }, { withCredentials: true })
       .toPromise()
@@ -43,7 +43,7 @@ export class AuthService {
       .catch(this.handleError);
   }
 
-  loginSimple(userId: string) : Promise<boolean> {
+  loginSimple(userId: string): Promise<boolean> {
     return this.http.post(this.loginSimpleUrl, { userId }, { withCredentials: true })
       .toPromise()
       .then(response => {
@@ -52,17 +52,17 @@ export class AuthService {
       .catch(this.handleError);
   }
 
-  login(loginModel: LoginViewModel) : Promise<boolean> {
+  login(loginModel: LoginViewModel): Promise<boolean> {
     console.log("service: loginModel: ", loginModel);
 
     return this.http.post(this.loginUrl, loginModel, { withCredentials: true })
       .toPromise()
       .then(response => {
-        const loggedIn = response.status == 200;
+        const loggedIn = response.status === 200;
         return this.setCurrentUserIfValid(response.json());
       });
   }
-  
+
 
   // This method will log the use out
   logout() {
@@ -78,10 +78,10 @@ export class AuthService {
       .catch(this.handleError);
     this.router.navigateByUrl('/login');
   }
-  
+
   isLoggedInAsPromise(): Promise<boolean> {
     if (this.finishFirstRun) {
-      return new Promise<boolean>(response => { return this.isLoggedIn });
+      return new Promise<boolean>(response => { return this.isLoggedIn; });
     }
     return this.promise;
   }
@@ -89,7 +89,7 @@ export class AuthService {
   isFinishFirstRun(): boolean {
     return this.finishFirstRun;
   }
-  
+
   isLoggedIn(): boolean {
     if (!this.finishFirstRun) {
       return this.localStorageService.getCurrentUser() !== undefined;
@@ -97,19 +97,19 @@ export class AuthService {
     return this.loggedIn;
   }
 
-  getUser() : IUser | undefined {
+  getUser(): IUser | undefined {
     return this.localStorageService.getCurrentUser();
   }
 
   isUserInRole(role: string): boolean {
     const user = this.localStorageService.getCurrentUser();
-    return user != null && user.roles.indexOf(role) != -1;
+    return user != null && user.roles.indexOf(role) !== -1;
   }
 
   private setCurrentUserIfValid(jsonObj: JsonResponse<IUser>): boolean {
     this.finishFirstRun = true;
-    let user = jsonObj.data;
-    let succes = jsonObj.succus;
+    const user = jsonObj.data;
+    const succes = jsonObj.succus;
     if (succes) {
       this.localStorageService.setCurrentUser(user);
     } else {

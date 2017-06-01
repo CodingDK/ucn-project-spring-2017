@@ -13,6 +13,7 @@ import { LessonAdminComponent } from "./components/admin/lesson-admin.component"
 // student
 import { LessonStudentComponent } from './components/student/lesson-student.component';
 import { StudentTopicModalComponent } from './components/student/student-topic-modal';
+import { LessonGetAllResolver } from "./services/lesson-get-all-resolver.service";
 
 @NgModule({
   imports: [RouterModule.forChild([
@@ -27,6 +28,9 @@ import { StudentTopicModalComponent } from './components/student/student-topic-m
         component: LessonComponent,
         canActivate: [RoleGuard],
         data: { roles: ['teacher', 'student'] },
+        resolve: {
+          lessons: LessonGetAllResolver
+        },
         children: [
           {
             path: 'details/:id',
@@ -48,6 +52,9 @@ import { StudentTopicModalComponent } from './components/student/student-topic-m
         component: LessonAdminComponent,
         canActivate: [RoleGuard],
         data: { roles: ['teacher', 'admin'] },
+        resolve: {
+          lessons: LessonGetAllResolver
+        },
         children: [{
           path: 'add',
           component: LessonAdminAddModalComponent
@@ -72,21 +79,8 @@ import { StudentTopicModalComponent } from './components/student/student-topic-m
             populateTeacher: true
           }
         }]
-      },
-      {
-          path: 'student',
-          component: LessonStudentComponent,
-          canActivate: [RoleGuard],
-          data: { roles: ['teacher', 'admin', 'student'] },     
-          children: [{
-              path: 'topic',
-              component: StudentTopicModalComponent
-          }]
-      }
-      ]
-      }//, canActivate: [AuthGuard] }
-    
-
+      }]
+    }
   ])],
   exports: [RouterModule]
 })

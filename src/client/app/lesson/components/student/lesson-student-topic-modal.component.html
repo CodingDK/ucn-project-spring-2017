@@ -1,0 +1,31 @@
+<div *ngIf="isModalShown" [config]="{ show: true }" (onHidden)="onHidden()" bsModal #topicModal="bs-modal" class="modal fade"
+  tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-sm">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title pull-left">Redigere dit emne</h4>
+        <button type="button" class="close pull-right" aria-label="Close" (click)="hideModal()">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="form">
+            <div class="row">
+              <div class="form-group col-sm-12">
+                <label class="control-label" for="topic">Hvad arbejder du med?</label>
+                <!--[(ngModel)]="model.endTime"-->
+                <input class="form-control" id="topic" name="topic" type="text" [(ngModel)]="topic">
+                <!--<div *ngIf="formErrors.endTime" class="alert alert-danger">
+                  {{ formErrors.endTime }}
+                </div>-->
+              </div>
+            </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" (click)="hideModal()">Annuller</button>
+        <button type="button" class="btn btn-success" (click)="submit()">Gem</button>
+      </div>
+    </div>
+  </div>
+</div>

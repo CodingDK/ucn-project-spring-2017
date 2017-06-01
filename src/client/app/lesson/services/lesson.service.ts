@@ -12,24 +12,32 @@ import { CreateLessonViewModel } from '../../models/viewmodels/createLessonViewM
 
 @Injectable()
 export class LessonService {
-    private lessonUrl = AppConstants.Server.url + "lesson/";
-    private studentUrl = AppConstants.Server.url + "student/";
+  private lessonUrl = AppConstants.Server.url + "lesson/";
+
+  private populateStudent: boolean | undefined;
+  private onlyActive: boolean | undefined;
   private allLessons: ILesson[] = [];
 
-  constructor(private http: Http, private router: Router, private toastyService: ToastyService) {
-    this.init();
+  constructor(private http: Http, private router: Router, private toastyService: ToastyService) { }
+
+  getAllLessons(): ILesson[] {
+    return this.allLessons;
   }
 
-  init() {
-    //this.refreshAllLessons();
-  }
+  refreshAllLessons(populateTeacher: boolean = true, populateStudent?: boolean, onlyActive?: boolean): Promise<ILesson[]> {
+    if (populateStudent !== undefined) {
+      this.populateStudent = populateStudent;
+    }
+    if (onlyActive !== undefined) {
+      this.onlyActive = onlyActive;
+    }
 
-  refreshAllLessons(): void {
-    this.http
+    return this.http
       .get(this.lessonUrl, {
         params: {
-          populateTeacher: true,
-          //nocache: new Date().getTime().toString() //lave custom http hvor param nocache bliver sat!
+          populateTeacher,
+          populateStudent: this.populateStudent,
+          onlyActive: this.onlyActive
         },
         withCredentials: true
       })
@@ -40,23 +48,6 @@ export class LessonService {
       })
       .catch(this.handleError.bind(this));
   }
-
-  getAllLessons(): ILesson[] {
-    return this.allLessons;
-  }
-
-  //getActiveLessons(): Promise<any>  {
-
-      //return this.http.
-      //    get(this.studentUrl + "active", {          
-      //    withCredentials: true
-      //    })
-      //    .toPromise()
-      //    .then(response => {
-      //        return response.json().data;
-      //    })
-      //    .catch(this.handleError.bind(this));
-  //}
 
   getLessonById(id: string, populateTeacher: boolean = true, populateStudent?: boolean): Promise<ILesson> {
     return this.http
@@ -115,15 +106,16 @@ export class LessonService {
   }
 
   updateMeetUp(lessonId: string, meetUp: IMeetUp): Promise<IMeetUp> {
-    const url = `${this.lessonUrl + lessonId}/meetup/${meetUp.student.id}`
+    const url = `${this.lessonUrl + lessonId}/meetup/${meetUp.student.id}`;
     return this.http.put(url, meetUp, { withCredentials: true })
       .toPromise()
       .then(response => {
         return response.json().data;
       })
-      .then((meetUp: IMeetUp) => {
+      .then((newMeetUp: IMeetUp) => {
         //TODO maybe refresh allLesson? (or just this meetUp)
-        return meetUp;
+        //right now it happen in the components (updating the meetUp only)
+        return newMeetUp;
       })
       .catch(this.handleError.bind(this));
   }

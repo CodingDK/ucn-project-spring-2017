@@ -7,6 +7,7 @@ import { Types } from 'mongoose';
 import { validateObjectId } from './helpers';
 
 import { IUserDAL } from '../interfaces/dal/iUserDAL';
+import { Roles } from "../../shared/constants/roles";
 /**
  * Class for handling Users in database
  */
@@ -101,7 +102,7 @@ export class UserDAL implements IUserDAL {
   private getUserFromDocument(userDoc: UserDocument): User {
     //let newObj: User;
     const retObj: User = new User(); //: Student | Teacher;
-    //if (userDoc.roles.indexOf("student") == -1) { //check if the user is a teacher
+    //if (userDoc.roles.indexOf(Roles.student) == -1) { //check if the user is a teacher
     //  retObj = new Teacher();
     retObj.roles = userDoc.roles;
     retObj.schoolClasses = userDoc.schoolClasses.map((value => {
@@ -171,7 +172,7 @@ export class UserDAL implements IUserDAL {
   public findStudentsBySchoolClassNames(user: any, names: string[]): Promise<User[]> {
     return new Promise<User[]>((resolve, reject) => {
       Users.find({
-        roles: "student",
+        roles: Roles.student,
         schoolClasses: { $in: names }
       }, (err, objs: UserDocument[]) => {
         if (err) {

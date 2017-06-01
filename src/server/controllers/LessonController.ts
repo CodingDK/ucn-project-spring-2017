@@ -9,6 +9,7 @@ import { ILessonDAL } from '../interfaces/dal/iLessonDAL';
 
 import { CreateLessonViewModel } from '../models/viewmodels/createLessonViewModel';
 import { IMeetUp, IUser } from '../../shared/interfaces/iModels';
+import { Roles } from '../../shared/constants/roles';
 import { ResponseError } from '../errors/responseError';
 
 import { UserController } from './userController';
@@ -120,7 +121,7 @@ export class LessonController extends BaseController {
    */
   public updateMeetUp(user: IUser, lessonId: string, studentId: string, meetUp: IMeetUp) {
     return new Promise<void>((resolve, reject) => {
-      if (hasRequiredRole(user, ['student']) && user.id !== studentId) {
+      if (hasRequiredRole(user, [Roles.student]) && user.id !== studentId) {
         return reject(ResponseError.makeNew(
           new Error("UserId and studentId not matching"),
           "You dont have access to update others meetUps", 403

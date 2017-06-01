@@ -10,6 +10,7 @@ import { hasRequiredRole } from '../common/common';
 import { IMeetUp, IUser } from '../../shared/interfaces/iModels';
 
 import { ILessonDAL } from '../interfaces/dal/iLessonDAL';
+import { Roles } from "../../shared/constants/roles";
 
 /**
  * Class for handling Lessons in database
@@ -73,10 +74,10 @@ export class LessonDAL implements ILessonDAL {
 
   private getQueryAndProjection(user: IUser, query: any = {}, projection: any = {}, allFields?: boolean) {
     if (user != null) {
-      if (user.roles.indexOf("student") !== -1) {
+      if (user.roles.indexOf(Roles.student) !== -1) {
         query = Object.assign(query, this.getStudentQuery(user.id));
         projection = Object.assign(projection, this.getStudentProjection(user.id, allFields));
-      } else if (user.roles.indexOf("admin") === -1 && user.roles.indexOf("teacher") !== -1) {
+      } else if (user.roles.indexOf(Roles.admin) === -1 && user.roles.indexOf(Roles.teacher) !== -1) {
         query = Object.assign(query, { teachers: Types.ObjectId(user.id) });
       }
     }

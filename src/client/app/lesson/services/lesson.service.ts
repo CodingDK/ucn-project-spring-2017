@@ -10,6 +10,7 @@ import { AppConstants } from "../../app.constants";
 
 import { CreateLessonViewModel } from '../../models/viewmodels/createLessonViewModel';
 import { AuthService } from "../../services/auth.service";
+import { Roles } from "../../../../shared/constants/roles";
 
 @Injectable()
 export class LessonService {
@@ -158,7 +159,7 @@ export class LessonService {
 
   private getUpdateMeetUpUrl(lessonId: string, studentId?: string, action?: "checkin" | "checkout" | "topic") {
     let url = `${this.lessonUrl + lessonId}/meetup`;
-    const isStudent = this.authService.isUserInRole("student");
+    const isStudent = this.authService.isUserInRole(Roles.student);
     if (!studentId && !isStudent) {
       url += `/${studentId}`;
     }

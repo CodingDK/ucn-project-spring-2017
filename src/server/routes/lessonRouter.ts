@@ -6,6 +6,7 @@ import { Lesson } from '../models/lesson';
 import { CreateLessonViewModel } from '../models/viewmodels/createLessonViewModel';
 import { IMeetUp, IUser } from '../../shared/interfaces/iModels';
 import { ResponseError } from "../errors/responseError";
+import { Roles } from "../../shared/constants/roles";
 
 class LessonRouter extends BaseRouter {
   ctrl: LessonController;
@@ -34,37 +35,37 @@ class LessonRouter extends BaseRouter {
 
     //POST create new lesson
     this.router.post('/', (req, res, next) => {
-      this.handleHasRoleAccess(req, res, next, ['admin']);
+      this.handleHasRoleAccess(req, res, next, [Roles.admin]);
     }, this.createLesson.bind(this));
 
     //PUT update lesson
     this.router.put('/', (req, res, next) => {
-      this.handleHasRoleAccess(req, res, next, ['admin']);
+      this.handleHasRoleAccess(req, res, next, [Roles.admin]);
     }, this.updateLesson.bind(this));
 
     //DELETE delete a lesson
     this.router.delete('/:id', (req, res, next) => {
-      this.handleHasRoleAccess(req, res, next, ['admin']);
+      this.handleHasRoleAccess(req, res, next, [Roles.admin]);
     }, this.deleteLesson.bind(this));
 
     //PUT update meetUp topic
     this.router.put('/:lessonId/meetup/topic', (req, res, next) => {
-      this.handleHasRoleAccess(req, res, next, ['student']);
+      this.handleHasRoleAccess(req, res, next, [Roles.student]);
     }, this.updateMeetUpTopic.bind(this));
 
     //POST add checkIn on meetUp
     this.router.post('/:lessonId/meetup/checkin', (req, res, next) => {
-      this.handleHasRoleAccess(req, res, next, ['student']);
+      this.handleHasRoleAccess(req, res, next, [Roles.student]);
     }, this.addMeetUpCheckIn.bind(this));
 
     //POST add checkOut on meetUp
     this.router.post('/:lessonId/meetup/checkOut', (req, res, next) => {
-      this.handleHasRoleAccess(req, res, next, ['student']);
+      this.handleHasRoleAccess(req, res, next, [Roles.student]);
     }, this.addMeetUpCheckOut.bind(this));
 
     //PUT update meetUp for a student
     this.router.put('/:lessonId/meetup/:studentId', (req, res, next) => {
-      this.handleHasRoleAccess(req, res, next, ['teacher', 'student']);
+      this.handleHasRoleAccess(req, res, next, [Roles.teacher, Roles.student]);
     }, this.updateMeetUp.bind(this));
 
   }

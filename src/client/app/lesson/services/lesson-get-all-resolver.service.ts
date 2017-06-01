@@ -6,6 +6,7 @@ import { ToastyService } from 'ng2-toasty';
 import { LessonService } from './lesson.service';
 import { ILesson } from '../../../../shared/interfaces/iModels';
 import { AuthService } from "../../services/auth.service";
+import { Roles } from "../../../../shared/constants/roles";
 
 @Injectable()
 export class LessonGetAllResolver implements Resolve<ILesson[]> {
@@ -25,7 +26,7 @@ export class LessonGetAllResolver implements Resolve<ILesson[]> {
     const populateTeacher = true;
     let populateStudent;
     let onlyActive;
-    if (this.authService.isUserInRole("student")) {
+    if (this.authService.isUserInRole(Roles.student)) {
       populateStudent = true;
       onlyActive = true;
     }

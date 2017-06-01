@@ -10,6 +10,7 @@ import { LocalStorageService } from './localstorage.service';
 import { IUser } from '../../../shared/interfaces/iModels';
 
 import { JsonResponse } from '../../../shared/interfaces/jsonResponse';
+import { Roles } from "../../../shared/constants/roles";
 
 
 @Injectable()
@@ -115,7 +116,7 @@ export class AuthService {
   }
 
   private redirectLogin() {
-    if (this.isUserInRole("admin") && !this.isUserInRole("teacher")) {
+    if (this.isUserInRole(Roles.admin) && !this.isUserInRole(Roles.teacher)) {
       this.router.navigateByUrl('/lesson/admin');
     } else {
       this.router.navigateByUrl('/lesson');

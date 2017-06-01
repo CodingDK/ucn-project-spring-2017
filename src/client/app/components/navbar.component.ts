@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { AuthService } from '../services/auth.service';
 
 import { ToastyService, ToastyConfig, ToastOptions, ToastData } from 'ng2-toasty';
+import { Roles } from "../../../shared/constants/roles";
 
 @Component({
   selector: 'navbar',
@@ -46,15 +47,15 @@ export class NavbarComponent {
   }
 
   isTeacher(): boolean {
-    return this.authService.isUserInRole("teacher");
+    return this.authService.isUserInRole(Roles.teacher);
   }
 
   isStudent(): boolean {
-    return this.authService.isUserInRole("student");
+    return this.authService.isUserInRole(Roles.student);
   }
 
   isAdmin(): boolean {
-    return this.authService.isUserInRole("admin");
+    return this.authService.isUserInRole(Roles.admin);
   }
 
   getDisplayUserRoles() {

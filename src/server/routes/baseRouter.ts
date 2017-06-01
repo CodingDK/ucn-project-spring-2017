@@ -7,16 +7,15 @@ import { User } from '../models/user';
 import { TypedJSON, SerializerSettings } from "typedjson-npm";
 import { IUser } from "../../shared/interfaces/iModels";
 
+import { hasRequiredRole } from '../common/common';
+
 export abstract class BaseRouter {
   router: Router = Router();
 
   protected handleHasRoleAccess(req: Request, res: Response, next: NextFunction, roles: string[]) {
     const user = req.user as IUser;
-    if (user == null) {
-      //return this.sendNotLoggedIn(res);
-    }
-    const hasRequiredRole = user.roles.some(x => { return roles.indexOf(x) !== -1; });
-    if (!hasRequiredRole) {
+    const hasRole = hasRequiredRole(user, roles);
+    if (!hasRole) {
       return this.send(res, {}, "You are not allowed to access this data", false, 403);
     }
     next();

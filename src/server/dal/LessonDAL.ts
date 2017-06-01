@@ -5,6 +5,7 @@ import { DbLesson, LessonDocument, Lessons, DbMeetUp } from './models/dbLesson';
 import { DbError } from '../errors/dbError';
 import { Types, DocumentQuery } from 'mongoose';
 import { validateObjectId } from './helpers';
+import { hasRequiredRole } from '../common/common';
 
 import { IMeetUp, IUser } from '../../shared/interfaces/iModels';
 
@@ -62,11 +63,11 @@ export class LessonDAL implements ILessonDAL {
       });
   }
 
-  private getQueryAndProjection(user: IUser, query: any = {}, projection: any = {}) {
+  private getQueryAndProjection(user: IUser, query: any = {}, projection: any = {}, allFields?: boolean) {
     if (user != null) {
       if (user.roles.indexOf("student") !== -1) {
         query = Object.assign(query, this.getStudentQuery(user.id));
-        projection = Object.assign(projection, this.getStudentProjection(user.id));
+        projection = Object.assign(projection, this.getStudentProjection(user.id, allFields));
       } else if (user.roles.indexOf("admin") === -1 && user.roles.indexOf("teacher") !== -1) {
         query = Object.assign(query, { teachers: Types.ObjectId(user.id)});
       }
@@ -81,13 +82,14 @@ export class LessonDAL implements ILessonDAL {
     return { "meetUps.student": Types.ObjectId(userId) };
   }
 
-  private getStudentProjection(userId: string) {
+  private getStudentProjection(userId: string, allFields?: boolean) {
+    const val = allFields === undefined || allFields ? 1 : 0;
     return {
-      _id: 1,
-      teachers: 1,
-      startTime: 1,
-      endTime: 1,
-      schoolClasses: 1,
+      _id: val,
+      teachers: val,
+      startTime: val,
+      endTime: val,
+      schoolClasses: val,
       meetUps: {
         $elemMatch: {
           student: Types.ObjectId(userId)
@@ -287,6 +289,38 @@ export class LessonDAL implements ILessonDAL {
         //.then(lesson => {
         //  console.log("here?", lesson);
         //  return <IMeetUp>lesson.meetUps.find(x => { return x.student.id == studentId })
+      }).catch(err => {
+        throw err;
+      });
+  }
+
+  /**
+   * Find a meetUp
+   * @param lessonId the id of the lesson to find
+   * @param studentId the id of the student to find
+   * @param meetUp the founded meetUp
+   */
+  public findMeetUp(user: IUser, lessonId: string, studentId: string): Promise<IMeetUp> {
+    let query = { "_id": lessonId, "meetUps.student": studentId };
+
+    const projection = {
+      meetUps: {
+        $elemMatch: {
+          student: Types.ObjectId(studentId)
+        }
+      }
+    };
+
+    return this.getPopulated(Lessons.findOne(query, projection), false, true)
+      .exec((err: any, lessonDocument) => {
+        if (err) {
+          throw DbError.makeNew(err, `Database error happened in finding meetup`);
+        }
+        return lessonDocument;
+      })
+      .then(lessonDoc => {
+        const lesson = lessonDoc.toObject() as Lesson;
+        return lesson.meetUps[0];
       }).catch(err => {
         console.log("here?", err);
         throw err;

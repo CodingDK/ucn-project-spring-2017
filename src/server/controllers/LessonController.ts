@@ -8,12 +8,13 @@ import { LessonDAL } from '../dal/lessonDAL';
 import { ILessonDAL } from '../interfaces/dal/iLessonDAL';
 
 import { CreateLessonViewModel } from '../models/viewmodels/createLessonViewModel';
-import { IMeetUp } from '../../shared/interfaces/iModels';
+import { IMeetUp, IUser } from '../../shared/interfaces/iModels';
 import { ResponseError } from '../errors/responseError';
-
 
 import { UserController } from './userController';
 import { BaseController } from './baseController';
+
+import { hasRequiredRole } from '../common/common';
 
 /**
  * Controller for handling Lessons
@@ -36,7 +37,7 @@ export class LessonController extends BaseController {
    */
   public findById(user: any, id: string, populateTeacher?: boolean, populateStudent?: boolean): Promise<Lesson> {
     return this.dal.findById(user, id, populateTeacher, populateStudent)
-      .catch(this.errorHandler.bind(this))
+      .catch(this.errorHandler.bind(this));
   }
 
   /**
@@ -57,7 +58,7 @@ export class LessonController extends BaseController {
       .then(newLesson => {
         return this.dal.insert(user, newLesson);
       })
-      .catch(this.errorHandler.bind(this))
+      .catch(this.errorHandler.bind(this));
   }
 
   /**
@@ -87,19 +88,19 @@ export class LessonController extends BaseController {
         throw ResponseError.makeNew(err, `Error happen in finding students`);
       })
       .then((students) => {
-        let newLesson = new Lesson();
+        const newLesson = new Lesson();
         newLesson.id = <string>viewModel.id;
         newLesson.startTime = viewModel.startTime;
         newLesson.endTime = viewModel.endTime;
-        newLesson.schoolClasses = viewModel.schoolClassNames.map((value) => { return new SchoolClass(value) });
+        newLesson.schoolClasses = viewModel.schoolClassNames.map((value) => { return new SchoolClass(value); });
         newLesson.teachers = viewModel.teachers.map(value => {
-          let teacher = new User();
+          const teacher = new User();
           teacher.id = value;
           return teacher;
-        })
-        newLesson.meetUps = students.map(value => { return new MeetUp(value) });
+        });
+        newLesson.meetUps = students.map(value => { return new MeetUp(value); });
         return newLesson;
-      })
+      });
   }
 
   /**
@@ -117,51 +118,24 @@ export class LessonController extends BaseController {
    * @param studentId the id of the student to update
    * @param meetUp the new meetUp
    */
-  public updateMeetUp(user: any, lessonId: string, studentId: string, meetUp: IMeetUp) {
-    return this.dal.updateMeetUp(user, lessonId, studentId, meetUp)
-      .catch(this.errorHandler.bind(this));
+  public updateMeetUp(user: IUser, lessonId: string, studentId: string, meetUp: IMeetUp) {
+    return new Promise<void>((resolve, reject) => {
+      if (hasRequiredRole(user, ['student']) && user.id !== studentId) {
+        return reject(ResponseError.makeNew(
+          new Error("UserId and studentId not matching"),
+          "You dont have access to update others meetUps", 403
+          ));
+      }
+      return resolve();
+    })
+    .then(() => {
+      return this.dal.updateMeetUp(user, lessonId, studentId, meetUp);
+    })
+    .catch(this.errorHandler.bind(this));
   }
 
-  ///**
-  // * Method for find a lesson by id
-  // * @param id
-  // */
-  //public findById(id: string): Promise<Lesson> {
-  //  return this.dal.findById(id);
-  //}
-
-  ///**
-  // * Method for find a lesson by a date
-  // * @param lessonDate
-  // */
-  //public findBydate(lessonDate: Date): Promise<Lesson> {
-  //  return this.dal.findByDate(lessonDate);
-  //}
-
-  ///**
-  // * Method for find a lesson by a daterange between two dates
-  // * @param lessonDates
-  // */
-  //public findByDateRange(lessonDates: Date[]): Promise<Lesson> {
-  //  return this.dal.findByDateRange(lessonDates);
-  //}
-
-  ///**
-  // * Method for find a lesson by teacher
-  // * @param teacher
-  // */
-  //public findByTeacher(teacher: string): Promise<Lesson> {
-  //  return this.dal.findByTeacher(teacher);
-  //}
-
-  ///**
-  // * Method for find a lesson by the school class
-  // * @param schoolClass
-  // */
-  //public findBySchoolClass(schoolClass: string): Promise<Lesson> {
-  //  return this.dal.findBySchoolClass(schoolClass);
-  //}
-
-  // public findByStartTime(): Promise<Lesson> {}
-  // public findByEndTime(): Promise<Lesson> {}
+  public findMeetUp(user: IUser, lessonId: string, studentId: string): Promise<IMeetUp> {
+    return this.dal.findMeetUp(user, lessonId, studentId)
+      .catch(this.errorHandler.bind(this));
+  }
 }

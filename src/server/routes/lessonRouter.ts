@@ -4,7 +4,8 @@ import { BaseRouter } from './baseRouter';
 import { LessonController } from '../controllers/lessonController';
 import { Lesson } from '../models/lesson';
 import { CreateLessonViewModel } from '../models/viewmodels/createLessonViewModel';
-import { IMeetUp } from '../../shared/interfaces/iModels';
+import { IMeetUp, IUser } from '../../shared/interfaces/iModels';
+import { ResponseError } from "../errors/responseError";
 
 class LessonRouter extends BaseRouter {
   ctrl: LessonController;
@@ -46,10 +47,26 @@ class LessonRouter extends BaseRouter {
       this.handleHasRoleAccess(req, res, next, ['admin']);
     }, this.deleteLesson.bind(this));
 
+    //PUT update meetUp topic
+    this.router.put('/:lessonId/meetup/topic', (req, res, next) => {
+      this.handleHasRoleAccess(req, res, next, ['student']);
+    }, this.updateMeetUpTopic.bind(this));
+
+    //POST add checkIn on meetUp
+    this.router.post('/:lessonId/meetup/checkin', (req, res, next) => {
+      this.handleHasRoleAccess(req, res, next, ['student']);
+    }, this.addMeetUpCheckIn.bind(this));
+
+    //POST add checkOut on meetUp
+    this.router.post('/:lessonId/meetup/checkOut', (req, res, next) => {
+      this.handleHasRoleAccess(req, res, next, ['student']);
+    }, this.addMeetUpCheckOut.bind(this));
+
     //PUT update meetUp for a student
     this.router.put('/:lessonId/meetup/:studentId', (req, res, next) => {
-      this.handleHasRoleAccess(req, res, next, ['teacher']);
+      this.handleHasRoleAccess(req, res, next, ['teacher', 'student']);
     }, this.updateMeetUp.bind(this));
+
   }
 
   /**
@@ -137,6 +154,9 @@ class LessonRouter extends BaseRouter {
       });
   }
 
+  /**
+   * Update a meetup (for teachers)
+   */
   private updateMeetUp(req: Request, res: Response, next: NextFunction): void {
     //TODO validation for req.body is a real meetUp
     const lessonId = req.params['lessonId'];
@@ -148,6 +168,93 @@ class LessonRouter extends BaseRouter {
       .catch((err: any) => {
         //this.errorHandler(res, err, err.message);
         return next(err);
+      });
+  }
+
+  /**
+   * Update a meetup with topic (for students)
+   */
+  private updateMeetUpTopic(req: Request, res: Response, next: NextFunction): void {
+    const lessonId = req.params['lessonId'];
+    const user = req.user as IUser;
+    const userId = user.id;
+    const topic = (req.body as IMeetUp).topic;
+    this.findMeetUp(user, lessonId, userId)
+      .then(meetUp => {
+        meetUp.topic = topic;
+        return this.ctrl.updateMeetUp(user, lessonId, userId, meetUp);
+      })
+      .then(meetUp => {
+        return this.send(res, meetUp);
+      })
+      .catch((err: any) => {
+        return next(err);
+      });
+  }
+
+  /**
+   * Add checkIn on meetUp (for students)
+   */
+  private addMeetUpCheckIn(req: Request, res: Response, next: NextFunction): void {
+    const lessonId = req.params['lessonId'];
+    const user = req.user as IUser;
+    const userId = user.id;
+    const checkIn = new Date();
+    this.findMeetUp(user, lessonId, userId)
+      .then(meetUp => {
+        if (meetUp.checkIn) {
+          throw ResponseError.makeNew(new Error("CheckIn already set"), "CheckIn is already set on the meetUp");
+        }
+        return meetUp;
+      })
+      .then(meetUp => {
+        meetUp.checkIn = checkIn;
+        return this.ctrl.updateMeetUp(user, lessonId, userId, meetUp);
+      })
+      .then(meetUp => {
+        return this.send(res, meetUp);
+      })
+      .catch((err: any) => {
+        return next(err);
+      });
+  }
+
+  /**
+   * Add checkOut on meetUp (for students)
+   */
+  private addMeetUpCheckOut(req: Request, res: Response, next: NextFunction): void {
+    const lessonId = req.params['lessonId'];
+    const user = req.user as IUser;
+    const userId = user.id;
+    const checkOut = new Date();
+    this.findMeetUp(user, lessonId, userId)
+      .then(meetUp => {
+        if (meetUp.checkOut) {
+          throw ResponseError.makeNew(new Error("CheckOut already set"), "CheckOut is already set on the meetUp");
+        } else if (!meetUp.checkIn) {
+          throw ResponseError.makeNew(new Error("CheckOut error: CheckIn is not set"), "CheckOut can't be set before checkIn");
+        }
+        return meetUp;
+      })
+      .then(meetUp => {
+        meetUp.checkOut = checkOut;
+        return this.ctrl.updateMeetUp(user, lessonId, userId, meetUp);
+      })
+      .then(meetUp => {
+        return this.send(res, meetUp);
+      })
+      .catch((err: any) => {
+        return next(err);
+      });
+  }
+
+  private findMeetUp(user: IUser, lessonId: string, studentId: string) {
+    return this.ctrl.findMeetUp(user, lessonId, studentId)
+      .then(meetUp => {
+        if (!meetUp) {
+          throw ResponseError.makeNew(new Error("MeetUp not found"), "meetUp cound be found in db");
+        }
+        return meetUp;
       });
   }
 }

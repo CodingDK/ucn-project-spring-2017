@@ -8,4 +8,6 @@ export interface ILessonDAL extends IBaseDAL<Lesson> {
   findById(user: IUser, id: string, populateTeacher?: boolean, populateStudent?: boolean): Promise<Lesson>;
 
   updateMeetUp(user: IUser, lessonId: string, studentId: string, meetUp: IMeetUp): Promise<IMeetUp>;
+
+  findMeetUp(user: IUser, lessonId: string, studentId: string): Promise<IMeetUp>;
 }

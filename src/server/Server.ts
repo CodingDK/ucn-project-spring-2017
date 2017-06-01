@@ -1,5 +1,5 @@
 import * as express from 'express';
-import * as logger from 'morgan';
+import * as morgan from 'morgan';
 import * as bodyParser from 'body-parser';
 import * as session from 'express-session';
 import * as cookieParser from 'cookie-parser';
@@ -54,7 +54,7 @@ class Server {
 
     app.use(compression());
     app.use(cors({ origin: config.origin, credentials: true})); //
-    app.use(logger('dev'));
+    app.use(morgan('dev'));
     app.use(cookieParser(config.cookie.secret));
     app.use(bodyParser.urlencoded({ extended: true }));
     app.use(bodyParser.json());

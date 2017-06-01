@@ -9,6 +9,7 @@ import { ILesson, IMeetUp } from '../../../../shared/interfaces/iModels';
 import { AppConstants } from "../../app.constants";
 
 import { CreateLessonViewModel } from '../../models/viewmodels/createLessonViewModel';
+import { AuthService } from "../../services/auth.service";
 
 @Injectable()
 export class LessonService {
@@ -18,7 +19,11 @@ export class LessonService {
   private onlyActive: boolean | undefined;
   private allLessons: ILesson[] = [];
 
-  constructor(private http: Http, private router: Router, private toastyService: ToastyService) { }
+  constructor(
+    private authService: AuthService,
+    private http: Http,
+    private router: Router,
+    private toastyService: ToastyService) { }
 
   getAllLessons(): ILesson[] {
     return this.allLessons;
@@ -106,7 +111,7 @@ export class LessonService {
   }
 
   updateMeetUp(lessonId: string, meetUp: IMeetUp): Promise<IMeetUp> {
-    const url = `${this.lessonUrl + lessonId}/meetup/${meetUp.student.id}`;
+    const url = this.getUpdateMeetUpUrl(lessonId, meetUp.student.id);
     return this.http.put(url, meetUp, { withCredentials: true })
       .toPromise()
       .then(response => {
@@ -118,6 +123,49 @@ export class LessonService {
         return newMeetUp;
       })
       .catch(this.handleError.bind(this));
+  }
+
+  updateMeetUpTopic(lessonId: string, topic: string | undefined): Promise<IMeetUp> {
+    const url = this.getUpdateMeetUpUrl(lessonId, undefined, "topic");
+    return this.http.put(url, <IMeetUp>{ topic }, { withCredentials: true })
+      .toPromise()
+      .then(response => {
+        return response.json().data;
+      })
+      .then((newMeetUp: IMeetUp) => {
+        //TODO maybe refresh allLesson? (or just this meetUp)
+        //right now it happen in the components (updating the meetUp only)
+        return newMeetUp;
+      })
+      .catch(this.handleError.bind(this));
+  }
+
+  addMeetUpCheckInOrOut(lessonId: string, isCheckIn: boolean): Promise<IMeetUp> {
+    const action = isCheckIn ? "checkin" : "checkout";
+    const url = this.getUpdateMeetUpUrl(lessonId, undefined, action);
+    return this.http.post(url, undefined,{ withCredentials: true })
+      .toPromise()
+      .then(response => {
+        return response.json().data;
+      })
+      .then((newMeetUp: IMeetUp) => {
+        //TODO maybe refresh allLesson? (or just this meetUp)
+        //right now it happen in the components (updating the meetUp only)
+        return newMeetUp;
+      })
+      .catch(this.handleError.bind(this));
+  }
+
+  private getUpdateMeetUpUrl(lessonId: string, studentId?: string, action?: "checkin" | "checkout" | "topic") {
+    let url = `${this.lessonUrl + lessonId}/meetup`;
+    const isStudent = this.authService.isUserInRole("student");
+    if (!studentId && !isStudent) {
+      url += `/${studentId}`;
+    }
+    if (isStudent && action) {
+      url += `/${action}`;
+    }
+    return url;
   }
 
   // Implement a method to handle errors if any

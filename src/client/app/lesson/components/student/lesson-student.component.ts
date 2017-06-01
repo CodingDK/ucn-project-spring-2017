@@ -54,11 +54,14 @@ export class LessonStudentComponent implements OnInit {
     const oldTopic = m.topic;
     newTopic = newTopic && newTopic.length > 0 ? newTopic : undefined;
 
-    if (newTopic !== m.topic) { //
-      m.topic = <string>newTopic;
-      this.updateMeetUp(m, "Dit emne er blevet opdateret", () => { 
-        this.topicModal.hideModal();
-      });
+    if (newTopic !== m.topic) {
+      this.lessonService.updateMeetUpTopic(this.item.id, newTopic)
+        .then((updatedMeetUp) => {
+          return this.succusHandler(updatedMeetUp, "Dit emne er blevet opdateret", () => {
+            this.topicModal.hideModal();
+          });
+        })
+        .catch(this.errorHandler.bind(this));
     } else {
       this.topicModal.hideModal();
     }
@@ -73,7 +76,12 @@ export class LessonStudentComponent implements OnInit {
     }
     let message = `Du er blevet tjekket `;
     isCheckIn ? message += "ind" : message += "ud";
-    this.updateMeetUp(m, message);
+
+    this.lessonService.addMeetUpCheckInOrOut(this.item.id, isCheckIn)
+      .then((updatedMeetUp) => {
+        return this.succusHandler(updatedMeetUp, message);
+      })
+      .catch(this.errorHandler.bind(this));
   }
 
   private getMeetUpCopy() {
@@ -86,25 +94,23 @@ export class LessonStudentComponent implements OnInit {
     };
   }
 
-  public updateMeetUp(newMeetUp: IMeetUp, message: string, action?: () => void) {
+  public succusHandler(updatedMeetUp: IMeetUp, message: string, action?: () => void) {
     const m = this.getMeetUp();
-    let promise = this.lessonService.updateMeetUp(this.item.id, newMeetUp)
-      .then(returnedMeetUp => {
-        m.checkIn = returnedMeetUp.checkIn;
-        m.checkOut = returnedMeetUp.checkOut;
-        m.topic = returnedMeetUp.topic;
-        this.toastyService.success(message);
-      });
-      if (action !== undefined) {
-        promise = promise.then(action);
-      }
-    return promise.catch(err => {
-        const body = JSON.parse(err._body);
-        this.toastyService.error(<ToastOptions>{
-          title: "Der opstod en fejl",
-          msg: body.message
-        });
-      });
+    m.checkIn = updatedMeetUp.checkIn;
+    m.checkOut = updatedMeetUp.checkOut;
+    m.topic = updatedMeetUp.topic;
+    this.toastyService.success(message);
+    if (action !== undefined) {
+      action();
+    }
+  }
+
+  private errorHandler(err: any) {
+    const body = JSON.parse(err._body);
+    this.toastyService.error(<ToastOptions>{
+      title: "Der opstod en fejl",
+      msg: body.message
+    });
   }
 
 }

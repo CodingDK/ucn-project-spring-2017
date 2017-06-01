@@ -144,7 +144,7 @@ export class LessonService {
   addMeetUpCheckInOrOut(lessonId: string, isCheckIn: boolean): Promise<IMeetUp> {
     const action = isCheckIn ? "checkin" : "checkout";
     const url = this.getUpdateMeetUpUrl(lessonId, undefined, action);
-    return this.http.post(url, undefined,{ withCredentials: true })
+    return this.http.post(url, undefined, { withCredentials: true })
       .toPromise()
       .then(response => {
         return response.json().data;

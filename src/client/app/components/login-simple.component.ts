@@ -52,7 +52,7 @@ export class LoginSimpleComponent implements OnInit {
           name: nameValue
         };
       });
-    })
+    });
   }
 
   submit() {

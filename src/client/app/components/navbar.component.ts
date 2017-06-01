@@ -37,7 +37,7 @@ export class NavbarComponent {
     this.toastyService.warning(toastOptions);
   }
 
-  isLoggedIn() : boolean {
+  isLoggedIn(): boolean {
     return this.authService.isLoggedIn();
   }
 
@@ -57,11 +57,12 @@ export class NavbarComponent {
     return this.authService.isUserInRole("admin");
   }
 
-  getDisplayUser() {
-    const user = this.authService.getUser();
-    if (user) {
-      return `${user.name} (${user.roles.join(", ")})`;
-    }
-    return "";
+  getDisplayUserRoles() {
+    const user = this.getUser();
+    return user ? `(${user.roles.join(", ")})` : "";
+  }
+
+  getUser() {
+    return this.authService.getUser();
   }
 }

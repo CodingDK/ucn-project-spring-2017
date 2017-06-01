@@ -70,6 +70,7 @@
                 <tr>
                   <th class="text-center"><i class="fa fa-user-circle-o" aria-hidden="true"></i></th>
                   <th class="nameCol">Navn</th>
+                  <th class="topicCol">Emne</th>
                   <th class="text-center checkInCol">Tjek Ind <i class="fa fa-sign-in" aria-hidden="true"></i></th>
                   <th class="text-center checkOutCol">Tjek Ud <i class="fa fa-sign-out" aria-hidden="true"></i></th>
                 </tr>
@@ -80,6 +81,7 @@
                     <img [src]="m.student.imageUrl" [title]="m.student.name" />
                   </td>
                   <td class="nameCol">{{m.student.name}}</td>
+                  <td class="topicCol">{{m.topic}}</td>
                   <td class="text-center checkInCol" [class.verticalMiddle]="!m.checkIn">
                     <span *ngIf="m.checkIn; else checkInTemplate" (click)="removeChecked(m, true)">
                       {{m.checkIn | amDateFormat:'LT'}}

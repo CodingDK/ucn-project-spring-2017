@@ -160,7 +160,7 @@ export class LessonService {
   private getUpdateMeetUpUrl(lessonId: string, studentId?: string, action?: "checkin" | "checkout" | "topic") {
     let url = `${this.lessonUrl + lessonId}/meetup`;
     const isStudent = this.authService.isUserInRole(Roles.student);
-    if (!studentId && !isStudent) {
+    if (studentId && !isStudent) {
       url += `/${studentId}`;
     }
     if (isStudent && action) {

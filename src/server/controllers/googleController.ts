@@ -22,7 +22,7 @@ export class GoogleController {
   public login(auth_code: string): Promise<User> {
     return this.getClientAndSetTokens(auth_code)
       .then(this.getProfileData.bind(this))
-      .then(this.createOrUpdateUserWithGoogleData.bind(this))
+      .then(this.createOrUpdateUserWithGoogleData.bind(this));
   }
 
   /**
@@ -75,7 +75,7 @@ export class GoogleController {
     const imageUrl = profile.image.url;
 
     //setting mock data from file, later replace this with real data from UniLogin
-    const uniMockedObject = UniData.users.find((x: any) => x.id == googleId);
+    const uniMockedObject = UniData.users.find((x: any) => x.id === googleId);
     const schoolClasses = uniMockedObject ? uniMockedObject.schoolClasses : UniData.defaultSchoolClasses;
     const roles = uniMockedObject ? uniMockedObject.roles : UniData.defaultRoles;
     //console.log("googleId:", googleId);

@@ -59,13 +59,13 @@ class LessonRouter extends BaseRouter {
     }, this.addMeetUpCheckIn.bind(this));
 
     //POST add checkOut on meetUp
-    this.router.post('/:lessonId/meetup/checkOut', (req, res, next) => {
+    this.router.post('/:lessonId/meetup/checkout', (req, res, next) => {
       this.handleHasRoleAccess(req, res, next, [Roles.student]);
     }, this.addMeetUpCheckOut.bind(this));
 
     //PUT update meetUp for a student
     this.router.put('/:lessonId/meetup/:studentId', (req, res, next) => {
-      this.handleHasRoleAccess(req, res, next, [Roles.teacher, Roles.student]);
+      this.handleHasRoleAccess(req, res, next, [Roles.teacher, Roles.admin]);
     }, this.updateMeetUp.bind(this));
 
   }

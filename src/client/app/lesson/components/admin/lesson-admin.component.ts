@@ -1,4 +1,4 @@
-import { Component, ViewChild, AfterViewInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute, Params } from '@angular/router';
 import 'rxjs/add/operator/switchMap';
 
@@ -14,17 +14,12 @@ import { LessonService } from '../../services/lesson.service';
   templateUrl: './lesson-admin.component.html',
   styleUrls: ['./lesson-admin.component.scss']
 })
-export class LessonAdminComponent implements AfterViewInit {
+export class LessonAdminComponent {
+  //lessons: ILesson[] = [];
 
   constructor(private lessonService: LessonService, private toastyService: ToastyService,
     private route: ActivatedRoute,
     private router: Router) {
-      this.lessonService.refreshAllLessons();
-  }
-
-  ngAfterViewInit() {
-    //this.addModal.showModal();
-
   }
 
   getAll(): ILesson[] {

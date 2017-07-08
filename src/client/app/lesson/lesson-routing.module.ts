@@ -12,21 +12,25 @@ import { LessonAdminComponent } from "./components/admin/lesson-admin.component"
 
 // student
 import { LessonStudentComponent } from './components/student/lesson-student.component';
-import { StudentTopicModalComponent } from './components/student/student-topic-modal';
+import { LessonGetAllResolver } from "./services/lesson-get-all-resolver.service";
+import { Roles } from "../../../shared/constants/roles";
 
 @NgModule({
   imports: [RouterModule.forChild([
     {
       path: 'lesson',
       canActivate: [AuthGuard, RoleGuard],
-      data: { roles: ['teacher', 'admin', 'student'] },
+      data: { roles: [Roles.teacher, Roles.admin, Roles.student] },
       //canActivateChild: [AuthGuard],
       children: [{
         path: '',
         //pathMatch: 'full',
         component: LessonComponent,
         canActivate: [RoleGuard],
-        data: { roles: ['teacher', 'student'] },
+        data: { roles: [Roles.teacher, Roles.student] },
+        resolve: {
+          lessons: LessonGetAllResolver
+        },
         children: [
           {
             path: 'details/:id',
@@ -36,7 +40,7 @@ import { StudentTopicModalComponent } from './components/student/student-topic-m
             },
             canActivate: [RoleGuard],
             data: {
-              roles: ['teacher'],
+              roles: [Roles.teacher],
               populateTeacher: true,
               populateStudent: true
             }
@@ -47,7 +51,10 @@ import { StudentTopicModalComponent } from './components/student/student-topic-m
         path: 'admin',
         component: LessonAdminComponent,
         canActivate: [RoleGuard],
-        data: { roles: ['teacher', 'admin'] },
+        data: { roles: [Roles.teacher, Roles.admin] },
+        resolve: {
+          lessons: LessonGetAllResolver
+        },
         children: [{
           path: 'add',
           component: LessonAdminAddModalComponent
@@ -72,21 +79,8 @@ import { StudentTopicModalComponent } from './components/student/student-topic-m
             populateTeacher: true
           }
         }]
-      },
-      {
-          path: 'student',
-          component: LessonStudentComponent,
-          canActivate: [RoleGuard],
-          data: { roles: ['teacher', 'admin', 'student'] },     
-          children: [{
-              path: 'topic',
-              component: StudentTopicModalComponent
-          }]
-      }
-      ]
-      }//, canActivate: [AuthGuard] }
-    
-
+      }]
+    }
   ])],
   exports: [RouterModule]
 })

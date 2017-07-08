@@ -6,9 +6,9 @@ import { Router } from "@angular/router";
 import { ToastyService } from "ng2-toasty";
 
 @Component({
-    selector: 'login-simple',
-    templateUrl: 'login-simple.component.html',
-    styleUrls: ['login-simple.component.scss']
+  selector: 'login-simple',
+  templateUrl: 'login-simple.component.html',
+  styleUrls: ['login-simple.component.scss']
 })
 export class LoginSimpleComponent implements OnInit {
 
@@ -29,44 +29,42 @@ export class LoginSimpleComponent implements OnInit {
     dynamicTitleMaxItems: 2,
     selectionLimit: 1,
     displayAllSelectedText: true,
-    containerClasses: '',   
+    containerClasses: '',
     autoUnselect: true,
     closeOnSelect: true
   };
-  options: IMultiSelectOption[] = [{name: "name", id: "id"}, {name: "name1", id: "id1"}, {name: "name2", id: "id2"}];
+  options: IMultiSelectOption[] = [{ name: "name", id: "id" }, { name: "name1", id: "id1" }, { name: "name2", id: "id2" }];
 
   constructor(
-    private userService: UserService, 
+    private userService: UserService,
     private authService: AuthService,
     private router: Router,
     private toastyService: ToastyService) {
-    
+
   }
 
   ngOnInit(): void {
     this.userService.getAllUsers().then(users => {
       this.options = users.map((user) => {
         const nameValue = `${user.name} (${user.roles.join(", ")})`;
-          return <IMultiSelectOption>{
-            id: user.id,
-            name: nameValue
-          };
-        });
-    })
+        return <IMultiSelectOption>{
+          id: user.id,
+          name: nameValue
+        };
+      });
+    });
   }
 
   submit() {
-    this.authService.loginSimple(this.selectedArr[0]).then(response => {
-          this.router.navigateByUrl('/lesson');
-        })
-        .catch(err => {
-          let errorMessage;
-          try {
-            errorMessage = JSON.parse(err._body).message;
-          } catch (e) {
-            errorMessage = `Unknown Error - code: ${err.status} - ${err.statusText}`;
-          }
-          this.toastyService.error(errorMessage);
-        });
+    this.authService.loginSimple(this.selectedArr[0])
+      .catch(err => {
+        let errorMessage;
+        try {
+          errorMessage = JSON.parse(err._body).message;
+        } catch (e) {
+          errorMessage = `Unknown Error - code: ${err.status} - ${err.statusText}`;
+        }
+        this.toastyService.error(errorMessage);
+      });
   }
 }

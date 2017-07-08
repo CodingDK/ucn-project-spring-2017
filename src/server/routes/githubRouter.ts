@@ -2,7 +2,16 @@ import { NextFunction, Request, Response, Router } from "express";
 import * as request from "request";
 
 import config from '../config/config';
-import {isLoggedIn} from '../config/common';
+//import {isLoggedIn} from '../config/common';
+
+function isLoggedIn(req: Request, res: Response, next: NextFunction): void {
+    // if user is authenticate in the session, carry on
+    if (req.isAuthenticated()) {
+      return next();
+    }
+    //res.redirect('/');
+    res.send(401, { login: false, text: 'You are not logged in!' });
+}
 
 const githubRouter: Router = Router();
 githubRouter.get('/commits', isLoggedIn, (req: Request, res: Response, next: NextFunction) => {

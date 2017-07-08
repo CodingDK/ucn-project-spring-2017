@@ -15,6 +15,7 @@ import { ISchoolClass, ILesson, IUser } from '../../../../../shared/interfaces/i
 
 
 import { ValidationError } from 'class-validator';
+import { Roles } from "../../../../../shared/constants/roles";
 
 @Component({
   selector: 'lesson-admin-add-modal',
@@ -27,7 +28,7 @@ export class LessonAdminAddModalComponent implements OnInit {
 
   @ViewChild('datePickerPopup')
   public datePickerPopup: PopoverDirective;
-  
+
   item: ILesson; //item for editing view
 
   lessonForm: FormGroup;
@@ -60,9 +61,9 @@ export class LessonAdminAddModalComponent implements OnInit {
   }
 
   public isEditing(): boolean {
-    return (this.item != undefined);
+    return (this.item !== undefined);
   };
-  
+
   public hideModal(): void {
     this.addModal.hide();
   }
@@ -76,7 +77,7 @@ export class LessonAdminAddModalComponent implements OnInit {
     //Get All schoolClasses and put them in select field
     const setSchoolClassesPromise = this.userService.getAllSchoolClasses()
       .then((schoolClasses: ISchoolClass[]) => {
-        let values = schoolClasses.map((schoolClass) => {
+        const values = schoolClasses.map((schoolClass) => {
           return <IMultiSelectOption>{
             id: schoolClass.name,
             name: schoolClass.name
@@ -90,9 +91,9 @@ export class LessonAdminAddModalComponent implements OnInit {
       });
 
     //Get All teachers and put them in select field
-    const setTeachersPromise = this.userService.getAllUsers(['teacher'])
+    const setTeachersPromise = this.userService.getAllUsers([Roles.teacher])
       .then((users) => {
-        let values = users.map((user) => {
+        const values = users.map((user) => {
           return <IMultiSelectOption>{
             id: user.id,
             name: user.name
@@ -105,7 +106,7 @@ export class LessonAdminAddModalComponent implements OnInit {
         this.promiseErrorHandler(err);
       });
 
-    return Promise.all([setSchoolClassesPromise, setTeachersPromise])
+    return Promise.all([setSchoolClassesPromise, setTeachersPromise]);
   }
 
   private promiseErrorHandler(err: any): void {
@@ -116,7 +117,7 @@ export class LessonAdminAddModalComponent implements OnInit {
   }
 
   private createForm() {
-    let start = moment().add(1, 'hour').startOf('hour');
+    const start = moment().add(1, 'hour').startOf('hour');
 
     this.dateInput = new FormControl(start.toDate(), [isDateValidator()]);
     this.startTimeInput = new FormControl(start.toDate(), [isDateValidator]);
@@ -149,12 +150,12 @@ export class LessonAdminAddModalComponent implements OnInit {
       this.startTimeInput.setValue(new Date(item.startTime));
       this.endTimeInput.setValue(new Date(item.endTime));
       this.teachersInput.setValue(item.teachers.map(v => { return v.id; }));
-      this.schoolClassNamesInput.setValue(item.schoolClasses.map(v => { return v.name }));
+      this.schoolClassNamesInput.setValue(item.schoolClasses.map(v => { return v.name; }));
     }
   }
 
   public submit(): void {
-    let viewModel = this.getViewModelFromForm();
+    const viewModel = this.getViewModelFromForm();
     let promise;
     if (this.isEditing()) {
       promise = this.lessonService.updateLesson(viewModel)
@@ -174,14 +175,14 @@ export class LessonAdminAddModalComponent implements OnInit {
         this.addModal.hide();
       })
       .catch((err) => {
-        let body = JSON.parse(err._body);
+        const body = JSON.parse(err._body);
         if (body.errorName && body.errorName === ValidationError.name) {
-          let errors = body.data as Array<ValidationError>;
+          const errors = body.data as Array<ValidationError>;
           errors.forEach((e) => {
-            let control = this.lessonForm.controls[e.property];
+            const control = this.lessonForm.controls[e.property];
             control.setErrors(e.constraints);
             control.markAsDirty();
-          })
+          });
           this.setErrorMessages();
         } else {
           this.toastyService.error(<ToastOptions>{
@@ -197,16 +198,16 @@ export class LessonAdminAddModalComponent implements OnInit {
     if (this.isEditing()) {
       viewModel.id = this.item.id;
     }
-    let schoolClassNames = this.schoolClassNamesInput.value;
-    let teachers = this.teachersInput.value;
+    const schoolClassNames = this.schoolClassNamesInput.value;
+    const teachers = this.teachersInput.value;
 
-    let date = moment(this.dateInput.value);
-    let startTime = moment(this.startTimeInput.value);
-    let endTime = moment(this.endTimeInput.value);
-    date.set({ hour: startTime.hour(), minute: startTime.minute() })
+    const date = moment(this.dateInput.value);
+    const startTime = moment(this.startTimeInput.value);
+    const endTime = moment(this.endTimeInput.value);
+    date.set({ hour: startTime.hour(), minute: startTime.minute() });
     viewModel.startTime = date.toDate();
 
-    let duration = moment.duration(endTime.diff(startTime));
+    const duration = moment.duration(endTime.diff(startTime));
     viewModel.endTime = date.add(duration).toDate();
     viewModel.schoolClassNames = schoolClassNames;
     viewModel.teachers = teachers;
@@ -217,11 +218,12 @@ export class LessonAdminAddModalComponent implements OnInit {
   public setErrorMessages(data?: any) {
     if (!this.lessonForm) { return; }
     const form = this.lessonForm;
+    // tslint:disable-next-line:forin
     for (const field in this.formErrors) {
       // clear previous error message (if any)
       this.formErrors[field] = '';
       const control = form.get(field);
-      if (control)
+      if (control) {
         if (control && control.dirty && !control.valid && control.errors != null) {
           const messages = this.validationMessages[field];
           const errors = control.errors;
@@ -231,13 +233,15 @@ export class LessonAdminAddModalComponent implements OnInit {
             } else if (typeof errors[key] === "string") {
               this.formErrors[field] += errors[key] + ' ';
             } else {
-              this.formErrors[field] += `Ukendt fejl: ${key} `
+              this.formErrors[field] += `Ukendt fejl: ${key} `;
             }
           }
         }
+      }
     }
   }
 
+  // tslint:disable-next-line:member-ordering
   formErrors: any = {
     'date': '',
     'startTime': '',
@@ -246,6 +250,7 @@ export class LessonAdminAddModalComponent implements OnInit {
     'schoolClassNames': ''
   };
 
+  // tslint:disable-next-line:member-ordering
   validationMessages: any = {
     teachers: {
       'required': 'Lærere feltet skal udfyldes',

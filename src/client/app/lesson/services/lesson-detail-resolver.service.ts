@@ -13,10 +13,10 @@ export class LessonDetailResolver implements Resolve<ILesson> {
   }
 
   resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Promise<ILesson> {
-    let id = route.params['id'];
-    let populateStudent = route.data['populateStudent'];
-    let populateTeacher = route.data['populateTeacher'];
-    
+    const id = route.params['id'];
+    const populateStudent = route.data['populateStudent'];
+    const populateTeacher = route.data['populateTeacher'];
+
     return this.ls.getLessonById(id, populateTeacher, populateStudent).then(lesson => {
       if (lesson) {
         return lesson;

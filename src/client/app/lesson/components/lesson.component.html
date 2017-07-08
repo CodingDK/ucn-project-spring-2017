@@ -1,5 +1,5 @@
 ﻿<!--Mainside for lesson<br />-->
-<lesson-teacher></lesson-teacher>
-<!--<lesson-student></lesson-student>-->
+<lesson-teacher *ngIf="isTeacher()"></lesson-teacher>
+<lesson-student *ngIf="isStudent()"></lesson-student>
 
 <router-outlet></router-outlet>

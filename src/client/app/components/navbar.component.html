@@ -11,9 +11,6 @@
       <li routerLinkActive="active" *ngIf="isLoggedIn() && isAdmin()">
         <a routerLink="/lesson/admin">Administrator</a>
       </li>
-        <li routerLinkActive="active" *ngIf="isLoggedIn() && isAdmin()">
-            <a routerLink="lesson/student">Elev</a>
-        </li>
       <!--<li>
         <a (click)="addToast()" style="cursor:pointer;">Notification test</a>
       </li>-->        
@@ -22,8 +19,8 @@
       <li routerLinkActive="active" *ngIf="!isLoggedIn()">
         <a routerLink="/login"><span class="fa fa-sign-in"></span> Login</a>
       </li>
-      <li *ngIf="isLoggedIn()">
-        <p class="navbar-text"><span class="fa fa-user"></span> {{getDisplayUser()}}</p>
+      <li *ngIf="isLoggedIn() && getUser()">
+        <p class="navbar-text"><img class="userImg" [src]="getUser().imageUrl" [title]="getUser().name" /> {{getUser().name}} {{getDisplayUserRoles()}}</p>
       </li>
       <li *ngIf="isLoggedIn()">
         <a (click)="logOut()" style="cursor:pointer;"><span class="fa fa-sign-out"></span> Logout</a>

@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { AuthService } from '../services/auth.service';
 
 import { ToastyService, ToastyConfig, ToastOptions, ToastData } from 'ng2-toasty';
+import { Roles } from "../../../shared/constants/roles";
 
 @Component({
   selector: 'navbar',
@@ -37,7 +38,7 @@ export class NavbarComponent {
     this.toastyService.warning(toastOptions);
   }
 
-  isLoggedIn() : boolean {
+  isLoggedIn(): boolean {
     return this.authService.isLoggedIn();
   }
 
@@ -46,22 +47,23 @@ export class NavbarComponent {
   }
 
   isTeacher(): boolean {
-    return this.authService.isUserInRole("teacher");
+    return this.authService.isUserInRole(Roles.teacher);
   }
 
   isStudent(): boolean {
-    return this.authService.isUserInRole("student");
+    return this.authService.isUserInRole(Roles.student);
   }
 
   isAdmin(): boolean {
-    return this.authService.isUserInRole("admin");
+    return this.authService.isUserInRole(Roles.admin);
   }
 
-  getDisplayUser() {
-    const user = this.authService.getUser();
-    if (user) {
-      return `${user.name} (${user.roles.join(", ")})`;
-    }
-    return "";
+  getDisplayUserRoles() {
+    const user = this.getUser();
+    return user ? `(${user.roles.join(", ")})` : "";
+  }
+
+  getUser() {
+    return this.authService.getUser();
   }
 }

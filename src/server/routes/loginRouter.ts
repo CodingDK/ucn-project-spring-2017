@@ -59,12 +59,12 @@ class LoginRouter extends BaseRouter {
 
   private getStatus(req: Request, res: Response, next: NextFunction) {
     // `req.user` contains the authenticated user.
-    let user = req.user;
+    const user = req.user;
     console.log("user", user);
     if (!user) {
       this.send(res, null, "User not logged in", false);
     } else {
-      let safeUser = this.getClientSafeUser(req.user);
+      const safeUser = this.getClientSafeUser(req.user);
       this.send(res, safeUser, "User is logged in");
     }
   }
@@ -79,8 +79,8 @@ class LoginRouter extends BaseRouter {
           if (err) {
             throw ResponseError.makeNew(err, "Error in logging user in with google route, passport part");
           }
-          let safeUser = this.getClientSafeUser(user);
-          this.send(res, safeUser, "Succes logging in with Google")
+          const safeUser = this.getClientSafeUser(user);
+          this.send(res, safeUser, "Succes logging in with Google");
           //res.json({ login: true, isGoogleUsed: true, message: "ok" });
         });
       })
@@ -107,8 +107,8 @@ class LoginRouter extends BaseRouter {
           if (err) {
             throw ResponseError.makeNew(err, "Error in logging user in with simple login, passport part");
           }
-          let safeUser = this.getClientSafeUser(user);
-          this.send(res, safeUser, "Succes logging in with Simple")
+          const safeUser = this.getClientSafeUser(user);
+          this.send(res, safeUser, "Succes logging in with Simple");
           //res.json({ login: true, isGoogleUsed: true, message: "ok" });
         });
       })

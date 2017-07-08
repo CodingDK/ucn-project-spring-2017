@@ -26,17 +26,17 @@ export class LoginGoogleComponent implements AfterViewInit {
     'profile',
     'email'
   ].join(' ');
-  
+
   public auth2: any;
 
   constructor(private authService: AuthService, private router: Router, private _zone: NgZone, private renderer: Renderer2) {
-    
+
   }
 
   ngAfterViewInit() {
     this.googleInit();
   }
-    
+
   public googleInit() {
     gapi.load('auth2', () => {
       this.auth2 = gapi.auth2.init({
@@ -53,18 +53,18 @@ export class LoginGoogleComponent implements AfterViewInit {
   //  this.auth2.attachClickHandler(element, {},
   //    (googleUser: any) => {
   //      this._zone.run(() => {
-          
+
   //        let id_token = googleUser.getAuthResponse().id_token;
-          
+
   //      });
-        
+
   //      //let profile = googleUser.getBasicProfile();
   //      //console.log('Token || ' + googleUser.getAuthResponse().id_token);
   //      //console.log('ID: ' + profile.getId());
   //      //console.log('Name: ' + profile.getName());
   //      //console.log('Image URL: ' + profile.getImageUrl());
   //      //console.log('Email: ' + profile.getEmail());
-        
+
   //    }, (error: any) => {
   //      console.log("attachSignin Error: ", JSON.stringify(error, undefined, 2));
   //    });
@@ -72,18 +72,16 @@ export class LoginGoogleComponent implements AfterViewInit {
 
   public attachSignin() {
     this.auth2.grantOfflineAccess().then((response: any) => {
-      this._zone.run(() => { 
-        let authCode = response.code;
-        this.authService.googleLoginSucceed(authCode).then(response => {
-          this.router.navigateByUrl('/lesson');
-        })
-        .catch(err => {
-          try {
-            this.errorMessage = JSON.parse(err._body).message;
-          } catch (e) {
-            this.errorMessage = `Unknown Error - code: ${err.status} - ${err.statusText}`;
-          }
-        });
+      this._zone.run(() => {
+        const authCode = response.code;
+        this.authService.googleLoginSucceed(authCode)
+          .catch(err => {
+            try {
+              this.errorMessage = JSON.parse(err._body).message;
+            } catch (e) {
+              this.errorMessage = `Unknown Error - code: ${err.status} - ${err.statusText}`;
+            }
+          });
       });
     });
   }

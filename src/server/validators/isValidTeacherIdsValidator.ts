@@ -1,6 +1,8 @@
-import { registerDecorator, ValidationOptions, ValidationArguments, ValidatorConstraint, ValidatorConstraintInterface } from "class-validator";
+import { registerDecorator, ValidationOptions, ValidationArguments,
+  ValidatorConstraint, ValidatorConstraintInterface } from "class-validator";
 
 import { UserController } from '../controllers/userController';
+import { Roles } from "../../shared/constants/roles";
 
 
 /**
@@ -8,7 +10,7 @@ import { UserController } from '../controllers/userController';
  */
 export function IsValidTeacherIds(validationOptions?: ValidationOptions) {
   return function (object: Object, propertyName: string) {
-    let options: ValidationOptions = Object.assign(<ValidationOptions>{
+    const options: ValidationOptions = Object.assign(<ValidationOptions>{
       message: "The value '$value' does not exist in the system"
     }, validationOptions);
     //console.log("options", options);
@@ -29,7 +31,7 @@ class IsValidTeacherIdsConstraint implements ValidatorConstraintInterface {
 
   validate(teacherIds: any, args: ValidationArguments) {
     const ctrl = new UserController();
-    return ctrl.checkIdsExist(null, teacherIds, ['teacher'])
+    return ctrl.checkIdsExist(null, teacherIds, [Roles.teacher])
       .then((value) => {
         return value;
       })
